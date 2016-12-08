@@ -1,0 +1,17 @@
+app/mdchecker/conf/*.json
+app/mdchecker/conf/*.cfg
+*.pyc
+
+# virtualenv dir
+venv/*
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# OSX template
+.DS_Store
+.AppleDouble
+.LSOverride

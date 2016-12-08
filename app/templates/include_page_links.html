@@ -1,0 +1,51 @@
+<nav aria-label="...">
+
+    {% if object_list.pages > 1 %}
+    <ul class="pagination">
+
+        {% if not object_list.has_prev %}
+            <li class="disabled"><a href="#" aria-label="Page précédente"><span aria-hidden="true">&laquo;</span></a></li>
+        {% else %}
+            <li><a href="./?page={{ object_list.prev_num }}" aria-label="Page précédente"><span aria-hidden="true">&laquo;</span></a></li>
+        {% endif %}
+
+        {% for page in object_list.iter_pages() %}
+        <li{% if page == object_list.page %} class="active"{% endif %}>
+            {% if page %}
+                {% if page == object_list.page %}
+                    <a href="#">{{ page }}<span class="sr-only">(current)</span></a>
+                {% else %}
+                    {% set link="./?page=" + page|string %}
+                    {% if sort_by %}
+                        {% set link = link + "&sort_by=" + sort_by %}
+                    {% endif %}
+                    {% if order %}
+                        {% set link = link + "&order=" + order %}
+                    {% endif %}
+                    {% if display %}
+                        {% set link = link + "&display=" + display %}
+                    {% endif %}
+                    {% if level_filter %}
+                        {% set link = link + "&level_filter=" + level_filter %}
+                    {% endif %}
+                    {% if test_filter %}
+                        {% set link = link + "&test_filter=" + test_filter %}
+                    {% endif %}
+                    <a href="{{link}}">{{ page }}</a>
+                {% endif %}
+            {% else %}
+                <a class="disabled">...</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+
+        {% if object_list.has_next %}
+            <li><a href="./?page={{ object_list.next_num }}" aria-label="Page suivante"><span aria-hidden="true">&raquo;</span></a></li>
+        {% else %}
+            <li class="disabled"><a href="#" aria-label="Page suivante"><span aria-hidden="true">&raquo;</span></a></li>
+        {% endif %}
+
+    </ul>
+    {% endif %}
+
+</nav>

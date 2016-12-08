@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<GDAS service="TJS" version="1.0" capabilities="{{ get_getcapabilities_path(service) }}" xml:lang="en" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.opengis.net/tjs/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/tjs/1.0 http://schemas.opengis.net/tjs/1.0/tjsGetData_response.xsd">
+    <Framework>
+        <FrameworkURI>{{ dataset.framework.uri }}</FrameworkURI>
+        <Organization>{{ dataset.framework.organization }}</Organization>
+        <Title>{{ dataset.framework.title }}</Title>
+        <Abstract>{{ dataset.framework.abstract }}</Abstract>
+        <ReferenceDate startDate="{{ dataset.framework.reference_date }}">{{ dataset.framework.start_date }}</ReferenceDate>
+        <Version>{{ dataset.framework.version }}</Version>
+        <!--Documentation>{{ dataset.framework.documentation }}</Documentation-->
+        <FrameworkKey>
+        <Column name="{{ dataset.framework.key_col_name }}" type="{{ dataset.framework.key_col_type }}" length="{{ dataset.framework.key_col_length }}" decimals="{{ dataset.framework.key_col_decimals }}" />
+        </FrameworkKey>
+        <BoundingCoordinates>
+        <North>{{ dataset.framework.bbox_north }}</North>
+        <South>{{ dataset.framework.bbox_south }}</South>
+        <East>{{ dataset.framework.bbox_east }}</East>
+        <West>{{ dataset.framework.bbox_west }}</West>
+        </BoundingCoordinates>
+        <DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(service, dataset.framework) }}"/>
+        <Dataset>
+            <DatasetURI>{{ dataset.uri }}</DatasetURI>
+            <Organization>{{ dataset.organization }}</Organization>
+            <Title>{{ dataset.title }}</Title>
+            <Abstract>{{ dataset.abstract }}</Abstract>
+            <ReferenceDate>{{ dataset.reference_date }}</ReferenceDate>
+            <Version>{{ dataset.version }}</Version>
+            <!--Documentation>{{ dataset.documentation }}</Documentation-->
+            <DescribeDataRequest xlink:href="{{ get_describedata_url(service, dataset) }}"/>
+            <Columnset>
+                <FrameworkKey complete="true" relationship="one">
+                    <Column name="{{ dataset.framework.key_col_name }}" type="{{ dataset.framework.key_col_type }}" length="{{ dataset.framework.key_col_length }}" decimals="{{ dataset.framework.key_col_decimals }}" />
+                </FrameworkKey>
+                <Attributes>
+{% for attribute in dataset.attributes %}
+                    <Column name="rurf_91" type="http://www.w3.org/TR/xmlschema-2/#integer" length="10" decimals="0" purpose="Attribute">
+                        <Title>{{ attribute.title }}</Title>
+                        <Abstract>{{ attribute.abstract }}</Abstract>
+                        <!--Documentation>{{ attribute.documentation }}</Documentation-->
+                        <Values>
+{{ attribute.values }}
+                        </Values>
+                        <GetDataRequest xlink:href="{{ get_getdata_url(service, attribute) }}"/>
+                    </Column>
+{% endfor %}
+    </Attributes>
+   </Columnset>
+   <Rowset>
+{% for row in data.itertuples() %}
+     <Row>
+       <K>{{ row[0] }}</K>
+{% for col in data.columns %}
+       <V>{{ row[col] }}</V>
+{% endfor %}
+     </Row>
+{% endfor %}
+   </Rowset>
+  </Dataset>
+ </Framework>
+</GDAS>

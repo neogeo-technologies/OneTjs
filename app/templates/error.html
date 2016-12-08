@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Erreur {{error.code}}</h1>
+    {% if error.code in (410, 403) %}
+    <p>Vous n'êtes pas autorisé à consulter cette page. Veuillez vous <a href="{{ url_for('login')}}">authentifier</a>.</p>
+    {% elif error.code == 404 %}
+    <p>La page que vous recherchez n'existe pas.</p>
+    {% elif error.code == 500 %}
+    <p>Une erreur est intervenue au cours du traitement de votre requête. Veuillez nous excuser pour la gêne occasionnée.</p>
+    {% else %}
+    <p>{{error.description}}</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>TJS simple server</h1>
+    <p>TJS simple server est un prototype de serveur TJS implémentant le standard de l'OGC Georeferenced Table Joining Service.</p>
+    <p>Seules les opérations de type Data Access en HTTP GET sont implémentées.</p>
+    <br/>
+    <p>Eléments non supportés pour l'instant :
+        <ul>
+            <li>Requêtes HTTP POST</li>
+            <li>Requêtes SOAP</li>
+            <li>WSDL</li>
+            <li>Valeurs de types <em>ordinal</em> et <em>nominal</em></li>
+            <li>Les champs <em>documentation</em></li>
+            <li>Les exceptions décrites dans les spécifications</li>
+        </ul>
+    </p>
+{% endblock %}
