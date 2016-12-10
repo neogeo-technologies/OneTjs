@@ -26,7 +26,7 @@ from models.models import DatasetAttribute
 
 class AdminModelView(ModelView):
     def is_accessible(self):
-        return current_user.is_authenticated
+        return current_user.is_authenticated and current_user.can_access_admin_pages()
 
 
 class ServiceAdminView(AdminModelView):

@@ -66,7 +66,7 @@ def error_page(error):
     return render_template("error.html", error=error), 500
 
 
-import user
+import login.login
 import admin_views
 import service
-import tjs
+import data_access.tjs

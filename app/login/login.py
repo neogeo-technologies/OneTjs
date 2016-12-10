@@ -10,29 +10,14 @@ from flask_login import login_user
 from flask_login import logout_user
 from flask_login import login_required
 
-from flask_admin.contrib.sqla import ModelView
-
 from app import bcrypt
 from app import app
 from app import db
-from app import admin
 
 from app.models.models import User
 
-from app.forms import LoginForm
-from app.forms import RegisterForm
-
-
-def render_object_list(template_name, query, paginate_by=10, **context):
-    page = request.args.get("page")
-    if page and page.isdigit():
-        page = int(page)
-    else:
-        page = 1
-
-    object_list = query.paginate(page, paginate_by)
-
-    return render_template(template_name, object_list=object_list, **context)
+from forms import LoginForm
+from forms import RegisterForm
 
 
 @app.route("/register/", methods=["GET", "POST"])

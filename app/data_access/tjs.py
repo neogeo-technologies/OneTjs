@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from flask import request
 from flask import render_template
 from flask import make_response
+from flask import request
 
 from werkzeug.urls import url_encode
 from werkzeug.urls import url_join
 
 from app import app
 
-from models.models import Service
-from models.models import Dataset
+from app.models.models import Service
+from app.models.models import Dataset
 
 import data
 
@@ -28,7 +28,7 @@ def test():
         template_name = "tjs_100_getdata.xml"
     else:
         # TJS exception
-        response_content = render_template("getdata.xml", service=service, dataset=ds)
+        response_content = render_template("getdata.xml", service=serv, dataset=ds)
         response = make_response(response_content)
         response.headers["Content-Type"] = "application/xml"
         return response
