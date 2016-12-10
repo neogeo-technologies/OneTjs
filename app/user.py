@@ -22,8 +22,6 @@ from app.models.models import User
 from app.forms import LoginForm
 from app.forms import RegisterForm
 
-admin.add_view(ModelView(User, db.session))
-
 
 def render_object_list(template_name, query, paginate_by=10, **context):
     page = request.args.get("page")
@@ -51,7 +49,7 @@ def register():
         login_user(user)
 
         flash("Thank you for registering.", "success")
-        return redirect(url_for("users"))
+        return redirect(url_for("index"))
 
     return render_template("register.html", form=form)
 
@@ -65,7 +63,7 @@ def login():
                 user.password, request.form["password"]):
             login_user(user)
             flash("You are logged in. Welcome!", "success")
-            return redirect(url_for("users"))
+            return redirect(url_for("index"))
         else:
             flash("Invalid email and/or password.", "danger")
             return render_template("login.html", form=form)
@@ -78,10 +76,3 @@ def logout():
     logout_user()
     flash("You were logged out. Bye!", "success")
     return redirect(url_for("index"))
-
-
-@app.route("/users/")
-@login_required
-def users():
-    user_objects = User.query.order_by(User.id.asc())
-    return render_object_list("users.html", user_objects, cfg=app.config)

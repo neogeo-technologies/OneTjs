@@ -30,8 +30,14 @@ class User(db.Model):
     def is_authenticated(self):
         return True
 
+    def can_access_admin_pages(self):
+        return self.is_authenticated() and self.admin and not self.blocked
+
     def is_active(self):
         return True
+
+    def is_blocked(self):
+        return self.blocked
 
     def is_anonymous(self):
         return False

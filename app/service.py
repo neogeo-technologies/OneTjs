@@ -18,13 +18,12 @@ from flask import send_from_directory
 # from flask import abort
 # from flask import jsonify
 
-from flask_login import login_required
+from flask_login import current_user
 
 from flask_admin.contrib.sqla import ModelView
 from flask.ext.admin.form import rules
 # from flask.ext.admin.contrib.sqla.filters import FilterEqual
 # from flask.ext.admin.contrib.sqla.filters import BaseSQLAFilter
-
 
 from werkzeug.urls import url_encode
 from werkzeug.urls import url_join
@@ -33,7 +32,7 @@ from app import app
 from app import db
 from app import admin
 
-
+from models.models import User
 from models.models import Service
 from models.models import DataSource
 from models.models import Framework
@@ -42,19 +41,25 @@ from models.models import DatasetAttribute
 
 import data
 
-# TODO: only admin users should have access to the admin views
+# TODO: add links in the main template to login and logout, display the current user login...
+# TODO: put admin views in another file
 
-# TODO: use secure forms with Falsk-Admin:
+# TODO: use secure forms with Flask-Admin:
 # http://flask-admin.readthedocs.io/en/latest/advanced/#enabling-csrf-protection
 
 # TODO: create an admin view for symplifying the creation of datasets and datsetattribute records
 # TODO: (just by selecting a datasource and a table)
 
-# TODO: create a view listing the datasets, the relations with datasources, dataattributes, framwroks, services
+# TODO: create a public view listing the datasets, the relations with datasources, dataattributes, framwroks, services
 # TODO: and previewing the data
 
 
-class ServiceView(ModelView):
+class AdminModelView(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+
+class ServiceAdminView(AdminModelView):
     can_view_details = True
     column_list = (
         Service.title,
@@ -72,7 +77,7 @@ class ServiceView(ModelView):
     )
 
 
-class DataSourceView(ModelView):
+class DataSourceAdminView(AdminModelView):
     can_view_details = True
     column_list = (
         DataSource.title,
@@ -96,7 +101,7 @@ class DataSourceView(ModelView):
 
 
 # TODO: allow long text edition for abstract of Framework (multiple lines edit box)
-class FrameworkView(ModelView):
+class FrameworkAdminView(AdminModelView):
     can_view_details = True
     column_list = (
         Framework.title,
@@ -137,7 +142,7 @@ class FrameworkView(ModelView):
 
 # TODO: default organization for Dataset: the organization maintaining the server instance
 # TODO: allow long text edition for abstract of Dataset (multiple lines edit box)
-class DatasetView(ModelView):
+class DatasetAdminView(AdminModelView):
     can_view_details = True
     column_list = (
         Dataset.title,
@@ -168,7 +173,7 @@ class DatasetView(ModelView):
 
 
 # TODO: allow long text edition for abstract of DatasetAttribute (multiple lines edit box)
-class DatasetAttributeView(ModelView):
+class DatasetAttributeAdminView(AdminModelView):
     can_view_details = True
     column_list = (
         DatasetAttribute.id,
@@ -233,11 +238,12 @@ class DatasetAttributeView(ModelView):
     form_edit_rules = form_create_rules
 
 
-admin.add_view(ServiceView(Service, db.session))
-admin.add_view(DataSourceView(DataSource, db.session))
-admin.add_view(FrameworkView(Framework, db.session))
-admin.add_view(DatasetView(Dataset, db.session))
-admin.add_view(DatasetAttributeView(DatasetAttribute, db.session))
+admin.add_view(AdminModelView(User, db.session))
+admin.add_view(ServiceAdminView(Service, db.session))
+admin.add_view(DataSourceAdminView(DataSource, db.session))
+admin.add_view(FrameworkAdminView(Framework, db.session))
+admin.add_view(DatasetAdminView(Dataset, db.session))
+admin.add_view(DatasetAttributeAdminView(DatasetAttribute, db.session))
 
 
 # import utils
