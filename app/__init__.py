@@ -66,5 +66,7 @@ def error_page(error):
     return render_template("error.html", error=error), 500
 
 
-import service
 import user
+import admin_views
+import service
+import tjs
