@@ -56,7 +56,7 @@ def create_data():
     demo_db_path = os.path.join(db_dir_path, 'demo_data.sqlite')
     ds = DataSource(
         title="Demo database",
-        type="database",
+        type="db",
         connect_string="sqlite:///{}".format(demo_db_path)
     )
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # TODO: use Flask blueprints
+# TODO: display whether the user is connected or not
 
 from flask import Flask
 from flask import render_template

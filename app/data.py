@@ -10,6 +10,10 @@ def get_data_from_datasource(db_connect_string, db_subset, attributes, index):
     # TODO: check if the data should be retrieved from the data source or from a cached version?
     # TODO: or should be simply rely on the web server for managing cached data?
 
+    # TODO: the data type for each column should be specified in order to avoid wrong type inferance
+    # example: insee code wrongly interpreted as integers
+    # forcing datatypes with pandas: d = pandas.read_csv('foo.csv', dtype={'BAR': 'S10'})
+
     root_path = app.root_path
     db_connect_string = os.path.abspath(
         os.path.join(root_path, os.path.pardir, os.path.pardir, "data", "demandeurs_emploi_hommes.csv"))
