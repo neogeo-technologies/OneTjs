@@ -41,7 +41,7 @@ from models.models import DatasetAttribute
 
 import data
 
-# TODO: add links in the main template to login and logout, display the current user login...
+# Todo: Add login and logout links in the admin pages templates
 # TODO: put admin views in another file
 
 # TODO: use secure forms with Flask-Admin:

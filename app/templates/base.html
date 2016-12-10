@@ -38,9 +38,18 @@
                         <li><a href="/users/">Utilisateurs</a></li>
                         {% block extra_nav %}{% endblock %}
                     </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if current_user.is_authenticated %}
+                        <li class="navbar-text">{{ current_user.email }}</li>
+                        <li><a href="{{ url_for("logout") }}">logout</a></li>
+                        {% else %}
+                        <li class="navbar-text">not authenticated</li>
+                        <li><a href="{{ url_for("login") }}">login</a></li>
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
-          </div>
         </nav>
 
         <div class="container">
