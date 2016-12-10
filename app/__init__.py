@@ -47,11 +47,24 @@ def load_user(user_id):
 
 
 @app.errorhandler(401)
+def error_page(error):
+    return render_template("error.html", error=error), 401
+
+
 @app.errorhandler(403)
+def error_page(error):
+    return render_template("error.html", error=error), 403
+
+
 @app.errorhandler(404)
+def error_page(error):
+    return render_template("error.html", error=error), 404
+
+
 @app.errorhandler(500)
 def error_page(error):
-    return render_template("error.html", error=error), error
+    return render_template("error.html", error=error), 500
+
 
 import service
 import user
