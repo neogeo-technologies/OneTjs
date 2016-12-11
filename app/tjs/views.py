@@ -3,20 +3,22 @@
 from flask import render_template
 from flask import make_response
 from flask import request
+from flask import Blueprint
 
 from werkzeug.urls import url_encode
 from werkzeug.urls import url_join
 
 from app import app
 
-from app.models.models import Service
-from app.models.models import Dataset
+from app.models import Service
+from app.models import Dataset
 
 import data
 
+tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
 
 # TODO: use standard operation names
-@app.route("/tjs/test")
+@tjs_blueprint.route("/tjs/test/")
 def test():
     serv = Service.query.first()
     ds = Dataset.query.first()

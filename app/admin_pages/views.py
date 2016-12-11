@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from flask_login import current_user
+from flask import Blueprint
 
+from flask_login import current_user
 from flask_admin.contrib.sqla import ModelView
 from flask.ext.admin.form import rules
 
 from app import db
 from app import admin
 
-from models.models import User
-from models.models import Service
-from models.models import DataSource
-from models.models import Framework
-from models.models import Dataset
-from models.models import DatasetAttribute
+from app.models import User
+from app.models import Service
+from app.models import DataSource
+from app.models import Framework
+from app.models import Dataset
+from app.models import DatasetAttribute
+
+admin_blueprint = Blueprint('admin_pages', __name__, template_folder="templates")
+
 
 # TODO: Add login and logout links in the admin pages templates
 

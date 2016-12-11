@@ -5,18 +5,20 @@ import os
 from flask import request
 from flask import render_template
 from flask import send_from_directory
+from flask import Blueprint
 
 from werkzeug.urls import url_encode
 
 from app import app
 
-from models.models import Framework
-from models.models import Dataset
+from app.models import Framework
+from app.models import Dataset
 
-# Todo: Add login and logout links in the admin pages templates
+public_blueprint = Blueprint('public_pages', __name__, template_folder="templates")
 
 # TODO: create a public view listing the datasets, the relations with datasources, dataattributes, framwroks, services
 # TODO: and previewing the data
+
 
 def render_object_list(template_name, query, paginate_by=10, **context):
     page = request.args.get("page")

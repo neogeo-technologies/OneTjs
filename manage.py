@@ -7,12 +7,12 @@ from flask_migrate import MigrateCommand
 
 from app import app
 from app import db
-from app.models.models import User
-from app.models.models import Framework
-from app.models.models import Dataset
-from app.models.models import DataSource
-from app.models.models import Service
-from app.models.models import DatasetAttribute
+from app.models import User
+from app.models import Framework
+from app.models import Dataset
+from app.models import DataSource
+from app.models import Service
+from app.models import DatasetAttribute
 
 import os
 from datetime import datetime

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# TODO: use Flask blueprints
-
 from flask import Flask
 from flask import render_template
 from flask_login import LoginManager
@@ -35,7 +33,7 @@ bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 admin = Admin(app, template_mode='bootstrap3')
 
-from app.models.models import User
+from app.models import User
 
 login_manager.login_view = "login"
 login_manager.login_message_category = 'danger'
@@ -66,7 +64,12 @@ def error_page(error):
     return render_template("error.html", error=error), 500
 
 
-import login.login
-import admin_views
-import service
-import data_access.tjs
+# Blueprints
+from app.login.views import login_blueprint
+from app.tjs.views import tjs_blueprint
+from app.admin_pages.views import admin_blueprint
+from app.public_pages.views import public_blueprint
+app.register_blueprint(login_blueprint)
+app.register_blueprint(tjs_blueprint)
+app.register_blueprint(admin_blueprint)
+app.register_blueprint(public_blueprint)

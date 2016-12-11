@@ -5,6 +5,7 @@ from flask import url_for
 from flask import redirect
 from flask import flash
 from flask import request
+from flask import Blueprint
 
 from flask_login import login_user
 from flask_login import logout_user
@@ -14,13 +15,15 @@ from app import bcrypt
 from app import app
 from app import db
 
-from app.models.models import User
+from app.models import User
 
 from forms import LoginForm
 from forms import RegisterForm
 
+login_blueprint = Blueprint('login', __name__, template_folder="templates")
 
-@app.route("/register/", methods=["GET", "POST"])
+
+@login_blueprint.route("/register/", methods=["GET", "POST"])
 def register():
     form = RegisterForm(request.form)
     if form.validate_on_submit():
@@ -39,7 +42,7 @@ def register():
     return render_template("register.html", form=form)
 
 
-@app.route("/login/", methods=["GET", "POST"])
+@login_blueprint.route("/login/", methods=["GET", "POST"])
 def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
@@ -55,7 +58,7 @@ def login():
     return render_template("login.html", title="Please Login", form=form)
 
 
-@app.route("/logout/")
+@login_blueprint.route("/logout/")
 @login_required
 def logout():
     logout_user()

@@ -4,7 +4,7 @@
 {% block content %}
 
   <header class="content-header">
-    <h1>Please Register</h1>
+    <h1>Please login</h1>
   </header>
 
   <br>
@@ -16,17 +16,14 @@
     {{ form.hidden_tag() }}
     {{ wtf.form_errors(form, hiddens="only") }}
 
-
     <div class="col-lg-4 col-sm-4">
 
       {{ wtf.form_field(form.email) }}
       {{ wtf.form_field(form.password) }}
-      {{ wtf.form_field(form.confirm) }}
 
-      <button class="btn btn-success" type="submit">Register!</button>
+      <button class="btn btn-success" type="submit">Sign In!</button>
       <br><br>
-      <p>Already have an account? <a href="{{ url_for('login') }}">Sign in</a>.</p>
-
+      <p>Need to <a href="{{ url_for('login.register') }}">Register</a>?</p>
     </div>
 
   </form>
