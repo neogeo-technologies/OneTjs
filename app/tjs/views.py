@@ -11,7 +11,9 @@ from werkzeug.urls import url_join
 from app import app
 
 from app.models import Service
+from app.models import Framework
 from app.models import Dataset
+from app.models import DatasetAttribute
 
 import data
 
@@ -32,7 +34,7 @@ def tjs_operation():
         exceptions.append({
             "code": u"MissingParameterValue",
             "text": u"Oh là là ! "
-                    u"The service parameter must be present.",
+                    u"The 'service' parameter must be present.",
             "locator": u"service"})
         right_service_type = False
 
@@ -51,7 +53,7 @@ def tjs_operation():
         exceptions.append({
             "code": u"MissingParameterValue",
             "text": u"Oh là là ! "
-                    u"The request parameter must be present. This TJS server cannot make a guess for this parameter.",
+                    u"The 'request' parameter must be present. This TJS server cannot make a guess for this parameter.",
             "locator": u"request"})
 
     if arg_operation and right_service_type:
@@ -120,15 +122,6 @@ def get_data(args):
     arg_xsl = args.get('xsl')
     arg_aid = args.get('aid')
 
-    # Retrieve the service record
-    service_path = [part for part in request.path.split("/") if part != ""][0]
-    serv = Service.query.filter(Service.path == service_path).first()
-
-    # Retrieve the dataset record
-    ds = Dataset.query.first()
-
-    # TODO: manage the complete set of operations parameters declared in the TJS specification
-
     # Get the jinja template corresponding to the TJS specifications version
     if arg_version in ("1.0",):
         template_name = "tjs_100_getdata.xml"
@@ -144,21 +137,105 @@ def get_data(args):
 
         raise OwsCommonException(exceptions=exceptions)
 
+    # Missing frameworkuri parameter
+    if not arg_framework_uri:
+        exceptions.append({
+            "code": u"MissingParameterValue",
+            "text": u"Oh là là ! "
+                    u"The 'frameworkuri' parameter is mandatory for GetData operation. "
+                    u"This TJS server cannot make a guess for this parameter.",
+            "locator": u"frameworkuri"})
 
-    # TODO: Retrieve the attributes declared in the request parameters
-    ds_attributes_names = [attribute.name for attribute in ds.attributes]
+    # Missing dataseturi parameter
+    if not arg_dataset_uri:
+        exceptions.append({
+            "code": u"MissingParameterValue",
+            "text": u"Oh là là ! "
+                    u"The 'dataseturi' parameter is mandatory for GetData operation. "
+                    u"This TJS server cannot make a guess for this parameter.",
+            "locator": u"dataseturi"})
+
+    # Missing attributes parameter
+    if not arg_attributes:
+        exceptions.append({
+            "code": u"MissingParameterValue",
+            "text": u"Oh là là ! "
+                    u"The 'attributes' parameter is mandatory for GetData operation. "
+                    u"This TJS server cannot make a guess for this parameter.",
+            "locator": u"attributes"})
+
+    if not (arg_framework_uri and arg_dataset_uri and arg_attributes):
+        raise OwsCommonException(exceptions=exceptions)
+
+    # Retrieve the Service record
+    service_path = [part for part in request.path.split("/") if part != ""][0]
+    serv = Service.query.filter(Service.path == service_path).first()
+    if serv is None:
+        exceptions.append({
+            "code": u"NoApplicableCode",
+            "text": u"Sorry, "
+                    u"An unexpected error occurend while processing your request. "
+                    u"The TJS server is unable to retrieve the Service record related to the "
+                    u"service path. ".format(service_path)})
+        raise OwsCommonException(exceptions=exceptions, status_code=500)
+
+    # Retrieve the Framework record
+    # TODO: handle exception (can't retrieve Framework record)
+    frwk = Framework.query.filter(Framework.uri == arg_framework_uri).first()
+    if frwk is None:
+        exceptions.append({
+            "code": u"InvalidParameterValue",
+            "text": u"Oh là là ! "
+                    u"The parameter value for 'frameworkuri' is not valid: {}.".format(arg_framework_uri),
+            "locator": u"frameworkuri={}".format(arg_framework_uri)})
+        raise OwsCommonException(exceptions=exceptions)
+
+    # Retrieve the Dataset record
+    # TODO: handle exception (can't retrieve Dataset record)
+    dtst = Dataset.query.filter(Dataset.uri == arg_dataset_uri).first()
+    if dtst is None:
+        exceptions.append({
+            "code": u"InvalidParameterValue",
+            "text": u"Oh là là ! "
+                    u"The parameter value for 'dataseturi' is not valid: {}.".format(arg_dataset_uri),
+            "locator": u"dataseturi={}".format(arg_dataset_uri)})
+        raise OwsCommonException(exceptions=exceptions)
+
+    # Retrieve the DatasetAttribute records
+    dtst_attributes = []
+    attributes_names = [attribute_name.strip() for attribute_name in arg_attributes.split(",")]
+    for attribute_name in attributes_names:
+        attribute = DatasetAttribute.query.filter(
+            DatasetAttribute.dataset == dtst, DatasetAttribute.name == attribute_name).first()
+        if attribute is None:
+            exceptions.append({
+                "code": u"InvalidParameterValue",
+                "text": u"Oh là là ! "
+                        u"The requested attribute is not valid: {}.".format(attribute_name),
+                "locator": u"attributes={}".format(arg_attributes)})
+        else:
+            dtst_attributes.append(attribute)
+
+    # dtst_attributes = DatasetAttribute.query.filter(
+    #     DatasetAttribute.dataset == dtst, DatasetAttribute.name in attributes_names).all()
+    if len(attributes_names) != len(dtst_attributes):
+        raise OwsCommonException(exceptions=exceptions)
+
+    # TODO: manage the complete set of operations parameters declared in the TJS specification
 
     # TODO: include exception handling for the cases where the data cannot be retrieved
     # TODO: test the type of datasource
     # TODO: pass the datasource object to the called function
     # TODO: make the framework - dataset relation a many to many one
-    pd_dataframe = data.get_data_from_datasource(
-        ds.data_source.connect_string,
-        ds.data_source_subset,
-        ds_attributes_names,
-        ds.framework.key_col_name)
 
-    response_content = render_template(template_name, service=serv, dataset=ds, data=pd_dataframe)
+    pd_dataframe = data.get_data_from_datasource(
+        dtst.data_source.connect_string,
+        dtst.data_source_subset,
+        attributes_names,
+        frwk.key_col_name)
+
+    response_content = render_template(template_name, service=serv, framework=frwk,
+                                       dataset=dtst, attributes=dtst_attributes, data=pd_dataframe)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -180,7 +257,8 @@ class OwsCommonException(Exception):
     #     Identifier of option not supported
     #
     # InvalidUpdateSequence
-    #     Value of(optional) updateSequence parameter, in GetCapabilities operation request, is greater than current value of service metadata updateSequence number
+    #     Value of(optional) updateSequence parameter, in GetCapabilities operation request, is greater than current
+    #     value of service metadata updateSequence number
     #     None, omit “locator” parameter
     #
     # MissingParameterValue
@@ -192,7 +270,8 @@ class OwsCommonException(Exception):
     #     Name of parameter with invalid value
     #
     # VersionNegotiationFailed
-    #     List of versions in “AcceptVersions” parameter value, in GetCapabilities operation request, did not include any version supported by this server
+    #     List of versions in “AcceptVersions” parameter value, in GetCapabilities operation request, did not include
+    #     any version supported by this server
     #     None, omit “locator” parameter
     #
     # NoApplicableCode

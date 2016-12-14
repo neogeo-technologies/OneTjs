@@ -128,7 +128,7 @@ def create_data():
     da1 = DatasetAttribute(
         dataset=d1,
         purpose=u"Attribute",
-        name="demandeurs_emplois_homme",
+        name="demandeurs_emploi_homme",
         type=u"https://www.w3.org/TR/xmlschema-2/#integer",
         length=8,
         decimals=0,
