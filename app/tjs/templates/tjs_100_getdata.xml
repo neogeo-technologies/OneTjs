@@ -40,7 +40,7 @@
                 </FrameworkKey>
                 <Attributes>
 {% for attribute in attributes %}
-                    <Column name="rurf_91" type="http://www.w3.org/TR/xmlschema-2/#integer" length="10" decimals="0" purpose="Attribute">
+                    <Column name="{{ attribute.name }}" type="http://www.w3.org/TR/xmlschema-2/#integer" length="10" decimals="0" purpose="Attribute">
                         <Title>{{ attribute.title }}</Title>
                         <Abstract>{{ attribute.abstract }}</Abstract>
                         <!--Documentation>{{ attribute.documentation }}</Documentation-->
