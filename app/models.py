@@ -46,7 +46,7 @@ class User(db.Model):
         return self.id
 
     def __repr__(self):
-        return '<User {0}>'.format(self.email)
+        return u"<User {0}>".format(self.email)
 
 
 class Service(db.Model):
@@ -63,7 +63,7 @@ class Service(db.Model):
         super(Service, self).__init__(*args, **kwargs)
 
     def __repr__(self):
-        return "<Service: {0}>".format(self.id)
+        return u"<Service: {0}>".format(self.id)
 
 
 class Framework(db.Model):
@@ -104,7 +104,7 @@ class Framework(db.Model):
         super(Framework, self).__init__(*args, **kwargs)
 
     def __repr__(self):
-        return "<Framework: {0}>".format(self.uri)
+        return u"<Framework: {0}>".format(self.uri)
 
 
 class DataSource(db.Model):
@@ -116,11 +116,16 @@ class DataSource(db.Model):
     type = db.Column(db.String(16))
     connect_string = db.Column(db.String(1024))
 
+    def get_data_source_dir_path(self):
+        if type in ("csv", "xsl") and self.connect_string.lower().startswith("file://"):
+            data_source_dir_path = self.connect_string.lower()[len("file://"):]
+            return data_source_dir_path
+
     def __init__(self, *args, **kwargs):
         super(DataSource, self).__init__(*args, **kwargs)
 
     def __repr__(self):
-        return "<DataSource: id:{0} - title:{1}>".format(self.id, self.title)
+        return u"<DataSource: id:{0} - title:{1}>".format(self.id, self.title)
 
 
 class Dataset(db.Model):
@@ -150,7 +155,7 @@ class Dataset(db.Model):
         super(Dataset, self).__init__(*args, **kwargs)
 
     def __repr__(self):
-        return "<Dataset: {0}>".format(self.uri)
+        return u"<Dataset: {0}>".format(self.uri)
 
 
 class DatasetAttribute(db.Model):
@@ -177,4 +182,4 @@ class DatasetAttribute(db.Model):
         super(DatasetAttribute, self).__init__(*args, **kwargs)
 
     def __repr__(self):
-        return "<DatasetAttribute: id:{0} - name:{1}>".format(self.id, self.name)
+        return u"<DatasetAttribute: id:{0} - name:{1}>".format(self.id, self.name)
