@@ -14,6 +14,8 @@ from app.models import DataSource
 from app.models import Service
 from app.models import DatasetAttribute
 
+from app.admin_pages.publish import publish_csv_file
+
 import os
 from datetime import datetime
 
@@ -163,6 +165,21 @@ def create_data():
     db.session.add(da2)
     db.session.commit()
 
+
+@manager.command
+def publish_csv_files():
+    """Publish sample csv files."""
+    service = Service.query.first()
+    framework = Framework.query.filter(
+        Framework.uri == u"http://www.regionhautsdefrance.fr/data/geostats/frameworks/code-commune").first()
+
+    publish_csv_file(
+        r"/Users/benji/dev/projects_current/one-tjs/data_2/src/demandeurs_emploi_hommes.csv",
+        r"/Users/benji/dev/projects_current/one-tjs/data_2/dest/demandeurs_emploi/demandeurs_emploi_hommes.csv",
+        service,
+        framework)
+
+    print(u"Tout marche bien")
 
 if __name__ == '__main__':
     manager.run()
