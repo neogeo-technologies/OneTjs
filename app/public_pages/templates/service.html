@@ -1,6 +1,83 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2><small>Description du service</small></h2>
+    <h2><small>Service</small></h2>
+
+    <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <td>Name</td>
+                <td>{{ service.name }}</td>
+            </tr>
+            <tr>
+                <td>Title</td>
+                <td>{{ service.title }}</td>
+            </tr>
+            <tr>
+                <td>Abstract</td>
+                <td>{{ service.abstract }}</td>
+            </tr>
+            <tr>
+                <td>Activated</td>
+                <td>{{ service.activated }}</td>
+            </tr>
+            <tr>
+                <td>TJS versions</td>
+                <td>{{ service.tjs_versions|join(", ") }}</td>
+            </tr>
+            <tr>
+                <td>Language</td>
+                <td>{{ service.language }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2><small>Frameworks</small></h2>
+
+{% set frameworks = service.get_frameworks() %}
+{% if frameworks|length > 0 %}
+    <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <td>Name</td>
+                <td>Title</td>
+                <td>URI</td>
+            </tr>
+{% for framework in frameworks %}
+            <tr>
+                <td>{{ framework.name }}</td>
+                <td>{{ framework.title }}</td>
+                <td>{{ framework.uri }}</td>
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun framework n'est déclaré pour ce service</p>
+{% endif %}
+
+    <h2><small>Datasets</small></h2>
+
+{% set datasets = service.get_datasets() %}
+{% if dataset|length > 0 %}
+    <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <td>Name</td>
+                <td>Title</td>
+                <td>URI</td>
+            </tr>
+{% for dataset in datasets %}
+            <tr>
+                <td>{{ dataset.name }}</td>
+                <td>{{ dataset.title }}</td>
+                <td>{{ dataset.uri }}</td>
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun dataset n'est déclaré pour ce service</p>
+{% endif %}
 
 {% endblock %}

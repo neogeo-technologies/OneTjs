@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block extra_styles %}
+<style rel="stylesheet" type="text/css">
+    .clickable-row {
+        content: "";
+        display: inline-block;
+        position: absolute;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <h2><small>Datasets</small></h2>
+
+{% if services|length > 0 %}
+{% for service in services %}
+    <h3><small>{{ service.name }}</small></h3>
+{% set datasets = service.get_datasets() %}
+{% if datasets|length > 0 %}
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Title</th>
+                <th>URI</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dataset in datasets %}
+            <tr>
+                <td><a href="{{ url_for('.dataset', service_name=service.name, dataset_name=dataset.name) }}">
+                    {{ dataset.name }}</a></td>
+                <td>{{ dataset.title }}</td>
+                <td>{{ dataset.uri }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun dataset n'est déclaré pour ce service</p>
+{% endif %}
+{% endfor %}
+
+{% else %}
+    <p>Aucun service TJS n'est déclaré</p>
+{% endif %}
+{% endblock %}

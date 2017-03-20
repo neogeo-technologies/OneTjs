@@ -1,0 +1,20 @@
+# frameworks
+---
+code_commune:
+  uri:               http://www.regionhautsdefrance.fr/data/geostats/frameworks/code-commune
+  organization:      Région Hauts-de-France
+  title:             Code commune
+  abstract:          Découpage territorial à la commune. L'identifiant utilisé est le code INSEE de la commune.
+  version:           2016
+  reference_date:    2016-01-01
+  start_date:        2016-01-01
+  key_col:
+    name:            code
+    type:            https://www.w3.org/TR/xmlschema-2/#string
+    length:          5
+    decimals:        0
+  bbox:
+    south:           48.83
+    north:           51.09
+    west:            1.38
+    east:            4.25

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2><small>Dataset</small></h2>
+
+    <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <td>Name</td>
+                <td>{{ dataset.name }}</td>
+            </tr>
+            <tr>
+                <td>URI</td>
+                <td>{{ dataset.uri }}</td>
+            </tr>
+            <tr>
+                <td>Title</td>
+                <td>{{ dataset.title }}</td>
+            </tr>
+            <tr>
+                <td>Abstract</td>
+                <td>{{ dataset.abstract }}</td>
+            </tr>
+            <tr>
+                <td>Version</td>
+                <td>{{ dataset.version }}</td>
+            </tr>
+            <tr>
+                <td>Reference date</td>
+                <td>{{ dataset.reference_date }}</td>
+            </tr>
+            <tr>
+                <td>Start date</td>
+                <td>{{ dataset.start_date }}</td>
+            </tr>
+            <tr>
+                <td>Activated</td>
+                <td>{{ dataset.activated }}</td>
+            </tr>
+            <tr>
+                <td>Cached</td>
+                <td>{{ dataset.activated }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2><small>Liste des services</small></h2>
+
+
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Title</th>
+                <th>Activated</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for service in services %}
+            <tr>
+                <td><a href="{{ url_for('.service', service_name=service.name) }}">{{ service.name }}</a></td>
+                <td>{{ service.title }}</td>
+                <td>{{ service.activated }}</td>
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

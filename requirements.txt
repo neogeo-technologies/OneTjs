@@ -2,10 +2,7 @@ Flask
 Flask-Bcrypt
 Flask-Bootstrap
 Flask-DebugToolbar
-Flask-Login
-Flask-Admin
-Flask-Migrate
 Flask-Script
-Flask-SQLAlchemy
 Flask-WTF
 pandas
+pyyaml

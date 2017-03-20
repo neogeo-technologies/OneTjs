@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block extra_styles %}
+<style rel="stylesheet" type="text/css">
+    .clickable-row {
+        content: "";
+        display: inline-block;
+        position: absolute;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <h2><small>Frameworks</small></h2>
+
+{% if services|length > 0 %}
+{% for service in services %}
+    <h3><small>{{ service.name }}</small></h3>
+{% set frameworks = service.get_frameworks() %}
+{% if frameworks|length > 0 %}
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Title</th>
+                <th>URI</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for framework in frameworks %}
+            <tr>
+                <td><a href="{{ url_for('.framework', service_name=service.name, framework_name=framework.name) }}">
+                    {{ framework.name }}</a></td>
+                <td>{{ framework.title }}</td>
+                <td>{{ framework.uri }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun framework n'est déclaré pour ce service</p>
+{% endif %}
+{% endfor %}
+
+{% else %}
+    <p>Aucun service TJS n'est déclaré</p>
+{% endif %}
+{% endblock %}

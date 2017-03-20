@@ -1,72 +1,162 @@
-from app import app
-from app import bcrypt
-from app import db
-#from sqlalchemy import func
+# -*- coding: utf-8 -*-
 
-import datetime
+import yaml
+import os
+import logging
+
+FRAMEWORKS_FILE_NAME = "frameworks.yml"
 
 
-class User(db.Model):
-    """User represents a user account in the system
-    """
+class Service(object):
+    def __init__(self, **kwargs):
+        # Default values
+        self.cfg_file_path = None
+        self.name = "default_service_name"
+        self.activated = False
+        self.title = "Default service title"
+        self.abstract = "Default service abstract"
+        self.tjs_versions = ["1.0.0"]
+        self.language = "fr-FR"
+        self.data_dir_path = None
+        self.abs_data_dir_path = None
+        self.frameworks = {}
+        self.datasets = {}
 
-    __tablename__ = "user"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    registered_on = db.Column(db.DateTime, nullable=False)
-    admin = db.Column(db.Boolean, nullable=False, default=False)
-    blocked = db.Column(db.Boolean, nullable=False, default=True)
+        self.update_service_info(**kwargs)
 
-    def __init__(self, email="em@il", password="password", admin=False, blocked=True):
-        self.email = email
-        self.password = bcrypt.generate_password_hash(
-            password, app.config.get('BCRYPT_LOG_ROUNDS')
-        )
-        self.registered_on = datetime.datetime.now()
-        self.admin = admin
-        self.blocked = blocked
+    def update_service_info(self, **kwargs):
 
-    def is_authenticated(self):
-        return True
+        self.__dict__.update(kwargs)
 
-    def can_access_admin_pages(self):
-        return self.is_authenticated() and self.admin and not self.blocked
+        # Search for the parameters of the datasets published with this service
+        self.abs_data_dir_path = None
+        if os.path.isabs(self.data_dir_path):
+            temp_path = self.abs_data_dir_path
+        else:
+            # Concatenating the paths of directory containing the service config file and the data relative path
+            temp_path = os.path.join(os.path.dirname(self.cfg_file_path), self.data_dir_path)
 
-    def is_active(self):
-        return True
+        # print(temp_path)
+        if os.path.exists(temp_path):
+            self.abs_data_dir_path = temp_path
 
-    def is_blocked(self):
-        return self.blocked
+        # print(u"Répertoire du service {0}".format(self.abs_data_dir_path))
 
-    def is_anonymous(self):
-        return False
+        if self.abs_data_dir_path is not None and os.path.exists(self.abs_data_dir_path):
+            self.update_frameworks_info()
+            self.update_datasets_info()
 
-    def get_id(self):
-        return self.id
+        self.log_info()
+
+    def update_frameworks_info(self):
+        self.frameworks = {}
+
+        # Recherche d'un fichier frameworks.yml
+        frwks_yml_path = os.path.join(self.abs_data_dir_path, FRAMEWORKS_FILE_NAME)
+        if os.path.exists(frwks_yml_path):
+
+            with open(frwks_yml_path, 'r') as stream:
+                try:
+                    frameworks_dict = yaml.load(stream)
+
+                    for k, v in frameworks_dict.iteritems():
+                        v["name"] = k
+                        f = Framework(**v)
+                        self.frameworks[k] = f
+                except yaml.YAMLError as e:
+                    logging.exception(e)
+
+    def update_datasets_info(self):
+        self.datasets = {}
+
+        # Recherche des autres fichiers yaml correspondant à des jeux de données
+        for root, dirs, files in os.walk(self.abs_data_dir_path):
+            for f in files:
+                if f.endswith(".yml") and f != FRAMEWORKS_FILE_NAME:
+                    yaml_file_path = os.path.join(root, f)
+                    try:
+                        ds = self.create_dataset_instance(yaml_file_path)
+                        self.datasets[ds.name] = ds
+                    except ValueError as e:
+                        logging.exception(e)
+
+    def log_info(self):
+        logging.info("Service: {0} ({1})".format(self.name, "activated" if self.activated else "deactivated"))
+        logging.info("- datapath: {0}".format(self.data_dir_path))
+        for f in self.frameworks.items():
+            logging.info("- framework: {0} - {1}".format(f[1].title, f[0]))
+        for ds in self.datasets.items():
+            logging.info("- dataset: {0} - {1}".format(ds[1].title, ds[0]))
+
+    # factory function for datasets
+    def create_dataset_instance(self, dataset_yaml_file_path):
+        dataset_subclasses = [CsvFileDataset, XlsFileDataset, SqlDataset]
+        dataset_subclass = None
+        data_source_type = None
+
+        # Get the data source type
+        dataset_dict = {}
+        with open(dataset_yaml_file_path, 'r') as stream:
+            try:
+                # Read the yaml file
+                dataset_dict = yaml.load(stream)
+            # TODO: should we raise an exception to stop the process?
+            except yaml.YAMLError as e:
+                logging.exception(e)
+
+            # Save the yaml file path
+            dataset_dict["yaml_file_path"] = dataset_yaml_file_path
+
+            try:
+                # Set the reference of the framework using its uri
+                data_source_type = dataset_dict.get("data_source_type", None)
+                framework_uri = dataset_dict.pop("framework_uri")
+                framework = self.get_framework_with_uri(framework_uri)
+                dataset_dict["framework"] = framework
+            # TODO: should we raise an exception to stop the process?
+            except KeyError as e:
+                logging.exception(e)
+
+        if data_source_type is None:
+            raise ValueError(
+                "'data_source_type' parameter not defined in dataset config file {0}".format(dataset_yaml_file_path))
+
+        # Get the dataset class with this data source type
+        for sc in dataset_subclasses:
+            if sc.DATA_SOURCE_TYPE == data_source_type:
+                dataset_subclass = sc
+
+        # Instantiate the right class
+        if dataset_subclass is not None:
+            return dataset_subclass(dataset_dict)
+
+    def get_datasets(self):
+        return list(self.datasets.values())
+
+    def get_dataset_with_uri(self, dataset_uri):
+        for f in self.get_datasets():
+            if f.uri == dataset_uri:
+                return f
+
+    def get_dataset_with_name(self, dataset_name):
+        return self.datasets[dataset_name]
+
+    def get_frameworks(self):
+        return list(self.frameworks.values())
+
+    def get_framework_with_uri(self, framework_uri):
+        for f in self.get_frameworks():
+            if f.uri == framework_uri:
+                return f
+
+    def get_framework_with_name(self, framework_name):
+        return self.frameworks[framework_name]
 
     def __repr__(self):
-        return u"<User {0}>".format(self.email)
+        return u"%s(%r)" % (self.__class__, self.__dict__)
 
 
-class Service(db.Model):
-    __tablename__ = "service"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    path = db.Column(db.String(255), unique=True, nullable=False)
-    title = db.Column(db.String(255), nullable=False)
-    abstract = db.Column(db.String(1024), nullable=False)
-    tjs_versions = db.Column(db.String(32), nullable=False)
-    language = db.Column(db.String(32), nullable=False)
-    activated = db.Column(db.Boolean, nullable=False, default=False)
-
-    def __init__(self, *args, **kwargs):
-        super(Service, self).__init__(*args, **kwargs)
-
-    def __repr__(self):
-        return u"<Service: {0}>".format(self.id)
-
-
-class Framework(db.Model):
+class Framework(object):
     """Framework represents a spatial framework in the OGC TJS terminology
     spatial framework
     a GIS representation, either point, line, or polygon, of any collection of physical or conceptual geographic
@@ -77,109 +167,177 @@ class Framework(db.Model):
     One service may be associated with more than one framework
     """
 
-    # TODO: make the framework - dataset relation a many to many one
+    def __init__(self, **kwargs):
+        # Default values
+        self.name = "default_framework_name"
+        self.uri = None
+        self.organization = None
+        self.tile = "Default framework title"
+        self.abstract = "Default framework abstract"
+        self.version = None
+        self.reference_date = None
+        self.start_date = None
+        self.key_col = {
+            "name": None,
+            "type": None,
+            "length": None,
+            "decimals": None
+        }
+        self.bbox = {
+            "south": -90,
+            "north": 90,
+            "west": -180,
+            "east": 180,
+        }
 
-    __tablename__ = "framework"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    service_id = db.Column(db.Integer, db.ForeignKey('service.id'))
-    service = db.relationship('Service', backref=db.backref('frameworks', lazy='dynamic'))
-    uri = db.Column(db.String(512))
-    organization = db.Column(db.String(512))
-    title = db.Column(db.String(512))
-    abstract = db.Column(db.String(512))
-    documentation = db.Column(db.String(512))
-    version = db.Column(db.String(512))
-    reference_date = db.Column(db.DateTime)
-    start_date = db.Column(db.DateTime)
-    key_col_name = db.Column(db.String(512))
-    key_col_type = db.Column(db.String(512))
-    key_col_length = db.Column(db.Integer)
-    key_col_decimals = db.Column(db.Integer)
-    bbox_south = db.Column(db.Numeric(8, 2))
-    bbox_north = db.Column(db.Numeric(8, 2))
-    bbox_west = db.Column(db.Numeric(8, 2))
-    bbox_east = db.Column(db.Numeric(8, 2))
-
-    def __init__(self, *args, **kwargs):
-        super(Framework, self).__init__(*args, **kwargs)
-
-    def __repr__(self):
-        return u"<Framework: {0}>".format(self.uri)
-
-
-class DataSource(db.Model):
-    """DataSource represents a database or file repository
-    """
-    __tablename__ = "data_source"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(512))
-    type = db.Column(db.String(16))
-    connect_string = db.Column(db.String(1024))
-
-    def get_data_source_dir_path(self):
-        if type in ("csv", "xsl") and self.connect_string.lower().startswith("file://"):
-            data_source_dir_path = self.connect_string.lower()[len("file://"):]
-            return data_source_dir_path
-
-    def __init__(self, *args, **kwargs):
-        super(DataSource, self).__init__(*args, **kwargs)
+        self.__dict__.update(kwargs)
 
     def __repr__(self):
-        return u"<DataSource: id:{0} - title:{1}>".format(self.id, self.title)
+        return u"%s(%r)" % (self.__class__, self.__dict__)
 
 
-class Dataset(db.Model):
+class Dataset(object):
     """Dataset represents a dataset in the OGC TJS terminology
     One dataset in associated with one and only one framework
     """
-    __tablename__ = "dataset"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uri = db.Column(db.String(512))
-    framework_id = db.Column(db.Integer, db.ForeignKey('framework.id'))
-    framework = db.relationship('Framework', backref=db.backref('datasets', lazy='dynamic'))
-    data_source_id = db.Column(db.Integer, db.ForeignKey('data_source.id'))
-    data_source = db.relationship('DataSource', backref=db.backref('datasets', lazy='dynamic', cascade="all,delete"))
-    data_source_subset = db.Column(db.String(512))
-    organization = db.Column(db.String(512))
-    title = db.Column(db.String(512))
-    abstract = db.Column(db.String(512))
-    documentation = db.Column(db.String(512))
-    version = db.Column(db.String(512))
-    reference_date = db.Column(db.DateTime)
-    start_date = db.Column(db.DateTime)
-    activated = db.Column(db.Boolean, nullable=False, default=False)
-    cached = db.Column(db.Boolean, nullable=False, default=False)
-    cache_max_age = db.Column(db.Integer, nullable=False, default=86400)
 
-    def __init__(self, *args, **kwargs):
-        super(Dataset, self).__init__(*args, **kwargs)
+    DATA_SOURCE_TYPE = None
+
+    def __init__(self, dataset_dict):
+        # Default values
+        self.uri = None
+        self.framework = None
+        self.data_source_type = None
+        self.data_source_path = None
+        self.data_source_subset = None
+        self.organization = None
+        self.name = "default_dataset_name"
+        self.tile = "Default dataset title"
+        self.abstract = "Default dataset abstract"
+        self.documentation = None
+        self.version = None
+        self.reference_date = None
+        self.start_date = None
+        self.activated = False
+        self.cached = False
+        self.cache_max_age = 0
+        self.yaml_file_path = None
+
+        self.ds_attributes = []
+
+        # Get the dataset attributes definitions
+        dataset_attributes_dicts = {}
+        try:
+            dataset_attributes_dicts = dataset_dict.pop("attributes")
+        except KeyError as e:
+            logging.error(
+                "'attributes' parameter not defined in dataset config file {0}".format(self.yaml_file_path))
+            logging.exception(e)
+
+        # Update the dataset object properties
+        self.__dict__.update(dataset_dict)
+
+        # Create the DatasetAttribute instances and add them to the ds_attributes list proprety of the dataset
+        for at_dict in dataset_attributes_dicts:
+            at_dict["dataset"] = self
+            at = DatasetAttribute(**at_dict)
+            self.ds_attributes.append(at)
+
+        # Check the data source et attributes existence
+        self.check_data_source()
+
+        if not self.uri:
+            raise ValueError("'uri' parameter not defined in service config file {0}".format(self.yaml_file_path))
+        if not self.framework:
+            raise ValueError("'framework' parameter not defined in service config file {0}".format(self.yaml_file_path))
+
+    def check_data_source(self):
+        raise NotImplementedError()
 
     def __repr__(self):
-        return u"<Dataset: {0}>".format(self.uri)
+        return u"%s(%r)" % (self.__class__, self.__dict__)
 
 
-class DatasetAttribute(db.Model):
+class FileDataset(Dataset):
+
+    def __init__(self, dataset_dict):
+        super(FileDataset, self).__init__(dataset_dict)
+
+    def check_data_source(self):
+        data_source_found = False
+
+        # Check the existence of the data source
+        if os.path.exists(self.data_source_path):
+            data_source_found = True
+        else:
+            temp_file_path = os.path.join(os.path.dirname(self.yaml_file_path), self.data_source_path)
+            if os.path.exists(temp_file_path):
+                data_source_found = True
+                self.data_source_path = temp_file_path
+
+        if not data_source_found:
+            raise ValueError("data source specified in dataset config file {0} cannot be found: {1}".format(
+                self.yaml_file_path, self.data_source_path))
+
+        if not os.path.isfile(self.data_source_path):
+            raise ValueError("data source specified in dataset config file {0} is not a file: {1}".format(
+                self.yaml_file_path, self.data_source_path))
+
+        # Check the existence of the attributes in the data source
+        # TODO: check the attributes
+
+
+class CsvFileDataset(FileDataset):
+    DATA_SOURCE_TYPE = "csv"
+
+    def __init__(self, dataset_dict):
+        super(CsvFileDataset, self).__init__(dataset_dict)
+
+    def check_data_source(self):
+        super(CsvFileDataset, self).check_data_source()
+
+
+class XlsFileDataset(FileDataset):
+    DATA_SOURCE_TYPE = "xls"
+
+    def __init__(self, dataset_dict):
+        super(XlsFileDataset, self).__init__(dataset_dict)
+
+    def check_data_source(self):
+        super(XlsFileDataset, self).check_data_source()
+
+
+class SqlDataset(Dataset):
+    DATA_SOURCE_TYPE = "sql"
+
+    def __init__(self, dataset_dict):
+        super(SqlDataset, self).__init__(dataset_dict)
+
+    def check_data_source(self):
+        pass
+
+
+class DatasetAttribute(object):
     """DatasetAttribute represents an attribute of a dataset in the OGC TJS terminology
     One dataset attribute in associated with one and only one dataset
     """
-    __tablename__ = "dataset_attribute"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    dataset_uri = db.Column(db.String(512), db.ForeignKey('dataset.uri'))
-    dataset = db.relationship('Dataset', backref=db.backref('attributes', lazy='dynamic', cascade="all,delete"))
-    purpose = db.Column(db.String(64))
-    name = db.Column(db.String(512))
-    type = db.Column(db.String(512))
-    length = db.Column(db.Integer)
-    decimals = db.Column(db.Integer)
-    title = db.Column(db.String(512))
-    abstract = db.Column(db.String(512))
-    documentation = db.Column(db.String(512))
-    values = db.Column(db.String(32))
-    uom_short_form = db.Column(db.String(16))
-    uom_long_form = db.Column(db.String(64))
 
-    def __init__(self, *args, **kwargs):
-        super(DatasetAttribute, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
+        # Default values
+        self.dataset = None
+        self.name = "default_attribute_name"
+        self.tile = "Default attribute title"
+        self.abstract = "Default attribute abstract"
+        self.documentation = None
+        self.type = None
+        self.length = None
+        self.decimals = None
+        self.purpose = None
+        self.values = None
+        self.uom_short_form = None
+        self.uom_long_form = None
+
+        self.__dict__.update(kwargs)
 
     def __repr__(self):
-        return u"<DatasetAttribute: id:{0} - name:{1}>".format(self.id, self.name)
+        return u"%s(%r)" % (self.__class__, self.__dict__)

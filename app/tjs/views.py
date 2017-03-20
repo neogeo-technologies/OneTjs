@@ -10,10 +10,10 @@ from werkzeug.urls import url_join
 
 from app import app
 
-from app.models import Service
-from app.models import Framework
-from app.models import Dataset
-from app.models import DatasetAttribute
+# from app.models import Service
+# from app.models import Framework
+# from app.models import Dataset
+# from app.models import DatasetAttribute
 
 import data
 
