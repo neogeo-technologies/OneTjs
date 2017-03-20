@@ -7,6 +7,7 @@ from flask import Blueprint
 
 from werkzeug.urls import url_encode
 from werkzeug.urls import url_join
+from werkzeug.urls import url_parse
 
 from app import app
 
@@ -282,6 +283,11 @@ class OwsCommonException(Exception):
         self.message = u"\n".join([exception.get("text") for exception in self.exceptions])
 
 
+def get_service_url(serv):
+    app_path = request.url_root
+    return url_join(app_path, "tjs/{}".format(serv.name))
+
+
 @app.errorhandler(OwsCommonException)
 def handle_tjs_exception(error):
     if error.tjs_version in ("1.0",):
@@ -305,14 +311,13 @@ def modify_query(**new_values):
 
     return "{}?{}".format(request.path, url_encode(args))
 
-
+# TODO: create a more generic build request function
 @app.template_global()
-def get_describedatasets_url(serv, framework):
-    app_path = request.url_root
-    service_url = url_join(app_path, serv.name)
+def get_describedatasets_url(serv, tjs_version, framework):
+    service_url = get_service_url(serv)
     args = dict()
     args[u"service"] = u"TJS"
-    args[u"version"] = 1
+    args[u"version"] = tjs_version
     args[u"request"] = u"DescribeDatasets"
     args[u"frameworkuri"] = framework.uri
     args[u"acceptlanguages"] = u"fr"
@@ -321,12 +326,11 @@ def get_describedatasets_url(serv, framework):
 
 
 @app.template_global()
-def get_describedata_url(serv, dataset):
-    app_path = request.url_root
-    service_url = url_join(app_path, serv.name)
+def get_describedata_url(serv, tjs_version, dataset):
+    service_url = get_service_url(serv)
     args = dict()
     args[u"service"] = u"TJS"
-    args[u"version"] = 1
+    args[u"version"] = tjs_version
     args[u"request"] = u"DescribeData"
     args[u"frameworkuri"] = dataset.framework.uri
     args[u"dataseturi"] = dataset.uri
@@ -336,12 +340,11 @@ def get_describedata_url(serv, dataset):
 
 
 @app.template_global()
-def get_getdata_url(serv, attribute):
-    app_path = request.url_root
-    service_url = url_join(app_path, serv.name)
+def get_getdata_url(serv, tjs_version, attribute):
+    service_url = get_service_url(serv)
     args = dict()
     args[u"service"] = u"TJS"
-    args[u"version"] = 1
+    args[u"version"] = tjs_version
     args[u"request"] = u"GetData"
     args[u"frameworkuri"] = attribute.dataset.framework.uri
     args[u"dataseturi"] = attribute.dataset.uri
@@ -353,7 +356,6 @@ def get_getdata_url(serv, attribute):
 
 @app.template_global()
 def get_getcapabilities_path(serv):
-    app_path = request.url_root
-    getcapabilities_path = url_join(app_path, serv.name)
+    getcapabilities_path = get_service_url(serv)
 
     return getcapabilities_path

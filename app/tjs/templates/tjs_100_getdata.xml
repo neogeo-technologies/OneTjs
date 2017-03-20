@@ -15,15 +15,15 @@
         <Version>{{ framework.version }}</Version>
         <!--Documentation>{{ framework.documentation }}</Documentation-->
         <FrameworkKey>
-            <Column name="{{ framework.key_col_name }}" type="{{ framework.key_col_type }}" length="{{ framework.key_col_length }}" decimals="{{ framework.key_col_decimals }}" />
+            <Column name="{{ framework.key_col['name']}}" type="{{ framework.key_col['type'] }}" length="{{ framework.key_col['length'] }}" decimals="{{ framework.key_col['decimals'] }}" />
         </FrameworkKey>
         <BoundingCoordinates>
-        <North>{{ framework.bbox_north }}</North>
-        <South>{{ framework.bbox_south }}</South>
-        <East>{{ framework.bbox_east }}</East>
-        <West>{{ framework.bbox_west }}</West>
+        <North>{{ framework.bbox["north"] }}</North>
+        <South>{{ framework.bbox["south"] }}</South>
+        <East>{{ framework.bbox["east"] }}</East>
+        <West>{{ framework.bbox["west"] }}</West>
         </BoundingCoordinates>
-        <DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(service, framework) }}"/>
+        <DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(service, tjs_version, framework) }}"/>
         <Dataset>
             <DatasetURI>{{ dataset.uri }}</DatasetURI>
             <Organization>{{ dataset.organization }}</Organization>
@@ -32,11 +32,11 @@
             <ReferenceDate>{{ dataset.reference_date }}</ReferenceDate>
             <Version>{{ dataset.version }}</Version>
             <!--Documentation>{{ dataset.documentation }}</Documentation-->
-            <DescribeDataRequest xlink:href="{{ get_describedata_url(service, dataset) }}"/>
+            <DescribeDataRequest xlink:href="{{ get_describedata_url(service, tjs_version, dataset) }}"/>
             <Columnset>
                 <!--Need a loop on all framework keys of the dataset?-->
                 <FrameworkKey complete="true" relationship="one">
-                    <Column name="{{ framework.key_col_name }}" type="{{ framework.key_col_type }}" length="{{ framework.key_col_length }}" decimals="{{ framework.key_col_decimals }}" />
+                    <Column name="{{ framework.key_col['name']}}" type="{{ framework.key_col['type'] }}" length="{{ framework.key_col['length'] }}" decimals="{{ framework.key_col['decimals'] }}" />
                 </FrameworkKey>
                 <Attributes>
 {% for attribute in attributes %}
@@ -47,7 +47,7 @@
                         <Values>
 {{ attribute.values }}
                         </Values>
-                        <GetDataRequest xlink:href="{{ get_getdata_url(service, attribute) }}"/>
+                        <GetDataRequest xlink:href="{{ get_getdata_url(service, tjs_version, attribute) }}"/>
                     </Column>
 {% endfor %}
     </Attributes>
