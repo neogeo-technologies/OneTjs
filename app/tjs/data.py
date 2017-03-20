@@ -5,30 +5,19 @@ import os
 from app import app
 
 
-def get_data_from_datasource(db_connect_string, db_subset, attributes_names, index):
+def get_data_from_datasource(dataset, dataset_attributes, framework):
 
     # TODO: the data type for each column should be specified in order to avoid wrong type inferance
     # example: insee code wrongly interpreted as integers
     # forcing datatypes with pandas: d = pandas.read_csv('foo.csv', dtype={'BAR': 'S10'})
 
-    root_path = app.root_path
-    db_connect_string = os.path.abspath(
-        os.path.join(root_path, os.path.pardir, os.path.pardir, "data", "demandeurs_emploi_hommes.csv"))
+    attributes_names = [at.name for at in dataset_attributes]
 
-    # test if the connection string points to a file or is a db connection string
-    # file
-    if os.path.exists(db_connect_string):
-
-        # test if the file is a csv file
-        print(attributes_names)
-        print(os.path.splitext(db_connect_string)[1])
-        if os.path.splitext(db_connect_string)[1] == u".csv":
-            data = pd.read_csv(db_connect_string, index_col="code")
-            dataframe = pd.DataFrame(data, columns=attributes_names)
-            return dataframe
-        # TODO : test for Excel file
-        else:
-            pass
-    # database
-    else:
+    if dataset.data_source_type == "csv":
+        data = pd.read_csv(dataset.data_source_path, index_col=framework.key_col["name"])
+        dataframe = pd.DataFrame(data, columns=attributes_names)
+        return dataframe
+    elif dataset.data_source_type == "xls":
+        pass
+    elif dataset.data_source_type == "sql":
         pass

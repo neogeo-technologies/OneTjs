@@ -6,7 +6,7 @@ region_hdf:
   title:           Service TJS de données de la Région Hauts-de-France
   abstract:        Prototype de service TJS développé par Neogeo Technologies pour la Région Hauts-de-France
   tjs_versions:
-                   - 1.0.0
+                   - 1.0
   language:        fr-FR
 
 test:
@@ -15,5 +15,5 @@ test:
   title:           Service TJS de test
   abstract:        Prototype de service TJS développé par Neogeo Technologies
   tjs_versions:
-                   - 0.0.0
+                   - 1.0
   language:        fr-FR

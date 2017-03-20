@@ -20,14 +20,26 @@ import data
 tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
 
 
-@tjs_blueprint.route("/tjs/", methods=['GET', 'POST'])
-def tjs_operation():
+@tjs_blueprint.route("/tjs/<service_name>", methods=['GET', 'POST'])
+def tjs_operation(service_name):
     exceptions = []
     right_service_type = True
 
     args = get_normalized_args()
     arg_service = args.get('service')
     arg_operation = args.get('request')
+
+    # TODO: check the parameter service_name -> manage this with a TJS exception or a 404 error?
+    # Service instance
+    service = app.services_manager.get_service_with_name(service_name)
+    if service is None:
+        exceptions.append({
+            "code": u"NoApplicableCode",
+            "text": u"Sorry, "
+                    u"An unexpected error occurend while processing your request. "
+                    u"The TJS server is unable to retrieve the Service record related to the following "
+                    u"service name: {}. ".format(service_name)})
+        raise OwsCommonException(exceptions=exceptions, status_code=500)
 
     # Missing service parameter
     if not arg_service:
@@ -59,24 +71,25 @@ def tjs_operation():
     if arg_operation and right_service_type:
 
         # GetCapabilities
+        #TODO: Create a real getcapabilities request handler
         if arg_operation.lower() == "getcapabilities":
-            return get_data(args)
+            return get_data(service, args)
 
         # DescribeFrameworks
         elif arg_operation.lower() == "describeframeworks":
-            return get_data(args)
+            return get_data(service, args)
 
         # DescribeDatasets
         elif arg_operation.lower() == "describedatasets":
-            return get_data(args)
+            return get_data(service, args)
 
         # DescribeData
         elif arg_operation.lower() == "describedata":
-            return get_data(args)
+            return get_data(service, args)
 
         # GetData
         elif arg_operation.lower() == "getdata":
-            return get_data(args)
+            return get_data(service, args)
 
         # Unsupported operations
         elif arg_operation.lower() in ("describejoinabilities", "describekey", "joindata"):
@@ -111,7 +124,7 @@ def get_normalized_args():
     return normalized_args
 
 
-def get_data(args):
+def get_data(serv, args):
     exceptions = []
 
     arg_version = args.get('version')
@@ -155,33 +168,12 @@ def get_data(args):
                     u"This TJS server cannot make a guess for this parameter.",
             "locator": u"dataseturi"})
 
-    # Missing attributes parameter
-    if not arg_attributes:
-        exceptions.append({
-            "code": u"MissingParameterValue",
-            "text": u"Oh là là ! "
-                    u"The 'attributes' parameter is mandatory for GetData operation. "
-                    u"This TJS server cannot make a guess for this parameter.",
-            "locator": u"attributes"})
-
-    if not (arg_framework_uri and arg_dataset_uri and arg_attributes):
+    if not (arg_framework_uri and arg_dataset_uri):
         raise OwsCommonException(exceptions=exceptions)
-
-    # Retrieve the Service record
-    service_path = [part for part in request.path.split("/") if part != ""][0]
-    serv = Service.query.filter(Service.path == service_path).first()
-    if serv is None:
-        exceptions.append({
-            "code": u"NoApplicableCode",
-            "text": u"Sorry, "
-                    u"An unexpected error occurend while processing your request. "
-                    u"The TJS server is unable to retrieve the Service record related to the "
-                    u"service path. ".format(service_path)})
-        raise OwsCommonException(exceptions=exceptions, status_code=500)
 
     # Retrieve the Framework record
     # TODO: handle exception (can't retrieve Framework record)
-    frwk = Framework.query.filter(Framework.uri == arg_framework_uri).first()
+    frwk = serv.get_framework_with_uri(arg_framework_uri)
     if frwk is None:
         exceptions.append({
             "code": u"InvalidParameterValue",
@@ -192,7 +184,8 @@ def get_data(args):
 
     # Retrieve the Dataset record
     # TODO: handle exception (can't retrieve Dataset record)
-    dtst = Dataset.query.filter(Dataset.uri == arg_dataset_uri).first()
+    # dtst = Dataset.query.filter(Dataset.uri == arg_dataset_uri).first()
+    dtst = serv.get_dataset_with_uri(arg_dataset_uri)
     if dtst is None:
         exceptions.append({
             "code": u"InvalidParameterValue",
@@ -203,23 +196,22 @@ def get_data(args):
 
     # Retrieve the DatasetAttribute records
     dtst_attributes = []
-    attributes_names = [attribute_name.strip() for attribute_name in arg_attributes.split(",")]
-    for attribute_name in attributes_names:
-        attribute = DatasetAttribute.query.filter(
-            DatasetAttribute.dataset == dtst, DatasetAttribute.name == attribute_name).first()
-        if attribute is None:
-            exceptions.append({
-                "code": u"InvalidParameterValue",
-                "text": u"Oh là là ! "
-                        u"The requested attribute is not valid: {}.".format(attribute_name),
-                "locator": u"attributes={}".format(arg_attributes)})
-        else:
-            dtst_attributes.append(attribute)
-
-    # dtst_attributes = DatasetAttribute.query.filter(
-    #     DatasetAttribute.dataset == dtst, DatasetAttribute.name in attributes_names).all()
-    if len(attributes_names) != len(dtst_attributes):
-        raise OwsCommonException(exceptions=exceptions)
+    if arg_attributes:
+        attributes_names = [attribute_name.strip() for attribute_name in arg_attributes.split(",")]
+        for attribute_name in attributes_names:
+            attribute = dtst.get_attribute_with_name(attribute_name)
+            if attribute is None:
+                exceptions.append({
+                    "code": u"InvalidParameterValue",
+                    "text": u"Oh là là ! "
+                            u"The requested attribute is not valid: {}.".format(attribute_name),
+                    "locator": u"attributes={}".format(arg_attributes)})
+            else:
+                dtst_attributes.append(attribute)
+        if len(attributes_names) != len(dtst_attributes):
+            raise OwsCommonException(exceptions=exceptions)
+    else:
+        dtst_attributes = dtst.ds_attributes
 
     # TODO: manage the complete set of operations parameters declared in the TJS specification
 
@@ -228,19 +220,15 @@ def get_data(args):
     # TODO: pass the datasource object to the called function
     # TODO: make the framework - dataset relation a many to many one
 
-    pd_dataframe = data.get_data_from_datasource(
-        dtst.data_source.connect_string,
-        dtst.data_source_subset,
-        attributes_names,
-        frwk.key_col_name)
+    # TODO: get_data_from_datasource -> need for complete rewrite
+    pd_dataframe = data.get_data_from_datasource(dtst, dtst_attributes, frwk)
 
-    response_content = render_template(template_name, service=serv, framework=frwk,
+    response_content = render_template(template_name, service=serv, tjs_version=arg_version, framework=frwk,
                                        dataset=dtst, attributes=dtst_attributes, data=pd_dataframe)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
     # TODO: add cache information in the response headers
-
     return response
 
 
@@ -321,7 +309,7 @@ def modify_query(**new_values):
 @app.template_global()
 def get_describedatasets_url(serv, framework):
     app_path = request.url_root
-    service_url = url_join(app_path, serv.path)
+    service_url = url_join(app_path, serv.name)
     args = dict()
     args[u"service"] = u"TJS"
     args[u"version"] = 1
@@ -335,7 +323,7 @@ def get_describedatasets_url(serv, framework):
 @app.template_global()
 def get_describedata_url(serv, dataset):
     app_path = request.url_root
-    service_url = url_join(app_path, serv.path)
+    service_url = url_join(app_path, serv.name)
     args = dict()
     args[u"service"] = u"TJS"
     args[u"version"] = 1
@@ -350,7 +338,7 @@ def get_describedata_url(serv, dataset):
 @app.template_global()
 def get_getdata_url(serv, attribute):
     app_path = request.url_root
-    service_url = url_join(app_path, serv.path)
+    service_url = url_join(app_path, serv.name)
     args = dict()
     args[u"service"] = u"TJS"
     args[u"version"] = 1
@@ -366,6 +354,6 @@ def get_getdata_url(serv, attribute):
 @app.template_global()
 def get_getcapabilities_path(serv):
     app_path = request.url_root
-    getcapabilities_path = url_join(app_path, serv.path)
+    getcapabilities_path = url_join(app_path, serv.name)
 
     return getcapabilities_path

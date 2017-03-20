@@ -16,21 +16,7 @@ from app.models import Dataset
 
 public_blueprint = Blueprint('public_pages', __name__, template_folder="templates")
 
-# TODO: create a public view listing the datasets, the relations with datasources, dataattributes, framwroks, services
-# TODO: and previewing the data
-
-
-# def render_object_list(template_name, query, paginate_by=10, **context):
-#     page = request.args.get("page")
-#     if page and page.isdigit():
-#         page = int(page)
-#     else:
-#         page = 1
-#
-#     object_list = query.paginate(page, paginate_by)
-#
-#     return render_template(template_name, object_list=object_list, **context)
-
+# TODO: need some simple way to preview published data
 
 @app.route('/favicon.ico')
 def favicon():

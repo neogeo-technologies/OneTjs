@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Erreur {{error.code}}</h1>
     {% if error.code in (410, 403) %}
-    <p>Vous n'êtes pas autorisé à consulter cette page. Veuillez vous <a href="{{ url_for('login')}}">authentifier</a>.</p>
+    <p>Vous n'êtes pas autorisé à consulter cette page.</p>
     {% elif error.code == 404 %}
     <p>La page que vous recherchez n'existe pas.</p>
     {% elif error.code == 500 %}

@@ -59,7 +59,7 @@
     <h2><small>Datasets</small></h2>
 
 {% set datasets = service.get_datasets() %}
-{% if dataset|length > 0 %}
+{% if datasets|length > 0 %}
     <table class="table table-condensed">
         <tbody>
             <tr>
@@ -79,5 +79,23 @@
 {% else %}
     <p>Aucun dataset n'est déclaré pour ce service</p>
 {% endif %}
+
+    <h2><small>Sample TJS requests</small></h2>
+
+    <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <td><a href="{{ url_for('tjs.tjs_operation', service_name=service.name,
+    service='TJS', request='GetCapabilities')}}">GetCapabilities</a></td>
+            </tr>
+{% for dataset in datasets %}
+            <tr>
+                <td><a href="{{ url_for('tjs.tjs_operation', service_name=service.name,
+    service='TJS', version=service.tjs_versions[-1], request='GetData', language=service.language,
+    frameworkuri=dataset.framework.uri, dataseturi=dataset.uri)}}">GetData for {{ dataset.name }} dataset</a></td>
+            </tr>
+{% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}

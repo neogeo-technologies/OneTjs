@@ -254,6 +254,11 @@ class Dataset(object):
     def check_data_source(self):
         raise NotImplementedError()
 
+    def get_attribute_with_name(self, attribute_name):
+        for at in self.ds_attributes:
+            if at.name == attribute_name:
+                return at
+
     def __repr__(self):
         return u"%s(%r)" % (self.__class__, self.__dict__)
 
