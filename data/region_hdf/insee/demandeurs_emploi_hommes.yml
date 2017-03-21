@@ -1,17 +1,22 @@
 ---
-name:              demandeurs_emploi_hommes
-uri:               http://www.regionhautsdefrance.fr/data/geostats/datasets/demandeurs_emploi/hommes/2011
-framework_uri:     http://www.regionhautsdefrance.fr/data/geostats/frameworks/code-commune
-data_source_type:  csv
-data_source_path:  demandeurs_emploi_hommes.csv
+name:              demandeurs_emploi_hommes_2011
+uri:               http://www.regionhautsdefrance.fr/data/geostats/datasets/demandeurs_emploi_hommes_2011
 organization:      Région Hauts-de-France
 title:             Nombre de demandeurs d'emploi dans les Hauts-de-Frances chez les hommes en 2011
 abstract:          Nombre de demandeurs d'emploi dans les Hauts-de-Frances chez les hommes en 2011
+documentation:     http://www.regionhautsdefrance.fr/data/geostats/datasets/demandeurs_emploi_hommes_2011.html
 version:           1
 reference_date:    2011-01-01
-start_date:        2011-01-01
+start_date:        2011-12-31
 activated:         yes
 cached:            no
+framework:
+  uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune
+  complete:        yes
+  relationship:    one
+data_source:
+  type:  csv
+  path:  demandeurs_emploi_hommes.csv
 attributes:
   - name:            demandeurs_emploi_homme
     title:           Nombre de demandeurs d'emploi dans les Hauts-de-France chez les hommes en 2011

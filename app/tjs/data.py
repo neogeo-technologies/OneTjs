@@ -13,11 +13,15 @@ def get_data_from_datasource(dataset, dataset_attributes, framework):
 
     attributes_names = [at.name for at in dataset_attributes]
 
-    if dataset.data_source_type == "csv":
-        data = pd.read_csv(dataset.data_source_path, index_col=framework.key_col["name"])
+    data_source_type = dataset.data_source["type"]
+
+    if data_source_type == "csv":
+        data = pd.read_csv(dataset.data_source["path"], index_col=framework.key_col["name"])
         dataframe = pd.DataFrame(data, columns=attributes_names)
         return dataframe
-    elif dataset.data_source_type == "xls":
-        pass
-    elif dataset.data_source_type == "sql":
+    elif data_source_type == "xls":
+        data = pd.read_excel(dataset.data_source["path"], index_col=framework.key_col["name"])
+        dataframe = pd.DataFrame(data, columns=attributes_names)
+        return dataframe
+    elif data_source_type == "sql":
         pass

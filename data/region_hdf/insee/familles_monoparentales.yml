@@ -1,17 +1,21 @@
 ---
-name:              familles_monoparentales
-uri:               http://www.regionhautsdefrance.fr/data/geostats/datasets/familles_monoparentales/2012
-framework_uri:     http://www.regionhautsdefrance.fr/data/geostats/frameworks/code-commune
-data_source_type:  xls
-data_source_path:  familles_monoparentales.xls
+name:              familles_monoparentales_2012
+uri:               http://www.regionhautsdefrance.fr/data/geostats/datasets/familles_monoparentales_2012
 organization:      Région Hauts-de-France
 title:             Part des familles monoparentales dans les Hauts-de-Frances en 2012
 abstract:          Part des familles monoparentales dans les Hauts-de-Frances en 2012
+documentation:     http://www.regionhautsdefrance.fr/data/geostats/datasets/familles_monoparentales_2012.html
 version:           1
 reference_date:    2012-01-01
-start_date:        2012-01-01
 activated:         yes
 cached:            no
+framework:
+  uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune
+  complete:        yes
+  relationship:    one
+data_source:
+  type:  xls
+  path:  familles_monoparentales.xls
 attributes:
     - name:            part_des_menages
       title:           Part des familles monoparentales dans les Hauts-de-Frances en 2012

@@ -4,5 +4,6 @@ Flask-Bootstrap
 Flask-DebugToolbar
 Flask-Script
 Flask-WTF
-pandas
 pyyaml
+xlrd
+pandas

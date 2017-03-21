@@ -109,17 +109,22 @@ class Service(object):
 
             try:
                 # Set the reference of the framework using its uri
-                data_source_type = dataset_dict.get("data_source_type", None)
-                framework_uri = dataset_dict.pop("framework_uri")
-                framework = self.get_framework_with_uri(framework_uri)
+                data_source = dataset_dict["data_source"]
+                data_source_type = data_source["type"]
+                framework_dict = dataset_dict.pop("framework")
+                # TODO: handle errors related to framework uri typo
+                framework = self.get_framework_with_uri(framework_dict["uri"])
                 dataset_dict["framework"] = framework
+                dataset_dict["framework_uri"] = framework_dict["uri"]
+                dataset_dict["framework_complete"] = framework_dict["complete"]
+                dataset_dict["framework_relationship"] = framework_dict["relationship"]
             # TODO: should we raise an exception to stop the process?
             except KeyError as e:
                 logging.exception(e)
 
         if data_source_type is None:
             raise ValueError(
-                "'data_source_type' parameter not defined in dataset config file {0}".format(dataset_yaml_file_path))
+                "'data_source/type' parameter not defined in dataset config file {0}".format(dataset_yaml_file_path))
 
         # Get the dataset class with this data source type
         for sc in dataset_subclasses:
@@ -174,6 +179,7 @@ class Framework(object):
         self.organization = None
         self.tile = "Default framework title"
         self.abstract = "Default framework abstract"
+        self.documentation = None
         self.version = None
         self.reference_date = None
         self.start_date = None
@@ -207,9 +213,9 @@ class Dataset(object):
         # Default values
         self.uri = None
         self.framework = None
-        self.data_source_type = None
-        self.data_source_path = None
-        self.data_source_subset = None
+        self.framework_complete = False
+        self.framework_relationship = "many"
+        self.data_source = {"type": None, "path": None, "subset": None}
         self.organization = None
         self.name = "default_dataset_name"
         self.tile = "Default dataset title"
@@ -272,21 +278,21 @@ class FileDataset(Dataset):
         data_source_found = False
 
         # Check the existence of the data source
-        if os.path.exists(self.data_source_path):
+        if os.path.exists(self.data_source["path"]):
             data_source_found = True
         else:
-            temp_file_path = os.path.join(os.path.dirname(self.yaml_file_path), self.data_source_path)
+            temp_file_path = os.path.join(os.path.dirname(self.yaml_file_path), self.data_source["path"])
             if os.path.exists(temp_file_path):
                 data_source_found = True
-                self.data_source_path = temp_file_path
+                self.data_source["path"] = temp_file_path
 
         if not data_source_found:
             raise ValueError("data source specified in dataset config file {0} cannot be found: {1}".format(
-                self.yaml_file_path, self.data_source_path))
+                self.yaml_file_path, self.data_source["path"]))
 
-        if not os.path.isfile(self.data_source_path):
+        if not os.path.isfile(self.data_source["path"]):
             raise ValueError("data source specified in dataset config file {0} is not a file: {1}".format(
-                self.yaml_file_path, self.data_source_path))
+                self.yaml_file_path, self.data_source["path"]))
 
         # Check the existence of the attributes in the data source
         # TODO: check the attributes
@@ -322,6 +328,8 @@ class SqlDataset(Dataset):
         pass
 
 
+# TODO: documentation property of attributes are not supported at the moment.
+# To do so, we would need a unique identifier per attribute
 class DatasetAttribute(object):
     """DatasetAttribute represents an attribute of a dataset in the OGC TJS terminology
     One dataset attribute in associated with one and only one dataset

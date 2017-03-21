@@ -224,6 +224,7 @@ def get_data(serv, args):
     # TODO: get_data_from_datasource -> need for complete rewrite
     pd_dataframe = data.get_data_from_datasource(dtst, dtst_attributes, frwk)
 
+    # TODO: handle correctly empty pd_dataframe (None for example)
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, framework=frwk,
                                        dataset=dtst, attributes=dtst_attributes, data=pd_dataframe)
     response = make_response(response_content)

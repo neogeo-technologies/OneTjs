@@ -13,7 +13,9 @@
         <Abstract>{{ framework.abstract }}</Abstract>
         <ReferenceDate startDate="{{ framework.reference_date }}">{{ framework.start_date }}</ReferenceDate>
         <Version>{{ framework.version }}</Version>
-        <!--Documentation>{{ framework.documentation }}</Documentation-->
+{% if framework.documentation is not none %}
+        <Documentation>{{ framework.documentation }}</Documentation>
+{% endif %}
         <FrameworkKey>
             <Column name="{{ framework.key_col['name']}}" type="{{ framework.key_col['type'] }}" length="{{ framework.key_col['length'] }}" decimals="{{ framework.key_col['decimals'] }}" />
         </FrameworkKey>
@@ -31,11 +33,13 @@
             <Abstract>{{ dataset.abstract }}</Abstract>
             <ReferenceDate>{{ dataset.reference_date }}</ReferenceDate>
             <Version>{{ dataset.version }}</Version>
-            <!--Documentation>{{ dataset.documentation }}</Documentation-->
+{% if dataset.documentation is not none %}
+            <Documentation>{{ dataset.documentation }}</Documentation>
+{% endif %}
             <DescribeDataRequest xlink:href="{{ get_describedata_url(service, tjs_version, dataset) }}"/>
             <Columnset>
                 <!--Need a loop on all framework keys of the dataset?-->
-                <FrameworkKey complete="true" relationship="one">
+                <FrameworkKey complete="{% if dataset.framework_complete %}true{% else %}false{% endif %}" relationship="{{ dataset.framework_relationship }}">
                     <Column name="{{ framework.key_col['name']}}" type="{{ framework.key_col['type'] }}" length="{{ framework.key_col['length'] }}" decimals="{{ framework.key_col['decimals'] }}" />
                 </FrameworkKey>
                 <Attributes>
