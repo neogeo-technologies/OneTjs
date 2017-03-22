@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <GDAS service="TJS"
       version="1.0"
-      capabilities="{{ get_getcapabilities_path(service) }}"
-      xml:lang="en" xmlns:xlink="http://www.w3.org/1999/xlink"
-      xmlns="http://www.opengis.net/tjs/1.0" xmlns:ows="http://www.opengis.net/ows/1.1"
+      capabilities="{{ get_service_url(service) }}"
+      xml:lang="en"
+      xmlns="http://www.opengis.net/tjs/1.0"
+      xmlns:ows="http://www.opengis.net/ows/1.1"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.opengis.net/tjs/1.0 http://schemas.opengis.net/tjs/1.0/tjsGetData_response.xsd">
     <Framework>

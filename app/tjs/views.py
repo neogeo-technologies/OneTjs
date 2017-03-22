@@ -7,19 +7,14 @@ from flask import Blueprint
 
 from werkzeug.urls import url_encode
 from werkzeug.urls import url_join
-from werkzeug.urls import url_parse
 
 from app import app
 
-# from app.models import Service
-# from app.models import Framework
-# from app.models import Dataset
-# from app.models import DatasetAttribute
-
 import data
 
-tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
+SUPPORTED_VERSIONS = ["1.0"]
 
+tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
 
 @tjs_blueprint.route("/tjs/<service_name>", methods=['GET', 'POST'])
 def tjs_operation(service_name):
@@ -41,6 +36,7 @@ def tjs_operation(service_name):
                     u"The TJS server is unable to retrieve the Service record related to the following "
                     u"service name: {}. ".format(service_name)})
         raise OwsCommonException(exceptions=exceptions, status_code=500)
+    # TODO: test if the service is active or not, if not -> 404?
 
     # Missing service parameter
     if not arg_service:
@@ -72,9 +68,8 @@ def tjs_operation(service_name):
     if arg_operation and right_service_type:
 
         # GetCapabilities
-        #TODO: Create a real getcapabilities request handler
         if arg_operation.lower() == "getcapabilities":
-            return get_data(service, args)
+            return get_capabilities(service, args)
 
         # DescribeFrameworks
         elif arg_operation.lower() == "describeframeworks":
@@ -125,6 +120,28 @@ def get_normalized_args():
     return normalized_args
 
 
+def get_capabilities(serv, args):
+    exceptions = []
+
+    # TODO: manage the complete set of operations parameters declared in the TJS specification
+    arg_accept_versions = args.get('AcceptVersions')
+    arg_sections = args.get('Sections')
+    arg_accept_formats = args.get('AcceptFormats')
+    arg_language = args.get('language')
+    arg_update_sequence = args.get('updateSequence')
+
+    # TODO: need a real version negociation process
+    tjs_version = "1.0"
+    template_name = "tjs_100_getcapabilities.xml"
+
+    response_content = render_template(template_name, service=serv, tjs_version=tjs_version)
+    response = make_response(response_content)
+    response.headers["Content-Type"] = "application/xml"
+
+    # TODO: add cache information in the response headers
+    return response
+
+
 def get_data(serv, args):
     exceptions = []
 
@@ -145,8 +162,7 @@ def get_data(serv, args):
             "code": u"InvalidParameterValue",
             "text": u"Oh là là ! "
                     u"This version of the TJS specifications is not supported by this TJS implementation: {}. "
-                    u"Supported operations are GetCapabilities, DescribeFrameworks, DescribeDatasets "
-                    u"and DescribeData.".format(arg_version),
+                    u"Supported version numbers are: .".format(arg_version, ", ".join(SUPPORTED_VERSIONS)),
             "locator": u"version={}".format(arg_version)})
 
         raise OwsCommonException(exceptions=exceptions)
@@ -284,6 +300,7 @@ class OwsCommonException(Exception):
         self.message = u"\n".join([exception.get("text") for exception in self.exceptions])
 
 
+@app.template_global()
 def get_service_url(serv):
     app_path = request.url_root
     return url_join(app_path, "tjs/{}".format(serv.name))
@@ -312,51 +329,85 @@ def modify_query(**new_values):
 
     return "{}?{}".format(request.path, url_encode(args))
 
+
 # TODO: create a more generic build request function
 @app.template_global()
-def get_describedatasets_url(serv, tjs_version, framework):
+def get_getcapabilities_url(serv, language=None):
     service_url = get_service_url(serv)
     args = dict()
     args[u"service"] = u"TJS"
-    args[u"version"] = tjs_version
+    args[u"request"] = u"GetCapabilities"
+    if language:
+        args[u"language"] = language
+
+    return "{}?{}".format(service_url, url_encode(args))
+
+
+@app.template_global()
+def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=None):
+    service_url = get_service_url(serv)
+    args = dict()
+    args[u"service"] = u"TJS"
+    args[u"request"] = u"DescribeFrameworks"
+    if tjs_version:
+        args[u"version"] = tjs_version
+    if framework:
+        args[u"frameworkuri"] = framework.uri
+    if language:
+        args[u"language"] = language
+
+    return "{}?{}".format(service_url, url_encode(args))
+
+
+@app.template_global()
+def get_describedatasets_url(serv, tjs_version=None, language=None, dataset=None):
+    service_url = get_service_url(serv)
+    args = dict()
+    args[u"service"] = u"TJS"
     args[u"request"] = u"DescribeDatasets"
-    args[u"frameworkuri"] = framework.uri
-    args[u"acceptlanguages"] = u"fr"
+    if tjs_version:
+        args[u"version"] = tjs_version
+    if dataset:
+        args[u"frameworkuri"] = dataset.framework.uri
+        args[u"dataseturi"] = dataset.uri
+    if language:
+        args[u"language"] = language
 
     return "{}?{}".format(service_url, url_encode(args))
 
 
 @app.template_global()
-def get_describedata_url(serv, tjs_version, dataset):
+def get_describedata_url(serv, tjs_version=None, language=None, dataset=None, attributes=None):
     service_url = get_service_url(serv)
     args = dict()
     args[u"service"] = u"TJS"
-    args[u"version"] = tjs_version
+    if tjs_version:
+        args[u"version"] = tjs_version
     args[u"request"] = u"DescribeData"
-    args[u"frameworkuri"] = dataset.framework.uri
-    args[u"dataseturi"] = dataset.uri
-    args[u"acceptlanguages"] = u"fr"
+    if dataset:
+        args[u"frameworkuri"] = dataset.framework.uri
+        args[u"dataseturi"] = dataset.uri
+    if attributes:
+        args[u"attributes"] = ",".join([at.name for at in attributes])
+    if language:
+        args[u"language"] = language
 
     return "{}?{}".format(service_url, url_encode(args))
 
 
 @app.template_global()
-def get_getdata_url(serv, tjs_version, attribute):
+def get_getdata_url(serv, tjs_version=None, attribute=None):
     service_url = get_service_url(serv)
     args = dict()
     args[u"service"] = u"TJS"
-    args[u"version"] = tjs_version
+    if tjs_version:
+        args[u"version"] = tjs_version
     args[u"request"] = u"GetData"
-    args[u"frameworkuri"] = attribute.dataset.framework.uri
-    args[u"dataseturi"] = attribute.dataset.uri
-    args[u"attributes"] = attribute.name
-    args[u"acceptlanguages"] = u"fr"
+    if attribute:
+        args[u"frameworkuri"] = attribute.dataset.framework.uri
+        args[u"dataseturi"] = attribute.dataset.uri
+        args[u"attributes"] = attribute.name
+    # TODO: should we use the acceptlanguages parameter?
+    # args[u"acceptlanguages"] = u"fr"
 
     return "{}?{}".format(service_url, url_encode(args))
-
-
-@app.template_global()
-def get_getcapabilities_path(serv):
-    getcapabilities_path = get_service_url(serv)
-
-    return getcapabilities_path

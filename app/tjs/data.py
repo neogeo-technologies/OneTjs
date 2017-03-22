@@ -15,6 +15,7 @@ def get_data_from_datasource(dataset, dataset_attributes, framework):
 
     data_source_type = dataset.data_source["type"]
 
+    # TODO: add exception handling for data reading troubles
     if data_source_type == "csv":
         data = pd.read_csv(dataset.data_source["path"], index_col=framework.key_col["name"])
         dataframe = pd.DataFrame(data, columns=attributes_names)

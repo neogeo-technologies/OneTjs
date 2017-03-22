@@ -15,8 +15,14 @@ class Service(object):
         self.activated = False
         self.title = "Default service title"
         self.abstract = "Default service abstract"
+        self.service_provider = {
+
+        }
+        self.keywords = ["TJS", "geospatial"]
+        self.fees = "NONE"
+        self.access_constraints = "NONE"
         self.tjs_versions = ["1.0.0"]
-        self.language = "fr-FR"
+        self.languages = ["fr-FR"]
         self.data_dir_path = None
         self.abs_data_dir_path = None
         self.frameworks = {}

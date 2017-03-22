@@ -1,19 +1,37 @@
 # services
 ---
 region_hdf:
-  activated:       yes
-  data_dir_path:   region_hdf
-  title:           Service TJS de données de la Région Hauts-de-France
-  abstract:        Prototype de service TJS développé par Neogeo Technologies pour la Région Hauts-de-France
+  activated:         yes
+  data_dir_path:     region_hdf
+  title:             Service TJS de données de la Région Hauts-de-France
+  abstract:          Prototype de service TJS développé par Neogeo Technologies pour la Région Hauts-de-France
+  keywords:
+                     - TJS
+                     - données statistiques
+                     - Région Hauts-de-France
+                     - Picardie
+                     - Nord-Pas-de-Calais
+                     - Nord
+                     - Pas-de-Calais
+                     - Oise
+                     - Somme
+                     - Aisne
+                     - INSEE
+  service_provider:
+    organization:    Région Hauts-de-France
+    web_site:        http://www.hautsdefrance.fr/
+    contact_email:   contact@geopicardie.fr
   tjs_versions:
-                   - 1.0
-  language:        fr-FR
+                     - 1.0
+  languages:
+                     - fr-FR
 
 test:
-  activated:       no
-  data_dir_path:   test
-  title:           Service TJS de test
-  abstract:        Prototype de service TJS développé par Neogeo Technologies
+  activated:         no
+  data_dir_path:     test
+  title:             Service TJS de test
+  abstract:          Prototype de service TJS développé par Neogeo Technologies
   tjs_versions:
-                   - 1.0
-  language:        fr-FR
+                     - 1.0
+  languages:
+                     - fr-FR
