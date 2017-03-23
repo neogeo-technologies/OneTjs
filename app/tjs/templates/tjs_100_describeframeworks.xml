@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <FrameworkDescriptions service="TJS"
                        version="1.0"
-                       capabilities="{{ get_service_url(service) }}"
+                       capabilities="{{ get_service_url(serv=service) }}"
                        xml:lang="{{ service.languages[0] }}"
                        xmlns:xlink="http://www.w3.org/1999/xlink"
                        xmlns="http://www.opengis.net/tjs/1.0"
@@ -27,7 +27,7 @@
    <East>-{{ framework.bbox.east }}</East>
    <West>-{{ framework.bbox.west }}</West>
   </BoundingCoordinates>
-  <DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(service, tjs_version, language, dataset) }}"/>
+  <DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, language=language, framework=framework) }}"/>
  </Framework>
 {% endfor %}
 </FrameworkDescriptions>

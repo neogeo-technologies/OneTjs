@@ -79,35 +79,35 @@
         <ows:Operation name="GetCapabilities">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="{{ get_getcapabilities_url(service) }}"/>
+                    <ows:Get xlink:href="{{ get_getcapabilities_url(serv=service) }}"/>
                 </ows:HTTP>
             </ows:DCP>
         </ows:Operation>
         <ows:Operation name="DescribeFrameworks">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="{{ get_describeframeworks_url(service) }}"/>
+                    <ows:Get xlink:href="{{ get_describeframeworks_url(serv=service) }}"/>
                 </ows:HTTP>
             </ows:DCP>
         </ows:Operation>
         <ows:Operation name="DescribeDatasets">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="{{ get_describedatasets_url(service) }}"/>
+                    <ows:Get xlink:href="{{ get_describedatasets_url(serv=service) }}"/>
                 </ows:HTTP>
             </ows:DCP>
         </ows:Operation>
         <ows:Operation name="DescribeData">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="{{ get_describedata_url(service) }}"/>
+                    <ows:Get xlink:href="{{ get_describedata_url(serv=service) }}"/>
                 </ows:HTTP>
             </ows:DCP>
         </ows:Operation>
         <ows:Operation name="GetData">
             <ows:DCP>
                 <ows:HTTP>
-                    <ows:Get xlink:href="{{ get_getdata_url(service) }}"/>
+                    <ows:Get xlink:href="{{ get_getdata_url(serv=service) }}"/>
                 </ows:HTTP>
             </ows:DCP>
             <ows:Constraint name="GeolinkidsLimit">

@@ -85,16 +85,16 @@
     <table class="table table-condensed">
         <tbody>
             <tr>
-                <td><a href="{{ get_getcapabilities_url(service) }}">
+                <td><a href="{{ get_getcapabilities_url(serv=service) }}">
                     GetCapabilities</a></td>
             </tr>
             <tr>
-                <td><a href="{{ get_describeframeworks_url(service, tjs_version=service.tjs_versions[-1]) }}">
+                <td><a href="{{ get_describeframeworks_url(serv=service, tjs_version=service.tjs_versions[-1]) }}">
                     DescribeFrameworks</a></td>
             </tr>
 {% for dataset in datasets %}
             <tr>
-                <td><a href="{{ get_getdata_url(service, tjs_version=service.tjs_versions[-1], dataset=dataset) }}">
+                <td><a href="{{ get_getdata_url(serv=service, tjs_version=service.tjs_versions[-1], dataset=dataset) }}">
                     GetData for {{ dataset.name }} dataset</a></td>
             </tr>
 {% endfor %}
