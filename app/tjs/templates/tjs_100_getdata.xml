@@ -2,7 +2,7 @@
 <GDAS service="TJS"
       version="1.0"
       capabilities="{{ get_service_url(service) }}"
-      xml:lang="en"
+      xml:lang="{{ service.languages[0] }}"
       xmlns="http://www.opengis.net/tjs/1.0"
       xmlns:ows="http://www.opengis.net/ows/1.1"
       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -27,7 +27,7 @@
         <East>{{ framework.bbox["east"] }}</East>
         <West>{{ framework.bbox["west"] }}</West>
         </BoundingCoordinates>
-        <DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(service, tjs_version, framework) }}"/>
+        <DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, dataset=dataset) }}"/>
         <Dataset>
             <DatasetURI>{{ dataset.uri }}</DatasetURI>
             <Organization>{{ dataset.organization }}</Organization>
@@ -38,7 +38,7 @@
 {% if dataset.documentation is not none %}
             <Documentation>{{ dataset.documentation }}</Documentation>
 {% endif %}
-            <DescribeDataRequest xlink:href="{{ get_describedata_url(service, tjs_version, dataset) }}"/>
+            <DescribeDataRequest xlink:href="{{ get_describedata_url(serv=service, tjs_version=tjs_version, dataset=dataset) }}"/>
             <Columnset>
                 <!--Need a loop on all framework keys of the dataset?-->
                 <FrameworkKey complete="{% if dataset.framework_complete %}true{% else %}false{% endif %}" relationship="{{ dataset.framework_relationship }}">
@@ -53,7 +53,7 @@
                         <Values>
 {{ attribute.values }}
                         </Values>
-                        <GetDataRequest xlink:href="{{ get_getdata_url(service, tjs_version, attribute) }}"/>
+                        <GetDataRequest xlink:href="{{ get_getdata_url(serv=service, tjs_version=tjs_version, dataset=dataset, attribute=attribute) }}"/>
                     </Column>
 {% endfor %}
     </Attributes>

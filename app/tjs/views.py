@@ -73,7 +73,7 @@ def tjs_operation(service_name):
 
         # DescribeFrameworks
         elif arg_operation.lower() == "describeframeworks":
-            return get_data(service, args)
+            return describe_frameworks(service, args)
 
         # DescribeDatasets
         elif arg_operation.lower() == "describedatasets":
@@ -134,7 +134,49 @@ def get_capabilities(serv, args):
     tjs_version = "1.0"
     template_name = "tjs_100_getcapabilities.xml"
 
+    # TODO: handle language parameter
+    arg_language = serv.languages[0]
+
     response_content = render_template(template_name, service=serv, tjs_version=tjs_version)
+    response = make_response(response_content)
+    response.headers["Content-Type"] = "application/xml"
+
+    # TODO: add cache information in the response headers
+    return response
+
+
+def describe_frameworks(serv, args):
+    exceptions = []
+
+    arg_version = args.get('version')
+    arg_language = args.get('language')
+    arg_framework_uri = args.get('frameworkuri')
+
+    # TODO: handle language parameter
+    arg_language = serv.languages[0]
+
+    if arg_framework_uri:
+        framework_uris = [item.strip() for item in arg_framework_uri.split(",")]
+        frameworks = [serv.get_framework_with_uri(uri) for uri in framework_uris]
+    else:
+        frameworks = list(serv.get_frameworks())
+
+    # Get the jinja template corresponding to the TJS specifications version
+    if arg_version in ("1.0",):
+        template_name = "tjs_100_describeframeworks.xml"
+    else:
+        # TJS exception
+        exceptions.append({
+            "code": u"InvalidParameterValue",
+            "text": u"Oh là là ! "
+                    u"This version of the TJS specifications is not supported by this TJS implementation: {}. "
+                    u"Supported version numbers are: {}.".format(arg_version, ", ".join(SUPPORTED_VERSIONS)),
+            "locator": u"version={}".format(arg_version)})
+
+        raise OwsCommonException(exceptions=exceptions)
+
+    response_content = render_template(template_name, service=serv, frameworks=frameworks,
+                                       tjs_version=arg_version, language=arg_language)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -146,6 +188,7 @@ def get_data(serv, args):
     exceptions = []
 
     arg_version = args.get('version')
+    arg_language = args.get('language')
     arg_framework_uri = args.get('frameworkuri')
     arg_dataset_uri = args.get('dataseturi')
     arg_attributes = args.get('attributes')
@@ -162,10 +205,13 @@ def get_data(serv, args):
             "code": u"InvalidParameterValue",
             "text": u"Oh là là ! "
                     u"This version of the TJS specifications is not supported by this TJS implementation: {}. "
-                    u"Supported version numbers are: .".format(arg_version, ", ".join(SUPPORTED_VERSIONS)),
+                    u"Supported version numbers are: {}.".format(arg_version, ", ".join(SUPPORTED_VERSIONS)),
             "locator": u"version={}".format(arg_version)})
 
         raise OwsCommonException(exceptions=exceptions)
+
+    # TODO: handle language parameter
+    arg_language = serv.languages[0]
 
     # Missing frameworkuri parameter
     if not arg_framework_uri:
@@ -241,8 +287,8 @@ def get_data(serv, args):
     pd_dataframe = data.get_data_from_datasource(dtst, dtst_attributes, frwk)
 
     # TODO: handle correctly empty pd_dataframe (None for example)
-    response_content = render_template(template_name, service=serv, tjs_version=arg_version, framework=frwk,
-                                       dataset=dtst, attributes=dtst_attributes, data=pd_dataframe)
+    response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
+                                       framework=frwk, dataset=dtst, attributes=dtst_attributes, data=pd_dataframe)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -331,6 +377,7 @@ def modify_query(**new_values):
 
 
 # TODO: create a more generic build request function
+# TODO: use ordereddict for request parameters
 @app.template_global()
 def get_getcapabilities_url(serv, language=None):
     service_url = get_service_url(serv)
@@ -360,13 +407,15 @@ def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=
 
 
 @app.template_global()
-def get_describedatasets_url(serv, tjs_version=None, language=None, dataset=None):
+def get_describedatasets_url(serv, tjs_version=None, language=None, framework=None, dataset=None):
     service_url = get_service_url(serv)
     args = dict()
     args[u"service"] = u"TJS"
     args[u"request"] = u"DescribeDatasets"
     if tjs_version:
         args[u"version"] = tjs_version
+    if framework:
+        args[u"frameworkuri"] = framework.uri
     if dataset:
         args[u"frameworkuri"] = dataset.framework.uri
         args[u"dataseturi"] = dataset.uri
@@ -395,19 +444,19 @@ def get_describedata_url(serv, tjs_version=None, language=None, dataset=None, at
     return "{}?{}".format(service_url, url_encode(args))
 
 
+# TODO: make sure this function works fine for more than one attribute
 @app.template_global()
-def get_getdata_url(serv, tjs_version=None, attribute=None):
+def get_getdata_url(serv, tjs_version=None, dataset=None, attribute=None):
     service_url = get_service_url(serv)
     args = dict()
     args[u"service"] = u"TJS"
     if tjs_version:
         args[u"version"] = tjs_version
     args[u"request"] = u"GetData"
+    if dataset:
+        args[u"frameworkuri"] = dataset.framework.uri
+        args[u"dataseturi"] = dataset.uri
     if attribute:
-        args[u"frameworkuri"] = attribute.dataset.framework.uri
-        args[u"dataseturi"] = attribute.dataset.uri
         args[u"attributes"] = attribute.name
-    # TODO: should we use the acceptlanguages parameter?
-    # args[u"acceptlanguages"] = u"fr"
 
     return "{}?{}".format(service_url, url_encode(args))

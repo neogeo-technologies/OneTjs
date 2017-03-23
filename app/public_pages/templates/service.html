@@ -26,8 +26,8 @@
                 <td>{{ service.tjs_versions|join(", ") }}</td>
             </tr>
             <tr>
-                <td>Language</td>
-                <td>{{ service.language }}</td>
+                <td>Languages</td>
+                <td>{{ service.languages|join(", ") }}</td>
             </tr>
         </tbody>
     </table>
@@ -85,14 +85,17 @@
     <table class="table table-condensed">
         <tbody>
             <tr>
-                <td><a href="{{ url_for('tjs.tjs_operation', service_name=service.name,
-    service='TJS', request='GetCapabilities')}}">GetCapabilities</a></td>
+                <td><a href="{{ get_getcapabilities_url(service) }}">
+                    GetCapabilities</a></td>
+            </tr>
+            <tr>
+                <td><a href="{{ get_describeframeworks_url(service, tjs_version=service.tjs_versions[-1]) }}">
+                    DescribeFrameworks</a></td>
             </tr>
 {% for dataset in datasets %}
             <tr>
-                <td><a href="{{ url_for('tjs.tjs_operation', service_name=service.name,
-    service='TJS', version=service.tjs_versions[-1], request='GetData', language=service.language,
-    frameworkuri=dataset.framework.uri, dataseturi=dataset.uri)}}">GetData for {{ dataset.name }} dataset</a></td>
+                <td><a href="{{ get_getdata_url(service, tjs_version=service.tjs_versions[-1], dataset=dataset) }}">
+                    GetData for {{ dataset.name }} dataset</a></td>
             </tr>
 {% endfor %}
         </tbody>
