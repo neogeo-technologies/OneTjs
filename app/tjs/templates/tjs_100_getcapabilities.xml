@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Capabilities service="TJS"
+<tjs:Capabilities service="TJS"
                   version="1.0"
                   xml:lang="{{ service.languages[0] }}"
                   xmlns:xlink="http://www.w3.org/1999/xlink"
-                  xmlns="http://www.opengis.net/tjs/1.0"
+                  xmlns:tjs="http://www.opengis.net/tjs/1.0"
                   xmlns:ows="http://www.opengis.net/ows/1.1"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://www.opengis.net/tjs/1.0 http://schemas.opengis.net/tjs/1.0/tjsGetCapabilities_response.xsd">
+                  xsi:schemaLocation="http://www.opengis.net/tjs/1.0 /schemas/tjs/1.0/tjsGetCapabilities_response.xsd">
     <ows:ServiceIdentification>
         <ows:Title>{{ service.title }}</ows:Title>
         <ows:Abstract>{{ service.abstract}}</ows:Abstract>
@@ -120,9 +120,9 @@
             </ows:Constraint>
         </ows:Operation>
     </ows:OperationsMetadata>
-    <Languages defaultLanguage="{{ service.languages[0] }}">
+    <tjs:Languages defaultLanguage="{{ service.languages[0] }}">
 {% for language in service.languages %}
         <ows:Language>{{ language }}</ows:Language>
 {% endfor %}
-    </Languages>
-</Capabilities>
+    </tjs:Languages>
+</tjs:Capabilities>
