@@ -44,4 +44,9 @@
         </tbody>
     </table>
 
+
+    <h2><small>Data preview</small></h2>
+
+{{ data.to_html(max_rows=10, border=0, bold_rows=False, classes="table table-condensed") | safe}}
+
 {% endblock %}

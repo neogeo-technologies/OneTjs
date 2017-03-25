@@ -112,16 +112,25 @@ class CsvFileDataset(FileDataset):
     def check_data_source(self):
         super(CsvFileDataset, self).check_data_source()
 
-    def get_data_from_datasource(self, dataset_attributes, framework):
+    def get_data_from_datasource(self, attributes=None, framework=None):
 
         # TODO: the data type for each column should be specified in order to avoid wrong type inferance
         # example: insee code wrongly interpreted as integers
         # forcing datatypes with pandas: d = pandas.read_csv('foo.csv', dtype={'BAR': 'S10'})
 
-        attributes_names = [at.name for at in dataset_attributes]
+        if attributes:
+            attributes_names = [at.name for at in attributes]
+        else:
+            attributes_names = [at.name for at in self.ds_attributes]
+
+        if framework:
+            key_col_name = framework.key_col["name"]
+        else:
+            # TODO: need improvement in case of n-n relation between datatsets and frameworks
+            key_col_name = self.framework.key_col["name"]
 
         # TODO: add exception handling for data reading troubles
-        data = pd.read_csv(self.data_source["path"], index_col=framework.key_col["name"])
+        data = pd.read_csv(self.data_source["path"], index_col=key_col_name)
         dataframe = pd.DataFrame(data, columns=attributes_names)
         return dataframe
 
@@ -135,16 +144,25 @@ class XlsFileDataset(FileDataset):
     def check_data_source(self):
         super(XlsFileDataset, self).check_data_source()
 
-    def get_data_from_datasource(self, dataset_attributes, framework):
+    def get_data_from_datasource(self, attributes=None, framework=None):
 
         # TODO: the data type for each column should be specified in order to avoid wrong type inferance
         # example: insee code wrongly interpreted as integers
         # forcing datatypes with pandas: d = pandas.read_csv('foo.csv', dtype={'BAR': 'S10'})
 
-        attributes_names = [at.name for at in dataset_attributes]
+        if attributes:
+            attributes_names = [at.name for at in attributes]
+        else:
+            attributes_names = [at.name for at in self.ds_attributes]
+
+        if framework:
+            key_col_name = framework.key_col["name"]
+        else:
+            # TODO: need improvement in case of n-n relation between datatsets and frameworks
+            key_col_name = self.framework.key_col["name"]
 
         # TODO: add exception handling for data reading troubles
-        data = pd.read_excel(self.data_source["path"], index_col=framework.key_col["name"])
+        data = pd.read_excel(self.data_source["path"], index_col=key_col_name)
         dataframe = pd.DataFrame(data, columns=attributes_names)
         return dataframe
 

@@ -13,7 +13,6 @@ from app import app
 
 public_blueprint = Blueprint('public_pages', __name__, template_folder="templates")
 
-# TODO: need some simple way to preview published data
 
 @app.route('/favicon.ico')
 def favicon():
@@ -61,7 +60,8 @@ def datasets():
 def dataset(service_name, dataset_name):
     this_service = app.services_manager.get_service_with_name(service_name)
     this_dataset = this_service.get_dataset_with_name(dataset_name)
-    return render_template("dataset.html", dataset=this_dataset, cfg=app.config)
+    return render_template("dataset.html", dataset=this_dataset,
+                           data=this_dataset.get_data_from_datasource(), cfg=app.config)
 
 
 @app.template_global()
