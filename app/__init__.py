@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import logging
+import os
+
 from flask import Flask
 from flask import render_template
 from flask_bcrypt import Bcrypt
-from flask_debugtoolbar import DebugToolbarExtension
 from flask_bootstrap import Bootstrap
-
-import os
-
-import logging
+from flask_debugtoolbar import DebugToolbarExtension
 
 logging.basicConfig(level=logging.INFO)
 
@@ -48,7 +47,8 @@ def error_page(error):
     return render_template("error.html", error=error), 500
 
 
-import services_manager
+from app.models import services_manager
+
 app.services_manager = services_manager.ServicesManager()
 
 # Blueprints
