@@ -24,36 +24,36 @@ def favicon():
 
 @app.route("/")
 def index():
-    return render_template("index.html", cfg=app.config, init_success=app.init_success)
+    return render_template("index.html", init_success=app.init_success)
 
 
 # TODO: do we need to pass app.config?
 @app.route("/services/")
 def services():
-    return render_template("services_list.html", services=app.services_manager.get_services(), cfg=app.config)
+    return render_template("services_list.html", services=app.services_manager.get_services())
 
 
 @app.route("/services/<service_name>")
 def service(service_name):
     this_service = app.services_manager.get_service_with_name(service_name)
-    return render_template("service.html", service=this_service, cfg=app.config)
+    return render_template("service.html", service=this_service)
 
 
 @app.route("/frameworks/")
 def frameworks():
-    return render_template("frameworks_list.html", services=app.services_manager.get_services(), cfg=app.config)
+    return render_template("frameworks_list.html", services=app.services_manager.get_services())
 
 
 @app.route("/services/<service_name>/frameworks/<framework_name>")
 def framework(service_name, framework_name):
     this_service = app.services_manager.get_service_with_name(service_name)
     this_framework = this_service.get_framework_with_name(framework_name)
-    return render_template("framework.html", framework=this_framework, cfg=app.config)
+    return render_template("framework.html", framework=this_framework)
 
 
 @app.route("/datasets/")
 def datasets():
-    return render_template("datasets_list.html", services=app.services_manager.get_services(), cfg=app.config)
+    return render_template("datasets_list.html", services=app.services_manager.get_services())
 
 
 @app.route("/services/<service_name>/datasets/<dataset_name>")
@@ -61,7 +61,7 @@ def dataset(service_name, dataset_name):
     this_service = app.services_manager.get_service_with_name(service_name)
     this_dataset = this_service.get_dataset_with_name(dataset_name)
     return render_template("dataset.html", dataset=this_dataset,
-                           data=this_dataset.get_data_from_datasource(), cfg=app.config)
+                           data=this_dataset.get_data_from_datasource())
 
 
 @app.template_global()
