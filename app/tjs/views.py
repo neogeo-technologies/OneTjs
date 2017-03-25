@@ -140,7 +140,6 @@ def get_capabilities(serv, args):
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
-    # TODO: add cache information in the response headers
     return response
 
 
@@ -179,7 +178,6 @@ def describe_frameworks(serv, args):
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
-    # TODO: add cache information in the response headers
     return response
 
 
@@ -286,7 +284,11 @@ def get_data(serv, args):
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
-    # TODO: add cache information in the response headers
+    if dtst.cached:
+        max_age = dtst.cache_max_age or 3600
+        response.cache_control.max_age = max_age
+        response.cache_control.public = True
+
     return response
 
 
