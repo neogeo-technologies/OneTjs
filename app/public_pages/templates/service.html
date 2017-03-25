@@ -18,6 +18,10 @@
                 <td>{{ service.abstract }}</td>
             </tr>
             <tr>
+                <td>Keywwords</td>
+                <td>{{ service.keywords|join(", ") }}</td>
+            </tr>
+            <tr>
                 <td>Activated</td>
                 <td>{{ service.activated }}</td>
             </tr>
@@ -45,7 +49,7 @@
             </tr>
 {% for framework in frameworks %}
             <tr>
-                <td>{{ framework.name }}</td>
+                <td><a href="{{ url_for('.framework', service_name=service.name, framework_name=framework.name) }}">{{ framework.name }}</a></td>
                 <td>{{ framework.title }}</td>
                 <td>{{ framework.uri }}</td>
             </tr>
@@ -69,7 +73,7 @@
             </tr>
 {% for dataset in datasets %}
             <tr>
-                <td>{{ dataset.name }}</td>
+                <td><a href="{{ url_for('.dataset', service_name=service.name, dataset_name=dataset.name) }}">{{ dataset.name }}</a></td>
                 <td>{{ dataset.title }}</td>
                 <td>{{ dataset.uri }}</td>
             </tr>
