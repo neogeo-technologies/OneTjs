@@ -20,6 +20,7 @@ app = Flask(
 
 app_settings = os.getenv('APP_SETTINGS', 'app.config.DevelopmentConfig')
 app.config.from_object(app_settings)
+app.init_success = False
 
 
 bcrypt = Bcrypt(app)

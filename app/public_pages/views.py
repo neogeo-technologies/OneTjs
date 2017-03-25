@@ -11,9 +11,6 @@ from werkzeug.urls import url_encode
 
 from app import app
 
-from app.models import Framework
-from app.models import Dataset
-
 public_blueprint = Blueprint('public_pages', __name__, template_folder="templates")
 
 # TODO: need some simple way to preview published data
@@ -28,9 +25,10 @@ def favicon():
 
 @app.route("/")
 def index():
-    return render_template("index.html", cfg=app.config)
+    return render_template("index.html", cfg=app.config, init_success=app.init_success)
 
 
+# TODO: do we need to pass app.config?
 @app.route("/services/")
 def services():
     return render_template("services_list.html", services=app.services_manager.get_services(), cfg=app.config)

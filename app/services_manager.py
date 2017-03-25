@@ -30,8 +30,12 @@ class ServicesManager(object):
                     v["name"] = k
                     s = models.Service(**v)
                     self.services[k] = s
+                    app.init_success = True
             except yaml.YAMLError as e:
                 logging.exception(e)
+                logging.critical("The app config file is not correctly formed. The initialization porcess will stop."
+                                 "The following configuration file must be fixed before the application is restarted : "
+                                 "{}".format(self.services_cfg_file_path))
 
     def __find_services_yml_file_path(self):
 

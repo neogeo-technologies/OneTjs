@@ -85,6 +85,14 @@ class Service(object):
                         self.datasets[ds.name] = ds
                     except ValueError as e:
                         logging.exception(e)
+                    except KeyError as e:
+                        logging.exception(e)
+                        logging.error("Some critical fields are missing in the following dataset config file:"
+                                         " {0}".format(yaml_file_path))
+                    except yaml.YAMLError as e:
+                        logging.exception(e)
+                        logging.error("The following dataset config file cannot be correctly read:"
+                                         " {0}".format(yaml_file_path))
 
     def log_info(self):
         logging.info("Service: {0} ({1})".format(self.name, "activated" if self.activated else "deactivated"))
@@ -103,30 +111,27 @@ class Service(object):
         # Get the data source type
         dataset_dict = {}
         with open(dataset_yaml_file_path, 'r') as stream:
-            try:
-                # Read the yaml file
-                dataset_dict = yaml.load(stream)
-            # TODO: should we raise an exception to stop the process?
-            except yaml.YAMLError as e:
-                logging.exception(e)
+            # try:
+            # Read the yaml file
+            dataset_dict = yaml.load(stream)
 
             # Save the yaml file path
             dataset_dict["yaml_file_path"] = dataset_yaml_file_path
 
-            try:
-                # Set the reference of the framework using its uri
-                data_source = dataset_dict["data_source"]
-                data_source_type = data_source["type"]
-                framework_dict = dataset_dict.pop("framework")
-                # TODO: handle errors related to framework uri typo
-                framework = self.get_framework_with_uri(framework_dict["uri"])
-                dataset_dict["framework"] = framework
-                dataset_dict["framework_uri"] = framework_dict["uri"]
-                dataset_dict["framework_complete"] = framework_dict["complete"]
-                dataset_dict["framework_relationship"] = framework_dict["relationship"]
-            # TODO: should we raise an exception to stop the process?
-            except KeyError as e:
-                logging.exception(e)
+            # try:
+            # Set the reference of the framework using its uri
+            data_source = dataset_dict["data_source"]
+            data_source_type = data_source["type"]
+            framework_dict = dataset_dict.pop("framework")
+            framework = self.get_framework_with_uri(framework_dict["uri"])
+            if framework is None:
+                raise ValueError(
+                    "The framework with the uri {} declared in the following dataset config file "
+                    "has not been found: {}".format(framework_dict["uri"], dataset_yaml_file_path))
+            dataset_dict["framework"] = framework
+            dataset_dict["framework_uri"] = framework_dict["uri"]
+            dataset_dict["framework_complete"] = framework_dict["complete"]
+            dataset_dict["framework_relationship"] = framework_dict["relationship"]
 
         if data_source_type is None:
             raise ValueError(
