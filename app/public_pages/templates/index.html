@@ -3,16 +3,31 @@
 {% block content %}
     <h1>TJS simple server</h1>
     <p>TJS simple server est un prototype de serveur TJS implémentant le standard de l'OGC Georeferenced Table Joining Service.</p>
-    <p>Seules les opérations de type Data Access en HTTP GET sont implémentées.</p>
-    <br/>
-    <p>Eléments non supportés pour l'instant :
+    <p>Seules les opérations de type Data Access en HTTP GET sont implémentées&nbsp;:
+        <ul>
+            <li>GetCapabilities</li>
+            <li>DescribeFrameworks</li>
+            <li><del>DescribeDatasets<del></li>
+            <li><del>DescribeData<del></li>
+            <li>GetData</li>
+        </ul>
+    </p>
+    <p>Eléments non supportés pour l'instant&nbsp;:
         <ul>
             <li>Requêtes HTTP POST</li>
             <li>Requêtes SOAP</li>
             <li>WSDL</li>
             <li>Valeurs de types <em>ordinal</em> et <em>nominal</em></li>
-            <li>Les champs <em>documentation</em></li>
+            <li>Le multilinguisme</li>
+            <li>Le champ <em>documentation</em> des attributs</li>
             <li>Les exceptions décrites dans les spécifications</li>
         </ul>
     </p>
+    <p>Autres limitations&nbsp;:
+        <ul>
+            <li>Chaque jeu de données (dataset) n'est associé qu'à un seul référentiel (framework)</li>
+            <li>Les jeux de données stockés dans une base SQL ne sont pas encore supportés</li>
+        </ul>
+    </p>
+    <p>Initialisation de l'application: {% if init_success %}<span class="label label-success">Succès</span>{% else %}<span class="label label-danger">Echec</span>{% endif %}</p>
 {% endblock %}
