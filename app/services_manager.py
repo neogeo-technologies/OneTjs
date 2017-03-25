@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import yaml
-import os
 import logging
+import os
+import yaml
 
-import models
 from app import app
+from app.models.service import Service
 
 SERVICES_FILE_NAME = "services.yml"
 
@@ -28,7 +28,7 @@ class ServicesManager(object):
                 for k, v in services_dict.iteritems():
                     v["cfg_file_path"] = self.services_cfg_file_path
                     v["name"] = k
-                    s = models.Service(**v)
+                    s = Service(**v)
                     self.services[k] = s
                     app.init_success = True
             except yaml.YAMLError as e:

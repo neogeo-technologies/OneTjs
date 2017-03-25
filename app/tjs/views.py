@@ -10,11 +10,10 @@ from werkzeug.urls import url_join
 
 from app import app
 
-import data
-
 SUPPORTED_VERSIONS = ["1.0"]
 
 tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
+
 
 @tjs_blueprint.route("/tjs/<service_name>", methods=['GET', 'POST'])
 def tjs_operation(service_name):
@@ -281,10 +280,9 @@ def get_data(serv, args):
     # TODO: include exception handling for the cases where the data cannot be retrieved
     # TODO: test the type of datasource
     # TODO: pass the datasource object to the called function
-    # TODO: make the framework - dataset relation a many to many one
 
-    # TODO: get_data_from_datasource -> need for complete rewrite
-    pd_dataframe = data.get_data_from_datasource(dtst, dtst_attributes, frwk)
+    # Create a pandas data frame from the dataset datasource
+    pd_dataframe = dtst.get_data_from_datasource(dtst_attributes, frwk)
 
     # TODO: handle correctly empty pd_dataframe (None for example)
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
