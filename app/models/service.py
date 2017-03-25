@@ -27,7 +27,7 @@ class Service(object):
         self.fees = "NONE"
         self.access_constraints = "NONE"
         self.tjs_versions = ["1.0.0"]
-        self.languages = ["fr-FR"]
+        self.languages = ["fr"]
         self.data_dir_path = None
         self.abs_data_dir_path = None
         self.frameworks = {}

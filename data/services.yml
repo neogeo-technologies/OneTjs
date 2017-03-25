@@ -24,7 +24,7 @@ region_hdf:
   tjs_versions:
                      - 1.0
   languages:
-                     - fr-FR
+                     - fr
 
 test:
   activated:         no
@@ -34,4 +34,4 @@ test:
   tjs_versions:
                      - 1.0
   languages:
-                     - fr-FR
+                     - fr
