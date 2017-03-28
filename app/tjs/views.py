@@ -24,18 +24,12 @@ def tjs_operation(service_name):
     arg_service = args.get('service')
     arg_operation = args.get('request')
 
-    # TODO: check the parameter service_name -> manage this with a TJS exception or a 404 error?
     # Service instance
     service = app.services_manager.get_service_with_name(service_name)
-    if service is None:
-        exceptions.append({
-            "code": u"NoApplicableCode",
-            "text": u"Sorry, "
-                    u"An unexpected error occurend while processing your request. "
-                    u"The TJS server is unable to retrieve the Service record related to the following "
-                    u"service name: {}. ".format(service_name)})
-        raise OwsCommonException(exceptions=exceptions, status_code=500)
-    # TODO: test if the service is active or not, if not -> 404?
+
+    # If the service does not exist or is not activated -> 404
+    if service is None or not service.activated:
+        return render_template("error.html", error_code=404), 404
 
     # Missing service parameter
     if not arg_service:

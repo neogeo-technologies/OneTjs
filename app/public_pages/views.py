@@ -36,6 +36,11 @@ def services():
 @app.route("/services/<service_name>")
 def service(service_name):
     this_service = app.services_manager.get_service_with_name(service_name)
+
+    # If the service does not exist -> 404
+    if this_service is None:
+        return render_template("error.html", error_code=404), 404
+
     return render_template("service.html", service=this_service)
 
 
@@ -46,8 +51,19 @@ def frameworks():
 
 @app.route("/services/<service_name>/frameworks/<framework_name>")
 def framework(service_name, framework_name):
+
     this_service = app.services_manager.get_service_with_name(service_name)
+
+    # If the service does not exist -> 404
+    if this_service is None:
+        return render_template("error.html", error_code=404), 404
+
     this_framework = this_service.get_framework_with_name(framework_name)
+
+    # If the framework does not exist -> 404
+    if this_framework is None:
+        return render_template("error.html", error_code=404), 404
+
     return render_template("framework.html", framework=this_framework)
 
 
@@ -59,7 +75,17 @@ def datasets():
 @app.route("/services/<service_name>/datasets/<dataset_name>")
 def dataset(service_name, dataset_name):
     this_service = app.services_manager.get_service_with_name(service_name)
+
+    # If the service does not exist -> 404
+    if this_service is None:
+        return render_template("error.html", error_code=404), 404
+
     this_dataset = this_service.get_dataset_with_name(dataset_name)
+
+    # If the dataset does not exist -> 404
+    if this_dataset is None:
+        return render_template("error.html", error_code=404), 404
+
     return render_template("dataset.html", dataset=this_dataset,
                            data=this_dataset.get_data_from_datasource())
 

@@ -29,22 +29,22 @@ bootstrap = Bootstrap(app)
 
 @app.errorhandler(401)
 def error_page(error):
-    return render_template("error.html", error=error), 401
+    return render_template("error.html", error_code=error.code), 401
 
 
 @app.errorhandler(403)
 def error_page(error):
-    return render_template("error.html", error=error), 403
+    return render_template("error.html", error_code=error.code), 403
 
 
 @app.errorhandler(404)
 def error_page(error):
-    return render_template("error.html", error=error), 404
+    return render_template("error.html", error_code=error.code), 404
 
 
 @app.errorhandler(500)
 def error_page(error):
-    return render_template("error.html", error=error), 500
+    return render_template("error.html", error_code=error.code), 500
 
 
 from app.models import services_manager
