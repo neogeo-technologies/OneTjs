@@ -10,10 +10,27 @@ code_commune:
   reference_date:    2016-01-01
   start_date:        2016-12-31
   key_col:
-    name:            code
+    name:            code_com
     type:            https://www.w3.org/TR/xmlschema-2/#string
     length:          5
-    decimals:        0
+  bbox:
+    south:           48.83
+    north:           51.09
+    west:            1.38
+    east:            4.25
+code_dept:
+  uri:               http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_dept
+  organization:      Région Hauts-de-France
+  title:             Code département
+  abstract:          Découpage territorial au département. L'identifiant utilisé est le code INSEE du département.
+  documentation:     http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_dept.html
+  version:           2016
+  reference_date:    2016-01-01
+  start_date:        2016-12-31
+  key_col:
+    name:            code_dept
+    type:            https://www.w3.org/TR/xmlschema-2/#string
+    length:          3
   bbox:
     south:           48.83
     north:           51.09

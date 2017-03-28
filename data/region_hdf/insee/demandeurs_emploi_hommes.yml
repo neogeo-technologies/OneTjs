@@ -10,10 +10,11 @@ reference_date:    2011-01-01
 start_date:        2011-12-31
 activated:         yes
 cached:            no
-framework:
-  uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune
-  complete:        yes
-  relationship:    one
+frameworks:
+  code_commune:
+    uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune
+    complete:        yes
+    relationship:    one
 data_source:
   type:  csv
   path:  demandeurs_emploi_hommes.csv

@@ -103,9 +103,9 @@ class Service(object):
         logging.info("Service: {0} ({1})".format(self.name, "activated" if self.activated else "deactivated"))
         logging.info("- datapath: {0}".format(self.data_dir_path))
         for f in self.frameworks.items():
-            logging.info("- framework: {0} - {1}".format(f[1].title, f[0]))
+            logging.info(u"- framework: {0} - {1}".format(f[1].title, f[0]))
         for ds in self.datasets.items():
-            logging.info("- dataset: {0} - {1}".format(ds[1].title, ds[0]))
+            logging.info(u"- dataset: {0} - {1}".format(ds[1].title, ds[0]))
 
     # factory function for datasets
     def create_dataset_instance(self, dataset_yaml_file_path):
@@ -123,20 +123,14 @@ class Service(object):
             # Save the yaml file path
             dataset_dict["yaml_file_path"] = dataset_yaml_file_path
 
-            # try:
             # Set the reference of the framework using its uri
             data_source = dataset_dict["data_source"]
             data_source_type = data_source["type"]
-            framework_dict = dataset_dict.pop("framework")
-            framework = self.get_framework_with_uri(framework_dict["uri"])
-            if framework is None:
-                raise ValueError(
-                    "The framework with the uri {} declared in the following dataset config file "
-                    "has not been found: {}".format(framework_dict["uri"], dataset_yaml_file_path))
-            dataset_dict["framework"] = framework
-            dataset_dict["framework_uri"] = framework_dict["uri"]
-            dataset_dict["framework_complete"] = framework_dict["complete"]
-            dataset_dict["framework_relationship"] = framework_dict["relationship"]
+            frameworks_dict = dataset_dict.get("frameworks")
+            for framework_name, framework_dict in frameworks_dict.iteritems():
+                framework_uri = framework_dict["uri"]
+                framework = self.get_framework_with_uri(framework_uri)
+                framework_dict["framework"] = framework
 
         if data_source_type is None:
             raise ValueError(

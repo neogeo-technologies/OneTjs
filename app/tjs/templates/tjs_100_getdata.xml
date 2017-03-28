@@ -27,7 +27,7 @@
             <tjs:East>{{ framework.bbox["east"] }}</tjs:East>
             <tjs:West>{{ framework.bbox["west"] }}</tjs:West>
         </tjs:BoundingCoordinates>
-        <tjs:DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, dataset=dataset) }}"/>
+        <tjs:DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, framework=framework, dataset=dataset) }}"/>
         <tjs:Dataset>
             <tjs:DatasetURI>{{ dataset.uri }}</tjs:DatasetURI>
             <tjs:Organization>{{ dataset.organization }}</tjs:Organization>
@@ -38,7 +38,7 @@
 {% if dataset.documentation is not none %}
             <tjs:Documentation>{{ dataset.documentation }}</tjs:Documentation>
 {% endif %}
-            <tjs:DescribeDataRequest xlink:href="{{ get_describedata_url(serv=service, tjs_version=tjs_version, dataset=dataset) }}"/>
+            <tjs:DescribeDataRequest xlink:href="{{ get_describedata_url(serv=service, tjs_version=tjs_version, framework=framework, dataset=dataset) }}"/>
             <tjs:Columnset>
                 <!--Need a loop on all framework keys of the dataset?-->
                 <tjs:FrameworkKey complete="{% if dataset.framework_complete %}true{% else %}false{% endif %}" relationship="{{ dataset.framework_relationship }}">
@@ -53,7 +53,7 @@
                         <tjs:Values>
 {{ attribute.values }}
                         </tjs:Values>
-                        <tjs:GetDataRequest xlink:href="{{ get_getdata_url(serv=service, tjs_version=tjs_version, dataset=dataset, attribute=attribute) }}"/>
+                        <tjs:GetDataRequest xlink:href="{{ get_getdata_url(serv=service, tjs_version=tjs_version, framework=framework, dataset=dataset, attribute=attribute) }}"/>
                     </tjs:Column>
 {% endfor %}
                 </tjs:Attributes>

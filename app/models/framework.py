@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# TODO: make the framework - dataset relation a many to many one
-# - the dataset yaml file should be able to reference a list frameworks
-
 
 class Framework(object):
     """Framework represents a spatial framework in the OGC TJS terminology
@@ -20,7 +17,7 @@ class Framework(object):
         self.name = "default_framework_name"
         self.uri = None
         self.organization = None
-        self.tile = "Default framework title"
+        self.title = "Default framework title"
         self.abstract = "Default framework abstract"
         self.documentation = None
         self.version = None

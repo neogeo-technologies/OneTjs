@@ -17,9 +17,10 @@ class Dataset(object):
     def __init__(self, dataset_dict):
         # Default values
         self.uri = None
-        self.framework = None
-        self.framework_complete = False
-        self.framework_relationship = "many"
+        self.frameworks = None
+        # self.framework = None
+        # self.framework_complete = False
+        # self.framework_relationship = "many"
         self.data_source = {"type": None, "path": None, "subset": None}
         self.organization = None
         self.name = "default_dataset_name"
@@ -59,8 +60,8 @@ class Dataset(object):
 
         if not self.uri:
             raise ValueError("'uri' parameter not defined in service config file {0}".format(self.yaml_file_path))
-        if not self.framework:
-            raise ValueError("'framework' parameter not defined in service config file {0}".format(self.yaml_file_path))
+        if not self.frameworks:
+            raise ValueError("'frameworks' parameter not defined in service config file {0}".format(self.yaml_file_path))
 
     def check_data_source(self):
         raise NotImplementedError()
@@ -114,6 +115,8 @@ class CsvFileDataset(FileDataset):
 
     def get_data_from_datasource(self, attributes=None, framework=None):
 
+        # TODO: check if the framework is one of the frameworks configured for the dataset
+
         # TODO: the data type for each column should be specified in order to avoid wrong type inferance
         # example: insee code wrongly interpreted as integers
         # forcing datatypes with pandas: d = pandas.read_csv('foo.csv', dtype={'BAR': 'S10'})
@@ -123,11 +126,13 @@ class CsvFileDataset(FileDataset):
         else:
             attributes_names = [at.name for at in self.ds_attributes]
 
-        if framework:
-            key_col_name = framework.key_col["name"]
-        else:
-            # TODO: need improvement in case of n-n relation between datatsets and frameworks
-            key_col_name = self.framework.key_col["name"]
+        if not self.frameworks:
+            return None
+
+        if not framework:
+            framework = self.frameworks.values()[0]["framework"]
+
+        key_col_name = framework.key_col["name"]
 
         # TODO: add exception handling for data reading troubles
         data = pd.read_csv(self.data_source["path"], index_col=key_col_name)
@@ -146,6 +151,8 @@ class XlsFileDataset(FileDataset):
 
     def get_data_from_datasource(self, attributes=None, framework=None):
 
+        # TODO: check if the framework is one of the frameworks configured for the dataset
+
         # TODO: the data type for each column should be specified in order to avoid wrong type inferance
         # example: insee code wrongly interpreted as integers
         # forcing datatypes with pandas: d = pandas.read_csv('foo.csv', dtype={'BAR': 'S10'})
@@ -155,11 +162,13 @@ class XlsFileDataset(FileDataset):
         else:
             attributes_names = [at.name for at in self.ds_attributes]
 
-        if framework:
-            key_col_name = framework.key_col["name"]
-        else:
-            # TODO: need improvement in case of n-n relation between datatsets and frameworks
-            key_col_name = self.framework.key_col["name"]
+        if not self.frameworks:
+            return None
+
+        if not framework:
+            framework = self.frameworks.values()[0]["framework"]
+
+        key_col_name = framework.key_col["name"]
 
         # TODO: add exception handling for data reading troubles
         data = pd.read_excel(self.data_source["path"], index_col=key_col_name)
@@ -177,5 +186,7 @@ class SqlDataset(Dataset):
         pass
 
     def get_data_from_datasource(self, dataset_attributes, framework):
+
+        # TODO: check if the framework is one of the frameworks configured for the dataset
 
         pass

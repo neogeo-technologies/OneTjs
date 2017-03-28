@@ -413,8 +413,9 @@ def get_describedatasets_url(serv, tjs_version=None, language=None, framework=No
     if framework:
         args[u"frameworkuri"] = framework.uri
     if dataset:
-        args[u"frameworkuri"] = dataset.framework.uri
         args[u"dataseturi"] = dataset.uri
+        if not framework and dataset.frameworks:
+            args[u"frameworkuri"] = dataset.frameworks.values()[0]["uri"]
     if language:
         args[u"language"] = language
 
@@ -422,16 +423,19 @@ def get_describedatasets_url(serv, tjs_version=None, language=None, framework=No
 
 
 @app.template_global()
-def get_describedata_url(serv, tjs_version=None, language=None, dataset=None, attributes=None):
+def get_describedata_url(serv, tjs_version=None, language=None, framework=None, dataset=None, attributes=None):
     service_url = get_service_url(serv)
     args = dict()
     args[u"service"] = u"TJS"
     if tjs_version:
         args[u"version"] = tjs_version
     args[u"request"] = u"DescribeData"
+    if framework:
+        args[u"frameworkuri"] = framework.uri
     if dataset:
-        args[u"frameworkuri"] = dataset.framework.uri
         args[u"dataseturi"] = dataset.uri
+        if not framework and dataset.frameworks:
+            args[u"frameworkuri"] = dataset.frameworks.values()[0]["uri"]
     if attributes:
         args[u"attributes"] = ",".join([at.name for at in attributes])
     if language:
@@ -442,16 +446,19 @@ def get_describedata_url(serv, tjs_version=None, language=None, dataset=None, at
 
 # TODO: make sure this function works fine for more than one attribute
 @app.template_global()
-def get_getdata_url(serv, tjs_version=None, dataset=None, attribute=None):
+def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attribute=None):
     service_url = get_service_url(serv)
     args = dict()
     args[u"service"] = u"TJS"
     if tjs_version:
         args[u"version"] = tjs_version
     args[u"request"] = u"GetData"
+    if framework:
+        args[u"frameworkuri"] = framework.uri
     if dataset:
-        args[u"frameworkuri"] = dataset.framework.uri
         args[u"dataseturi"] = dataset.uri
+        if not framework and dataset.frameworks:
+            args[u"frameworkuri"] = dataset.frameworks.values()[0]["uri"]
     if attribute:
         args[u"attributes"] = attribute.name
 
