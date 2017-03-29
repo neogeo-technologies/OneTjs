@@ -30,7 +30,7 @@ class Service(object):
         self.languages = ["fr"]
         self.data_dir_path = None
         self.abs_data_dir_path = None
-        self.frameworks = {}
+        self.frameworks = {}     # keys of this dictionary are the frameworks uris
         self.datasets = {}
 
         self.update_service_info(**kwargs)
@@ -73,7 +73,7 @@ class Service(object):
                     for k, v in frameworks_dict.iteritems():
                         v["name"] = k
                         f = Framework(**v)
-                        self.frameworks[k] = f
+                        self.frameworks[f.uri] = f
                 except yaml.YAMLError as e:
                     logging.exception(e)
 
@@ -112,6 +112,7 @@ class Service(object):
         dataset_subclasses = [CsvFileDataset, XlsFileDataset, SqlDataset]
         dataset_subclass = None
         data_source_type = None
+        frameworks = None
 
         # Get the data source type
         dataset_dict = {}
@@ -126,11 +127,6 @@ class Service(object):
             # Set the reference of the framework using its uri
             data_source = dataset_dict["data_source"]
             data_source_type = data_source["type"]
-            frameworks_dict = dataset_dict.get("frameworks")
-            for framework_name, framework_dict in frameworks_dict.iteritems():
-                framework_uri = framework_dict["uri"]
-                framework = self.get_framework_with_uri(framework_uri)
-                framework_dict["framework"] = framework
 
         if data_source_type is None:
             raise ValueError(
@@ -143,7 +139,7 @@ class Service(object):
 
         # Instantiate the right class
         if dataset_subclass is not None:
-            return dataset_subclass(dataset_dict)
+            return dataset_subclass(self, dataset_dict)
 
     def get_datasets(self):
         return list(self.datasets.values())
@@ -160,12 +156,12 @@ class Service(object):
         return list(self.frameworks.values())
 
     def get_framework_with_uri(self, framework_uri):
-        for f in self.get_frameworks():
-            if f.uri == framework_uri:
-                return f
+        return self.frameworks.get(framework_uri, None)
 
     def get_framework_with_name(self, framework_name):
-        return self.frameworks[framework_name]
+        for f in self.get_frameworks():
+            if f.name == framework_name:
+                return f
 
     def __repr__(self):
         return u"%s(%r)" % (self.__class__, self.__dict__)

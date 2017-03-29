@@ -11,7 +11,7 @@ start_date:        2011-12-31
 activated:         yes
 cached:            no
 frameworks:
-  code_commune:
+  - name:            code_commune
     uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune
     complete:        yes
     relationship:    one

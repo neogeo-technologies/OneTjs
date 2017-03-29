@@ -409,7 +409,7 @@ def get_describedatasets_url(serv, tjs_version=None, language=None, framework=No
     if dataset:
         args[u"dataseturi"] = dataset.uri
         if not framework and dataset.frameworks:
-            args[u"frameworkuri"] = dataset.frameworks.values()[0]["uri"]
+            args[u"frameworkuri"] = dataset.get_one_framework().uri
     if language:
         args[u"language"] = language
 
@@ -429,7 +429,7 @@ def get_describedata_url(serv, tjs_version=None, language=None, framework=None, 
     if dataset:
         args[u"dataseturi"] = dataset.uri
         if not framework and dataset.frameworks:
-            args[u"frameworkuri"] = dataset.frameworks.values()[0]["uri"]
+            args[u"frameworkuri"] = dataset.get_one_framework().uri
     if attributes:
         args[u"attributes"] = ",".join([at.name for at in attributes])
     if language:
@@ -452,7 +452,7 @@ def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attrib
     if dataset:
         args[u"dataseturi"] = dataset.uri
         if not framework and dataset.frameworks:
-            args[u"frameworkuri"] = dataset.frameworks.values()[0]["uri"]
+            args[u"frameworkuri"] = dataset.get_one_framework().uri
     if attribute:
         args[u"attributes"] = attribute.name
 

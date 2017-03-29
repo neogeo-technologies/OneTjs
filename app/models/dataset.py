@@ -14,13 +14,12 @@ class Dataset(object):
 
     DATA_SOURCE_TYPE = None
 
-    def __init__(self, dataset_dict):
+    def __init__(self, service, dataset_dict):
         # Default values
         self.uri = None
-        self.frameworks = None
-        # self.framework = None
-        # self.framework_complete = False
-        # self.framework_relationship = "many"
+        self.frameworks = {}
+        self.frameworks_complete = {}
+        self.frameworks_relationship = {}
         self.data_source = {"type": None, "path": None, "subset": None}
         self.organization = None
         self.name = "default_dataset_name"
@@ -46,8 +45,28 @@ class Dataset(object):
                 "'attributes' parameter not defined in dataset config file {0}".format(self.yaml_file_path))
             logging.exception(e)
 
+        # Get the frameworks info
+        frameworks_relations = {}
+        try:
+            frameworks_relations = dataset_dict.pop("frameworks")
+        except KeyError as e:
+            logging.error(
+                "'frameworks' parameter not defined in dataset config file {0}".format(self.yaml_file_path))
+            logging.exception(e)
+
         # Update the dataset object properties
         self.__dict__.update(dataset_dict)
+
+        # Get the frameworks info
+        for framework_relation in frameworks_relations:
+            framework_uri = framework_relation["uri"]
+            framework = service.get_framework_with_uri(framework_uri)
+            framework_complete = framework_relation["complete"]
+            framework_relationship = framework_relation["relationship"]
+
+            self.frameworks["uri"] = framework
+            self.frameworks_complete["uri"] = framework_complete
+            self.frameworks_relationship["uri"] = framework_relationship
 
         # Create the DatasetAttribute instances and add them to the ds_attributes list proprety of the dataset
         for at_dict in dataset_attributes_dicts:
@@ -71,14 +90,38 @@ class Dataset(object):
             if at.name == attribute_name:
                 return at
 
+    def get_frameworks(self):
+        return list(self.frameworks.values())
+
+    def get_one_framework(self):
+        frameworks = self.get_frameworks()
+        if frameworks:
+            return frameworks[0]
+        else:
+            return None
+
+    def get_framework_with_name(self, framework_name):
+        for f in self.get_frameworks():
+            if f.name == framework_name:
+                return f
+
+    def get_framework_with_uri(self, framework_uri):
+        return self.frameworks.get(framework_uri, None)
+
+    def get_framework_relationship_info(self, framework_uri):
+        return self.frameworks_relationship.get(framework_uri, None)
+
+    def get_framework_complete_info(self, framework_uri):
+        return self.frameworks_complete.get(framework_uri, None)
+
     def __repr__(self):
         return u"%s(%r)" % (self.__class__, self.__dict__)
 
 
 class FileDataset(Dataset):
 
-    def __init__(self, dataset_dict):
-        super(FileDataset, self).__init__(dataset_dict)
+    def __init__(self, service, dataset_dict):
+        super(FileDataset, self).__init__(service, dataset_dict)
 
     def check_data_source(self):
         data_source_found = False
@@ -107,8 +150,8 @@ class FileDataset(Dataset):
 class CsvFileDataset(FileDataset):
     DATA_SOURCE_TYPE = "csv"
 
-    def __init__(self, dataset_dict):
-        super(CsvFileDataset, self).__init__(dataset_dict)
+    def __init__(self, service, dataset_dict):
+        super(CsvFileDataset, self).__init__(service, dataset_dict)
 
     def check_data_source(self):
         super(CsvFileDataset, self).check_data_source()
@@ -130,7 +173,7 @@ class CsvFileDataset(FileDataset):
             return None
 
         if not framework:
-            framework = self.frameworks.values()[0]["framework"]
+            framework = self.get_one_framework()
 
         key_col_name = framework.key_col["name"]
 
@@ -143,8 +186,8 @@ class CsvFileDataset(FileDataset):
 class XlsFileDataset(FileDataset):
     DATA_SOURCE_TYPE = "xls"
 
-    def __init__(self, dataset_dict):
-        super(XlsFileDataset, self).__init__(dataset_dict)
+    def __init__(self, service, dataset_dict):
+        super(XlsFileDataset, self).__init__(service, dataset_dict)
 
     def check_data_source(self):
         super(XlsFileDataset, self).check_data_source()
@@ -166,7 +209,7 @@ class XlsFileDataset(FileDataset):
             return None
 
         if not framework:
-            framework = self.frameworks.values()[0]["framework"]
+            framework = self.get_one_framework()
 
         key_col_name = framework.key_col["name"]
 
@@ -179,8 +222,8 @@ class XlsFileDataset(FileDataset):
 class SqlDataset(Dataset):
     DATA_SOURCE_TYPE = "sql"
 
-    def __init__(self, dataset_dict):
-        super(SqlDataset, self).__init__(dataset_dict)
+    def __init__(self, service, dataset_dict):
+        super(SqlDataset, self).__init__(service, dataset_dict)
 
     def check_data_source(self):
         pass
