@@ -87,7 +87,7 @@ def dataset(service_name, dataset_name):
         return render_template("error.html", error_code=404), 404
 
     return render_template("dataset.html", dataset=this_dataset,
-                           data=this_dataset.get_data_from_datasource())
+                           data=this_dataset.get_data())
 
 
 @app.template_global()

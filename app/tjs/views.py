@@ -270,7 +270,7 @@ def get_data(serv, args):
     # TODO: manage the complete set of operations parameters declared in the TJS specification
 
     # Create a pandas data frame from the dataset datasource
-    pd_dataframe = dtst.get_data_from_datasource(attributes=dtst_attributes, framework=frwk)
+    pd_dataframe = dtst.get_data(attributes=dtst_attributes, framework=frwk)
 
     # TODO: handle correctly empty pd_dataframe (None for example)
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,

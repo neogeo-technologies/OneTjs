@@ -80,7 +80,8 @@ class Dataset(object):
         if not self.uri:
             raise ValueError("'uri' parameter not defined in service config file {0}".format(self.yaml_file_path))
         if not self.frameworks:
-            raise ValueError("'frameworks' parameter not defined in service config file {0}".format(self.yaml_file_path))
+            raise ValueError("'frameworks' parameter not defined in service config file {0}".format(
+                self.yaml_file_path))
 
     def check_data_source(self):
         raise NotImplementedError()
@@ -113,6 +114,37 @@ class Dataset(object):
 
     def get_framework_complete_info(self, framework_uri):
         return self.frameworks_complete.get(framework_uri, None)
+
+    def get_data(self, attributes=None, framework=None):
+
+        # TODO: check if the framework is one of the frameworks configured for the dataset
+
+        # TODO: the data type for each column should be specified in order to avoid wrong type inferance
+        # example: insee code wrongly interpreted as integers
+        # forcing datatypes with pandas: d = pandas.read_csv('foo.csv', dtype={'BAR': 'S10'})
+
+        if attributes:
+            attributes_names = [at.name for at in attributes]
+            attributes_types = []
+        else:
+            attributes_names = [at.name for at in self.ds_attributes]
+            attributes_types = []
+
+        if not self.frameworks:
+            return None
+
+        if not framework:
+            framework = self.get_one_framework()
+
+        key_col_name = framework.key_col["name"]
+        key_col_type = None
+
+        data = self._get_data(attributes_names, attributes_types, key_col_name, key_col_type)
+
+        return data
+
+    def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
+        pass
 
     def __repr__(self):
         return u"%s(%r)" % (self.__class__, self.__dict__)
@@ -156,27 +188,7 @@ class CsvFileDataset(FileDataset):
     def check_data_source(self):
         super(CsvFileDataset, self).check_data_source()
 
-    def get_data_from_datasource(self, attributes=None, framework=None):
-
-        # TODO: check if the framework is one of the frameworks configured for the dataset
-
-        # TODO: the data type for each column should be specified in order to avoid wrong type inferance
-        # example: insee code wrongly interpreted as integers
-        # forcing datatypes with pandas: d = pandas.read_csv('foo.csv', dtype={'BAR': 'S10'})
-
-        if attributes:
-            attributes_names = [at.name for at in attributes]
-        else:
-            attributes_names = [at.name for at in self.ds_attributes]
-
-        if not self.frameworks:
-            return None
-
-        if not framework:
-            framework = self.get_one_framework()
-
-        key_col_name = framework.key_col["name"]
-
+    def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
         # TODO: add exception handling for data reading troubles
         data = pd.read_csv(self.data_source["path"], index_col=key_col_name)
         dataframe = pd.DataFrame(data, columns=attributes_names)
@@ -192,27 +204,7 @@ class XlsFileDataset(FileDataset):
     def check_data_source(self):
         super(XlsFileDataset, self).check_data_source()
 
-    def get_data_from_datasource(self, attributes=None, framework=None):
-
-        # TODO: check if the framework is one of the frameworks configured for the dataset
-
-        # TODO: the data type for each column should be specified in order to avoid wrong type inferance
-        # example: insee code wrongly interpreted as integers
-        # forcing datatypes with pandas: d = pandas.read_csv('foo.csv', dtype={'BAR': 'S10'})
-
-        if attributes:
-            attributes_names = [at.name for at in attributes]
-        else:
-            attributes_names = [at.name for at in self.ds_attributes]
-
-        if not self.frameworks:
-            return None
-
-        if not framework:
-            framework = self.get_one_framework()
-
-        key_col_name = framework.key_col["name"]
-
+    def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
         # TODO: add exception handling for data reading troubles
         data = pd.read_excel(self.data_source["path"], index_col=key_col_name)
         dataframe = pd.DataFrame(data, columns=attributes_names)
@@ -228,8 +220,5 @@ class SqlDataset(Dataset):
     def check_data_source(self):
         pass
 
-    def get_data_from_datasource(self, dataset_attributes, framework):
-
-        # TODO: check if the framework is one of the frameworks configured for the dataset
-
+    def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
         pass
