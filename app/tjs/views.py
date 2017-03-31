@@ -6,8 +6,12 @@ from flask import request
 from flask import redirect
 from flask import Blueprint
 
-from werkzeug.urls import url_encode
-from werkzeug.urls import url_join
+try:
+    import urlparse
+    from urllib import urlencode
+except:  # For Python 3
+    import urllib.parse as urlparse
+    from urllib.parse import urlencode
 
 from distutils.version import StrictVersion as Version
 from collections import OrderedDict
@@ -267,7 +271,6 @@ def get_data(serv, args):
         raise OwsCommonException(exceptions=exceptions)
 
     # Retrieve the Framework record
-    # TODO: handle exception (can't retrieve Framework record)
     frwk = serv.get_framework_with_uri(arg_framework_uri)
     if frwk is None:
         exceptions.append({
@@ -278,8 +281,6 @@ def get_data(serv, args):
         raise OwsCommonException(exceptions=exceptions)
 
     # Retrieve the Dataset record
-    # TODO: handle exception (can't retrieve Dataset record)
-    # dtst = Dataset.query.filter(Dataset.uri == arg_dataset_uri).first()
     dtst = serv.get_dataset_with_uri(arg_dataset_uri)
     if dtst is None:
         exceptions.append({
@@ -380,7 +381,8 @@ class OwsCommonException(Exception):
 @app.template_global()
 def get_service_url(serv):
     app_path = request.url_root
-    return url_join(app_path, "tjs/{}".format(serv.name))
+    service_url = urlparse.urljoin(app_path, "/".join(("tjs", serv.name)))
+    return service_url
 
 
 @app.errorhandler(OwsCommonException)
@@ -397,22 +399,32 @@ def handle_tjs_exception(error):
     return response
 
 
-# TODO: create a more generic build request function
+def build_tjs_url(service, args):
+    service_url = get_service_url(service)
+
+    url_parts = list(urlparse.urlparse(service_url))
+    query = OrderedDict(urlparse.parse_qsl(url_parts[4]))
+    query.update(args)
+    url_parts[4] = urlencode(query)
+
+    tjs_url = urlparse.urlunparse(url_parts)
+    return tjs_url
+
+
 @app.template_global()
 def get_getcapabilities_url(serv, language=None):
-    service_url = get_service_url(serv)
     args = OrderedDict()
     args[u"service"] = u"TJS"
     args[u"request"] = u"GetCapabilities"
     if language:
         args[u"language"] = language
 
-    return "{}?{}".format(service_url, url_encode(args))
+    url = build_tjs_url(serv, args)
+    return url
 
 
 @app.template_global()
 def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=None):
-    service_url = get_service_url(serv)
     args = OrderedDict()
     args[u"service"] = u"TJS"
     if tjs_version:
@@ -423,12 +435,12 @@ def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=
     if language:
         args[u"language"] = language
 
-    return "{}?{}".format(service_url, url_encode(args))
+    url = build_tjs_url(serv, args)
+    return url
 
 
 @app.template_global()
 def get_describedatasets_url(serv, tjs_version=None, language=None, framework=None, dataset=None):
-    service_url = get_service_url(serv)
     args = OrderedDict()
     args[u"service"] = u"TJS"
     if tjs_version:
@@ -443,12 +455,12 @@ def get_describedatasets_url(serv, tjs_version=None, language=None, framework=No
     if language:
         args[u"language"] = language
 
-    return "{}?{}".format(service_url, url_encode(args))
+    url = build_tjs_url(serv, args)
+    return url
 
 
 @app.template_global()
 def get_describedata_url(serv, tjs_version=None, language=None, framework=None, dataset=None, attributes=None):
-    service_url = get_service_url(serv)
     args = OrderedDict()
     args[u"service"] = u"TJS"
     if tjs_version:
@@ -465,13 +477,13 @@ def get_describedata_url(serv, tjs_version=None, language=None, framework=None, 
     if language:
         args[u"language"] = language
 
-    return "{}?{}".format(service_url, url_encode(args))
+    url = build_tjs_url(serv, args)
+    return url
 
 
 # TODO: make sure this function works fine for more than one attribute
 @app.template_global()
 def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attribute=None):
-    service_url = get_service_url(serv)
     args = OrderedDict()
     args[u"service"] = u"TJS"
     if tjs_version:
@@ -486,4 +498,5 @@ def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attrib
     if attribute:
         args[u"attributes"] = attribute.name
 
-    return "{}?{}".format(service_url, url_encode(args))
+    url = build_tjs_url(serv, args)
+    return url
