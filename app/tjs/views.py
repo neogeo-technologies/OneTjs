@@ -9,9 +9,11 @@ from flask import Blueprint
 from werkzeug.urls import url_encode
 from werkzeug.urls import url_join
 
+from distutils.version import StrictVersion as Version
+
 from app import app
 
-SUPPORTED_VERSIONS = ["1.0"]
+SUPPORTED_VERSIONS = (Version("1.0"),)
 
 tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
 
@@ -123,24 +125,54 @@ def get_capabilities(serv, args):
     exceptions = []
 
     # TODO: manage the complete set of operations parameters declared in the TJS specification
-    arg_accept_versions = args.get('AcceptVersions')
-    arg_sections = args.get('Sections')
-    arg_accept_formats = args.get('AcceptFormats')
+    arg_accept_versions = args.get('acceptversions')
+    arg_sections = args.get('sections')
+    arg_accept_formats = args.get('acceptformats')
     arg_language = args.get('language')
-    arg_update_sequence = args.get('updateSequence')
+    arg_update_sequence = args.get('updatesequence')
 
-    # TODO: need a real version negociation process
-    tjs_version = "1.0"
-    template_name = "tjs_100_getcapabilities.xml"
+    tjs_version = None
 
-    # TODO: handle language parameter
-    arg_language = serv.languages[0]
+    if arg_accept_versions:
+        accepted_and_supported_versions = []
 
-    response_content = render_template(template_name, service=serv, tjs_version=tjs_version)
-    response = make_response(response_content)
-    response.headers["Content-Type"] = "application/xml"
+        for vrs in arg_accept_versions.split(","):
+            try:
+                strict_vrs = Version(vrs)
+                for supported_vrs in SUPPORTED_VERSIONS:
+                    if strict_vrs == supported_vrs:
+                        accepted_and_supported_versions.append(strict_vrs)
+            except ValueError as e:
+                exceptions.append({
+                    "code": u"VersionNegotiationFailed",
+                    "text": u"Oh là là ! "
+                            u"{}".format(e.message),
+                    "locator": u"acceptversions"})
 
-    return response
+        if accepted_and_supported_versions:
+            tjs_version = str(accepted_and_supported_versions[0])
+            print(tjs_version)
+        else:
+            exceptions.append({
+                "code": u"VersionNegotiationFailed",
+                "text": u"Oh là là ! "
+                        u"The 'acceptversions' does not include any version supported by this server."
+                        u"Supported versions are: {}".format(",".join([str(vrs) for vrs in SUPPORTED_VERSIONS])),
+                "locator": u"acceptversions"})
+
+    if tjs_version == "1.0":
+        template_name = "tjs_100_getcapabilities.xml"
+
+        # TODO: handle language parameter
+        arg_language = serv.languages[0]
+
+        response_content = render_template(template_name, service=serv, tjs_version=tjs_version)
+        response = make_response(response_content)
+        response.headers["Content-Type"] = "application/xml"
+
+        return response
+
+    raise OwsCommonException(exceptions=exceptions)
 
 
 def describe_frameworks(serv, args):
