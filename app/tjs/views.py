@@ -160,6 +160,8 @@ def get_capabilities(serv, args):
                         u"The 'acceptversions' does not include any version supported by this server."
                         u"Supported versions are: {}".format(",".join([str(vrs) for vrs in SUPPORTED_VERSIONS])),
                 "locator": u"acceptversions"})
+    else:
+        tjs_version = str(SUPPORTED_VERSIONS[0])
 
     if tjs_version == "1.0":
         template_name = "tjs_100_getcapabilities.xml"
