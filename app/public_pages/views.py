@@ -88,13 +88,3 @@ def dataset(service_name, dataset_name):
 
     return render_template("dataset.html", dataset=this_dataset,
                            data=this_dataset.get_data())
-
-
-@app.template_global()
-def modify_query(**new_values):
-    args = request.args.copy()
-
-    for key, value in new_values.items():
-        args[key] = value
-
-    return "{}?{}".format(request.path, url_encode(args))

@@ -397,16 +397,6 @@ def handle_tjs_exception(error):
     return response
 
 
-@app.template_global()
-def modify_query(**new_values):
-    args = request.args.copy()
-
-    for key, value in new_values.items():
-        args[key] = value
-
-    return "{}?{}".format(request.path, url_encode(args))
-
-
 # TODO: create a more generic build request function
 @app.template_global()
 def get_getcapabilities_url(serv, language=None):
