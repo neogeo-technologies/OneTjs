@@ -3,6 +3,7 @@
 from flask import render_template
 from flask import make_response
 from flask import request
+from flask import redirect
 from flask import Blueprint
 
 from werkzeug.urls import url_encode
@@ -30,6 +31,11 @@ def tjs_operation(service_name):
     # If the service does not exist or is not activated -> 404
     if service is None or not service.activated:
         return render_template("error.html", error_code=404), 404
+
+    # if no parameters, redirect to getcapabilities request
+    if len(args) == 0:
+        getcap_url = get_getcapabilities_url(serv=service)
+        return redirect(getcap_url, code=302)
 
     # Missing service parameter
     if not arg_service:
