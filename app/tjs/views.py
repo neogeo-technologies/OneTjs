@@ -10,6 +10,7 @@ from werkzeug.urls import url_encode
 from werkzeug.urls import url_join
 
 from distutils.version import StrictVersion as Version
+from collections import OrderedDict
 
 from app import app
 
@@ -405,11 +406,10 @@ def modify_query(**new_values):
 
 
 # TODO: create a more generic build request function
-# TODO: use ordereddict for request parameters
 @app.template_global()
 def get_getcapabilities_url(serv, language=None):
     service_url = get_service_url(serv)
-    args = dict()
+    args = OrderedDict()
     args[u"service"] = u"TJS"
     args[u"request"] = u"GetCapabilities"
     if language:
@@ -421,11 +421,11 @@ def get_getcapabilities_url(serv, language=None):
 @app.template_global()
 def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=None):
     service_url = get_service_url(serv)
-    args = dict()
+    args = OrderedDict()
     args[u"service"] = u"TJS"
-    args[u"request"] = u"DescribeFrameworks"
     if tjs_version:
         args[u"version"] = tjs_version
+    args[u"request"] = u"DescribeFrameworks"
     if framework:
         args[u"frameworkuri"] = framework.uri
     if language:
@@ -437,11 +437,11 @@ def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=
 @app.template_global()
 def get_describedatasets_url(serv, tjs_version=None, language=None, framework=None, dataset=None):
     service_url = get_service_url(serv)
-    args = dict()
+    args = OrderedDict()
     args[u"service"] = u"TJS"
-    args[u"request"] = u"DescribeDatasets"
     if tjs_version:
         args[u"version"] = tjs_version
+    args[u"request"] = u"DescribeDatasets"
     if framework:
         args[u"frameworkuri"] = framework.uri
     if dataset:
@@ -457,7 +457,7 @@ def get_describedatasets_url(serv, tjs_version=None, language=None, framework=No
 @app.template_global()
 def get_describedata_url(serv, tjs_version=None, language=None, framework=None, dataset=None, attributes=None):
     service_url = get_service_url(serv)
-    args = dict()
+    args = OrderedDict()
     args[u"service"] = u"TJS"
     if tjs_version:
         args[u"version"] = tjs_version
@@ -480,7 +480,7 @@ def get_describedata_url(serv, tjs_version=None, language=None, framework=None, 
 @app.template_global()
 def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attribute=None):
     service_url = get_service_url(serv)
-    args = dict()
+    args = OrderedDict()
     args[u"service"] = u"TJS"
     if tjs_version:
         args[u"version"] = tjs_version
