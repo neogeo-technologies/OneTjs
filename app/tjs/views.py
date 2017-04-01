@@ -129,12 +129,9 @@ def get_normalized_args():
 def get_capabilities(serv, args):
     exceptions = []
 
-    # TODO: manage the complete set of operations parameters declared in the TJS specification
     arg_accept_versions = args.get('acceptversions')
-    arg_sections = args.get('sections')
-    arg_accept_formats = args.get('acceptformats')
+    # TODO: handle language parameter
     arg_language = args.get('language')
-    arg_update_sequence = args.get('updatesequence')
 
     tjs_version = None
 
@@ -186,6 +183,7 @@ def describe_frameworks(serv, args):
     exceptions = []
 
     arg_version = args.get('version')
+    # TODO: handle language parameter
     arg_language = args.get('language')
     arg_framework_uri = args.get('frameworkuri')
 
@@ -224,12 +222,16 @@ def get_data(serv, args):
     exceptions = []
 
     arg_version = args.get('version')
+    # TODO: handle language parameter
     arg_language = args.get('language')
     arg_framework_uri = args.get('frameworkuri')
     arg_dataset_uri = args.get('dataseturi')
     arg_attributes = args.get('attributes')
+    # TODO: handle linkagekeys parameter
     arg_linkage_keys = args.get('linkagekeys')
+    # TODO: handle xsl parameter
     arg_xsl = args.get('xsl')
+    # TODO: handle aid parameter
     arg_aid = args.get('aid')
 
     # Get the jinja template corresponding to the TJS specifications version
@@ -309,7 +311,7 @@ def get_data(serv, args):
     else:
         dtst_attributes = dtst.ds_attributes
 
-    # TODO: manage the complete set of operations parameters declared in the TJS specification
+    # TODO: handle the complete set of parameters declared in the TJS specification
 
     # Create a pandas data frame from the dataset datasource
     pd_dataframe = dtst.get_data(attributes=dtst_attributes, framework=frwk)
