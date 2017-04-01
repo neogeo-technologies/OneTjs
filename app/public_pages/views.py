@@ -27,7 +27,6 @@ def index():
     return render_template("index.html", init_success=app.init_success)
 
 
-# TODO: do we need to pass app.config?
 @app.route("/services/")
 def services():
     return render_template("services_list.html", services=app.services_manager.get_services())
