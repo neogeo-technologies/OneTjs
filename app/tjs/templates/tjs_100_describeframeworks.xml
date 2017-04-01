@@ -19,7 +19,7 @@
 {% if framework.documentation %}  <tjs:Documentation>{{ framework.documentation }}</tjs:Documentation>{% endif %}
   <tjs:FrameworkKey>
    <tjs:Column name="{{ framework.key_col.name }}" type="{{ framework.key_col.type }}"
-           length="{{ framework.key_col.length }}" decimals="{{ framework.key_col.decimals }}" />
+           {% if framework.key_col.length %} length="{{ framework.key_col.length }}"{% endif %}{% if framework.key_col.decimals %} decimals="{{ framework.key_col.decimals }}"{% endif %} />
   </tjs:FrameworkKey>
   <tjs:BoundingCoordinates>
    <tjs:North>{{ framework.bbox.north }}</tjs:North>

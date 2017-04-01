@@ -24,7 +24,6 @@ attributes:
     abstract:        Nombre de demandeurs d'emploi dans les Hauts-de-France chez les hommes en 2011
     type:            https://www.w3.org/TR/xmlschema-2/#integer
     length:          8
-    decimals:        0
     purpose:         Attribute
     values:          Count
     uom_short_form:  personnes

@@ -19,7 +19,7 @@
         <tjs:Documentation>{{ framework.documentation }}</tjs:Documentation>
 {% endif %}
         <tjs:FrameworkKey>
-            <tjs:Column name="{{ framework.key_col['name']}}" type="{{ framework.key_col['type'] }}"{% if framework.key_col['length'] %} length="{{ framework.key_col['length'] }}"{% endif %}{% if framework.key_col['decimals'] %} decimals="{{ framework.key_col['decimals'] }}"{% endif %} />
+            <tjs:Column name="{{ framework.key_col.name}}" type="{{ framework.key_col.type }}"{% if framework.key_col.length %} length="{{ framework.key_col.length }}"{% endif %}{% if framework.key_col.decimals %} decimals="{{ framework.key_col.decimals }}"{% endif %} />
         </tjs:FrameworkKey>
         <tjs:BoundingCoordinates>
             <tjs:North>{{ framework.bbox["north"] }}</tjs:North>
@@ -42,11 +42,11 @@
             <tjs:Columnset>
                 <!--Need a loop on all framework keys of the dataset?-->
                 <tjs:FrameworkKey complete="{% if dataset.framework_complete %}true{% else %}false{% endif %}" relationship="{{ dataset.framework_relationship }}">
-                    <tjs:Column name="{{ framework.key_col['name']}}" type="{{ framework.key_col['type'] }}" length="{{ framework.key_col['length'] }}" decimals="{{ framework.key_col['decimals'] }}" />
+                    <tjs:Column name="{{ framework.key_col.name}}" type="{{ framework.key_col.type }}"{% if framework.key_col.length %} length="{{ framework.key_col.length }}"{% endif %}{% if framework.key_col.decimals %} decimals="{{ framework.key_col.decimals }}"{% endif %} />
                 </tjs:FrameworkKey>
                 <tjs:Attributes>
 {% for attribute in attributes %}
-                    <tjs:Column name="{{ attribute.name }}" type="http://www.w3.org/TR/xmlschema-2/#integer" length="10" decimals="0" purpose="Attribute">
+                    <tjs:Column name="{{ attribute.name }}" type="{{ attribute.type }}"{% if attribute.length %} length="{{ attribute.length }}"{% endif %}{% if attribute.decimals %} decimals="{{ attribute.decimals }}"{% endif %} purpose="{{ attribute.purpose }}">
                         <tjs:Title>{{ attribute.title }}</tjs:Title>
                         <tjs:Abstract>{{ attribute.abstract }}</tjs:Abstract>
                         <!--Documentation>{{ attribute.documentation }}</Documentation-->
