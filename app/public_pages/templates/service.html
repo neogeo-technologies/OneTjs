@@ -98,6 +98,10 @@
             </tr>
 {% for dataset in datasets %}
             <tr>
+                <td><a href="{{ get_describedatasets_url(serv=service, tjs_version=service.tjs_versions[-1], dataset=dataset) }}">
+                    DescribeDatasets for {{ dataset.name }} dataset</a></td>
+            </tr>
+            <tr>
                 <td><a href="{{ get_getdata_url(serv=service, tjs_version=service.tjs_versions[-1], dataset=dataset) }}">
                     GetData for {{ dataset.name }} dataset</a></td>
             </tr>

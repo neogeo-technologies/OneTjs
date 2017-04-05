@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<tjs:FrameworkDescriptions
+<tjs:DatasetDescriptions
         service="TJS"
         version="1.0"
         capabilities="{{ get_service_url(serv=service) }}"
@@ -8,8 +8,8 @@
         xmlns:tjs="http://www.opengis.net/tjs/1.0"
         xmlns:ows="http://www.opengis.net/ows/1.1"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.opengis.net/tjs/1.0 http://schemas.opengis.net/tjs/1.0/tjsDescribeFrameworks_response.xsd">
-{% for framework in frameworks %}
+        xsi:schemaLocation="http://www.opengis.net/tjs/1.0 http://schemas.opengis.net/tjs/1.0/tjsDescribeDatasets_response.xsd">
+{% set framework = service.get_framework_with_uri(framework_uri) %}
  <tjs:Framework>
   <tjs:FrameworkURI>{{ framework.uri }}</tjs:FrameworkURI>
   <tjs:Organization>{{ framework.organization }}</tjs:Organization>
@@ -29,6 +29,22 @@
    <tjs:West>-{{ framework.bbox.west }}</tjs:West>
   </tjs:BoundingCoordinates>
   <tjs:DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, language=language, framework=framework) }}"/>
- </tjs:Framework>
+{% if dataset_uri %}
+    {% set datasets = [service.get_dataset_with_uri(dataset_uri)] %}
+{% else %}
+    {% set datasets = framework.datasets %}
+{% endif %}
+{% for dataset in datasets %}
+  <tjs:Dataset>
+   <tjs:DatasetURI>{{ dataset.uri }}</tjs:DatasetURI>
+   <tjs:Organization>{{ dataset.organization }}</tjs:Organization>
+   <tjs:Title>{{ dataset.name }}</tjs:Title>
+   <tjs:Abstract>{{ dataset.abstract }}</tjs:Abstract>
+   <tjs:ReferenceDate {% if dataset.start_date %}startDate="{{ dataset.start_date }}"{% endif %}>{{ dataset.reference_date }}</tjs:ReferenceDate>
+   <tjs:Version>{{ dataset.version }}</tjs:Version>
+{% if dataset.documentation %}   <tjs:Documentation></tjs:Documentation>{% endif %}
+   <tjs:DescribeDataRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, language=language, framework=framework, dataset=dataset) }}"/>
+  </tjs:Dataset>
 {% endfor %}
-</tjs:FrameworkDescriptions>
+ </tjs:Framework>
+</tjs:DatasetDescriptions>

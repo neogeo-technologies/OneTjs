@@ -25,6 +25,15 @@ tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
 
 @tjs_blueprint.route("/tjs/<service_name>", methods=['GET', 'POST'])
 def tjs_operation(service_name):
+    """
+    Function responding to every TJS request and calling specialized functions for each TJS operation.
+    This function checks the validity of the more common TJS parameters.
+
+    :param serv:    Service object
+    :param args:    parameters of the TJS request
+    :return:        request response
+    """
+
     exceptions = []
     right_service_type = True
 
@@ -83,7 +92,7 @@ def tjs_operation(service_name):
 
         # DescribeDatasets
         elif arg_operation.lower() == "describedatasets":
-            return get_data(service, args)
+            return describe_datasets(service, args)
 
         # DescribeData
         elif arg_operation.lower() == "describedata":
@@ -117,6 +126,14 @@ def tjs_operation(service_name):
 
 
 def get_normalized_args():
+    """
+    Function converting parameter names to lowercase strings
+
+    :param serv:    Service object
+    :param args:    parameters of the TJS request
+    :return:        request response
+    """
+
     normalized_args = {}
     args = request.args
 
@@ -127,6 +144,14 @@ def get_normalized_args():
 
 
 def get_capabilities(serv, args):
+    """
+    Function used to answer to GetCapabilities requests
+
+    :param serv:    Service object
+    :param args:    parameters of the TJS request
+    :return:        request response
+    """
+
     exceptions = []
 
     arg_accept_versions = args.get('acceptversions')
@@ -180,6 +205,14 @@ def get_capabilities(serv, args):
 
 
 def describe_frameworks(serv, args):
+    """
+    Function used to answer to DescribeFrameworks requests
+
+    :param serv:    Service object
+    :param args:    parameters of the TJS request
+    :return:        request response
+    """
+
     exceptions = []
 
     arg_version = args.get('version')
@@ -218,7 +251,94 @@ def describe_frameworks(serv, args):
     return response
 
 
+def describe_datasets(serv, args):
+    """
+    Function used to answer to DescribeDatasets requests
+
+    :param serv:    Service object
+    :param args:    parameters of the TJS request
+    :return:        request response
+    """
+
+    exceptions = []
+
+    arg_version = args.get('version')
+    # TODO: handle language parameter
+    arg_language = args.get('language')
+    arg_framework_uri = args.get('frameworkuri')
+    arg_dataset_uri = args.get('dataseturi')
+
+    # TODO: handle language parameter
+    arg_language = serv.languages[0]
+
+    framework_uri = None
+    if arg_framework_uri:
+        framework_uris = [item.strip() for item in arg_framework_uri.split(",")]
+        if len(framework_uris) > 1:
+            # TJS exception
+            exceptions.append({
+                "code": u"InvalidParameterValue",
+                "text": u"Oh là là ! "
+                        u"The frameworkuri parameter of the DescribeDatasets operation can only contain one uri. ",
+                "locator": u"frameworkuri={}".format(arg_framework_uri)})
+
+            raise OwsCommonException(exceptions=exceptions)
+        framework_uri = framework_uris[0]
+
+    dataset_uri = None
+    if arg_dataset_uri:
+        dataset_uris = [item.strip() for item in arg_dataset_uri.split(",")]
+        if len(dataset_uris) > 1:
+            # TJS exception
+            exceptions.append({
+                "code": u"InvalidParameterValue",
+                "text": u"Oh là là ! "
+                        u"The dataseturi parameter of the DescribeDatasets operation can only contain one uri. ",
+                "locator": u"dataseturi={}".format(arg_dataset_uri)})
+
+            raise OwsCommonException(exceptions=exceptions)
+        dataset_uri = dataset_uris[0]
+
+    if not framework_uri and not dataset_uri:
+        exceptions.append({
+            "code": u"InvalidParameterValue",
+            "text": u"Oh là là ! "
+                    u"The dataseturi parameter of the DescribeDatasets operation can only contain one uri. ",
+            "locator": u"dataseturi={}".format(arg_dataset_uri)})
+
+    # Get the jinja template corresponding to the TJS specifications version
+    if arg_version in ("1.0",):
+        template_name = "tjs_100_describedatasets.xml"
+    else:
+        # TJS exception
+        exceptions.append({
+            "code": u"InvalidParameterValue",
+            "text": u"Oh là là ! "
+                    u"This version of the TJS specifications is not supported by this TJS implementation: {}. "
+                    u"Supported version numbers are: {}.".format(arg_version, ", ".join(SUPPORTED_VERSIONS)),
+            "locator": u"version={}".format(arg_version)})
+
+        raise OwsCommonException(exceptions=exceptions)
+
+    print(framework_uri)
+    print(dataset_uri)
+    response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
+                                       framework_uri=framework_uri, dataset_uri=dataset_uri)
+    response = make_response(response_content)
+    response.headers["Content-Type"] = "application/xml"
+
+    return response
+
+
 def get_data(serv, args):
+    """
+    Function used to answer to GetData requests
+
+    :param serv:    Service object
+    :param args:    parameters of the TJS request
+    :return:        request response
+    """
+
     exceptions = []
 
     arg_version = args.get('version')
@@ -331,6 +451,10 @@ def get_data(serv, args):
 
 
 class OwsCommonException(Exception):
+    """
+    Class representing the exceptions described in the TJS standard.
+    """
+
     status_code = 400
     tjs_version = "1.0"
 
@@ -382,6 +506,16 @@ class OwsCommonException(Exception):
 
 @app.template_global()
 def get_service_url(serv):
+    """
+    Function building the URL to a service.
+
+    :param serv:    Service instance
+    :return:        The UR
+    """
+
+    """
+
+    """
     app_path = request.url_root
     service_url = urlparse.urljoin(app_path, "/".join(("tjs", serv.name)))
     return service_url

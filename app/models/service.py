@@ -149,6 +149,14 @@ class Service(object):
             if f.uri == dataset_uri:
                 return f
 
+    def get_datasets_for_framework_uri(self, framework_uri):
+        datasets = []
+        for dtst in self.get_datasets():
+            for fmwk in dtst.get_frameworks():
+                if fmwk.uri == framework_uri and dtst not in datasets:
+                    datasets.append(dtst)
+        return datasets
+
     def get_dataset_with_name(self, dataset_name):
         return self.datasets[dataset_name]
 
