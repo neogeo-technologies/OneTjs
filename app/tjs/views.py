@@ -299,13 +299,6 @@ def describe_datasets(serv, args):
             raise OwsCommonException(exceptions=exceptions)
         dataset_uri = dataset_uris[0]
 
-    if not framework_uri and not dataset_uri:
-        exceptions.append({
-            "code": u"InvalidParameterValue",
-            "text": u"Oh là là ! "
-                    u"The dataseturi parameter of the DescribeDatasets operation can only contain one uri. ",
-            "locator": u"dataseturi={}".format(arg_dataset_uri)})
-
     # Get the jinja template corresponding to the TJS specifications version
     if arg_version in ("1.0",):
         template_name = "tjs_100_describedatasets.xml"
@@ -320,8 +313,6 @@ def describe_datasets(serv, args):
 
         raise OwsCommonException(exceptions=exceptions)
 
-    print(framework_uri)
-    print(dataset_uri)
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
                                        framework_uri=framework_uri, dataset_uri=dataset_uri)
     response = make_response(response_content)

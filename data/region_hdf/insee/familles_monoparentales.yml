@@ -14,8 +14,8 @@ frameworks:
     uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune
     complete:        yes
     relationship:    one
-  - name:            code_dept
-    uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_dept
+  - name:            code_departement
+    uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_departement
     complete:        yes
     relationship:    one
 data_source:

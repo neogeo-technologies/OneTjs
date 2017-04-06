@@ -13,6 +13,8 @@ from app import app
 
 public_blueprint = Blueprint('public_pages', __name__, template_folder="templates")
 
+# TODO: prettyfy XML output: http://stackoverflow.com/questions/749796/pretty-printing-xml-in-python
+
 
 @app.route('/favicon.ico')
 def favicon():

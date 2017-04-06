@@ -36,9 +36,10 @@
             <tr>
                 <td>Key col</td>
                 <td>{{ framework.key_col["name"] }}
-                    (type: {{ framework.key_col["type"] }} -
-                    length: {{ framework.key_col["length"] }} -
-                    decimals: {{ framework.key_col["decimals"] }})</td>
+                    (type: {{ framework.key_col["type"] }}
+                    {% if framework.key_col.length %}- length: {{ framework.key_col.length }}{% endif %}
+                    {% if framework.key_col.decimals %}- length: {{ framework.key_col.decimals }}{% endif %}
+                </td>
             </tr>
             <tr>
                 <td>Bounding box</td>

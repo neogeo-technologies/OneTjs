@@ -13,7 +13,7 @@ class DatasetAttribute(object):
         # Default values
         self.dataset = None
         self.name = "default_attribute_name"
-        self.tile = "Default attribute title"
+        self.title = "Default attribute title"
         self.abstract = "Default attribute abstract"
         self.documentation = None
         self.type = None

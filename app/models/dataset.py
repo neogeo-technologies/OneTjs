@@ -23,7 +23,7 @@ class Dataset(object):
         self.data_source = {"type": None, "path": None, "subset": None}
         self.organization = None
         self.name = "default_dataset_name"
-        self.tile = "Default dataset title"
+        self.title = "Default dataset title"
         self.abstract = "Default dataset abstract"
         self.documentation = None
         self.version = None
@@ -64,9 +64,9 @@ class Dataset(object):
             framework_complete = framework_relation["complete"]
             framework_relationship = framework_relation["relationship"]
 
-            self.frameworks["uri"] = framework
-            self.frameworks_complete["uri"] = framework_complete
-            self.frameworks_relationship["uri"] = framework_relationship
+            self.frameworks[framework_uri] = framework
+            self.frameworks_complete[framework_uri] = framework_complete
+            self.frameworks_relationship[framework_uri] = framework_relationship
 
         # Create the DatasetAttribute instances and add them to the ds_attributes list proprety of the dataset
         for at_dict in dataset_attributes_dicts:
