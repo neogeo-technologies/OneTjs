@@ -6,6 +6,8 @@ from flask import request
 from flask import redirect
 from flask import Blueprint
 
+import logging
+
 try:
     import urlparse
     from urllib import urlencode
@@ -21,6 +23,8 @@ from app import app
 SUPPORTED_VERSIONS = (Version("1.0"),)
 
 tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
+
+# TODO: prettyfy XML output: http://stackoverflow.com/questions/749796/pretty-printing-xml-in-python
 
 
 @tjs_blueprint.route("/tjs/<service_name>", methods=['GET', 'POST'])
@@ -96,7 +100,7 @@ def tjs_operation(service_name):
 
         # DescribeData
         elif arg_operation.lower() == "describedata":
-            return get_data(service, args)
+            return describe_data(service, args)
 
         # GetData
         elif arg_operation.lower() == "getdata":
@@ -321,6 +325,113 @@ def describe_datasets(serv, args):
     return response
 
 
+def describe_data(serv, args):
+    """
+    Function used to answer to DescribeData requests
+
+    :param serv:    Service object
+    :param args:    parameters of the TJS request
+    :return:        request response
+    """
+
+    exceptions = []
+
+    arg_version = args.get('version')
+    # TODO: handle language parameter
+    arg_language = args.get('language')
+    arg_framework_uri = args.get('frameworkuri')
+    arg_dataset_uri = args.get('dataseturi')
+    arg_attributes = args.get('attributes')
+
+    # TODO: handle language parameter
+    arg_language = serv.languages[0]
+
+    framework_uri = None
+    if arg_framework_uri:
+        framework_uris = [item.strip() for item in arg_framework_uri.split(",")]
+        if len(framework_uris) > 1:
+            # TJS exception
+            exceptions.append({
+                "code": u"InvalidParameterValue",
+                "text": u"Oh là là ! "
+                        u"The frameworkuri parameter of the DescribeData operation can only contain one uri. ",
+                "locator": u"frameworkuri={}".format(arg_framework_uri)})
+        framework_uri = framework_uris[0]
+    else:
+        exceptions.append({
+            "code": u"MissingParameterValue",
+            "text": u"Oh là là ! "
+                    u"The 'frameworkuri' parameter must be present.",
+            "locator": u"frameworkuri"})
+
+    dataset_uri = None
+    if arg_dataset_uri:
+        dataset_uris = [item.strip() for item in arg_dataset_uri.split(",")]
+        if len(dataset_uris) > 1:
+            # TJS exception
+            exceptions.append({
+                "code": u"InvalidParameterValue",
+                "text": u"Oh là là ! "
+                        u"The dataseturi parameter of the DescribeData operation can only contain one uri. ",
+                "locator": u"dataseturi={}".format(arg_dataset_uri)})
+        dataset_uri = dataset_uris[0]
+    else:
+        exceptions.append({
+            "code": u"MissingParameterValue",
+            "text": u"Oh là là ! "
+                    u"The 'dataseturi' parameter must be present.",
+            "locator": u"dataseturi"})
+
+    # Check if the frameworkuri and dataseturi values are compatible
+    dtst = serv.get_dataset_with_uri(dataset_uri)
+    frwk = serv.get_framework_with_uri(framework_uri)
+    if frwk not in dtst.get_frameworks():
+        exceptions.append({
+            "code": u"InvalidParameterValue",
+            "text": u"Oh là là ! "
+                    u"The specified framework is not available for the specified dataseturi.",
+            "locator": u"frameworkuri"})
+
+    # Retrieve the DatasetAttribute records
+    dtst_attributes = []
+    if arg_attributes:
+        attributes_names = [attribute_name.strip() for attribute_name in arg_attributes.split(",")]
+        for attribute_name in attributes_names:
+            attribute = dtst.get_attribute_with_name(attribute_name)
+            if attribute is None:
+                exceptions.append({
+                    "code": u"InvalidParameterValue",
+                    "text": u"Oh là là ! "
+                            u"The requested attribute is not valid: {}.".format(attribute_name),
+                    "locator": u"attributes={}".format(arg_attributes)})
+            else:
+                dtst_attributes.append(attribute)
+    else:
+        dtst_attributes = dtst.ds_attributes
+
+    # Get the jinja template corresponding to the TJS specifications version
+    if arg_version in ("1.0",):
+        template_name = "tjs_100_describedata.xml"
+    else:
+        # TJS exception
+        exceptions.append({
+            "code": u"InvalidParameterValue",
+            "text": u"Oh là là ! "
+                    u"This version of the TJS specifications is not supported by this TJS implementation: {}. "
+                    u"Supported version numbers are: {}.".format(arg_version, ", ".join(SUPPORTED_VERSIONS)),
+            "locator": u"version={}".format(arg_version)})
+
+    if exceptions:
+        raise OwsCommonException(exceptions=exceptions)
+
+    response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
+                                       framework=frwk, dataset=dtst, attributes=dtst_attributes)
+    response = make_response(response_content)
+    response.headers["Content-Type"] = "application/xml"
+
+    return response
+
+
 def get_data(serv, args):
     """
     Function used to answer to GetData requests
@@ -425,11 +536,15 @@ def get_data(serv, args):
     # TODO: handle the complete set of parameters declared in the TJS specification
 
     # Create a pandas data frame from the dataset datasource
-    pd_dataframe = dtst.get_data(attributes=dtst_attributes, framework=frwk)
+    try:
+        data = dtst.get_data(attributes=dtst_attributes, framework=frwk)
+    except ValueError as e:
+        logging.error(e.message)
+        data = None
 
     # TODO: handle correctly empty pd_dataframe (None for example)
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
-                                       framework=frwk, dataset=dtst, attributes=dtst_attributes, data=pd_dataframe)
+                                       framework=frwk, dataset=dtst, attributes=dtst_attributes, data=data)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -556,6 +671,8 @@ def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=
     args[u"service"] = u"TJS"
     if tjs_version:
         args[u"version"] = tjs_version
+    else:
+        args[u"version"] = serv.tjs_versions[-1]
     args[u"request"] = u"DescribeFrameworks"
     if framework:
         args[u"frameworkuri"] = framework.uri
@@ -572,6 +689,8 @@ def get_describedatasets_url(serv, tjs_version=None, language=None, framework=No
     args[u"service"] = u"TJS"
     if tjs_version:
         args[u"version"] = tjs_version
+    else:
+        args[u"version"] = serv.tjs_versions[-1]
     args[u"request"] = u"DescribeDatasets"
     if framework:
         args[u"frameworkuri"] = framework.uri
@@ -592,6 +711,8 @@ def get_describedata_url(serv, tjs_version=None, language=None, framework=None, 
     args[u"service"] = u"TJS"
     if tjs_version:
         args[u"version"] = tjs_version
+    else:
+        args[u"version"] = serv.tjs_versions[-1]
     args[u"request"] = u"DescribeData"
     if framework:
         args[u"frameworkuri"] = framework.uri
@@ -608,13 +729,14 @@ def get_describedata_url(serv, tjs_version=None, language=None, framework=None, 
     return url
 
 
-# TODO: make sure this function works fine for more than one attribute
 @app.template_global()
-def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attribute=None):
+def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attributes=None):
     args = OrderedDict()
     args[u"service"] = u"TJS"
     if tjs_version:
         args[u"version"] = tjs_version
+    else:
+        args[u"version"] = serv.tjs_versions[-1]
     args[u"request"] = u"GetData"
     if framework:
         args[u"frameworkuri"] = framework.uri
@@ -622,8 +744,8 @@ def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attrib
         args[u"dataseturi"] = dataset.uri
         if not framework and dataset.frameworks:
             args[u"frameworkuri"] = dataset.get_one_framework().uri
-    if attribute:
-        args[u"attributes"] = attribute.name
+    if attributes:
+        args[u"attributes"] = ",".join([attribute.name for attribute in attributes])
 
     url = build_tjs_url(serv, args)
     return url

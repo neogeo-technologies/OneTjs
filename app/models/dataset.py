@@ -117,7 +117,9 @@ class Dataset(object):
 
     def get_data(self, attributes=None, framework=None):
 
-        # TODO: check if the framework is one of the frameworks configured for the dataset
+        if framework and framework not in self.get_frameworks():
+            raise ValueError("The framework with the uri {} is not available "
+                             "for the dataset with the uri {}".format(framework.uri, self.uri))
 
         # TODO: the data type for each column should be specified in order to avoid wrong type inferance
         # example: insee code wrongly interpreted as integers
@@ -131,7 +133,8 @@ class Dataset(object):
             attributes_types = []
 
         if not self.frameworks:
-            return None
+            raise ValueError("There is not any framework available for the dataset with the uri {}.".format(
+                framework.uri, self.uri))
 
         if not framework:
             framework = self.get_one_framework()

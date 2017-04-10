@@ -53,12 +53,13 @@
                         <tjs:Values>
 {{ attribute.values }}
                         </tjs:Values>
-                        <tjs:GetDataRequest xlink:href="{{ get_getdata_url(serv=service, tjs_version=tjs_version, framework=framework, dataset=dataset, attribute=attribute) }}"/>
+                        <tjs:GetDataRequest xlink:href="{{ get_getdata_url(serv=service, tjs_version=tjs_version, framework=framework, dataset=dataset, attributes=[attribute]) }}"/>
                     </tjs:Column>
 {% endfor %}
                 </tjs:Attributes>
             </tjs:Columnset>
             <tjs:Rowset>
+{% if data is not none %}
 {% for row in data.itertuples() %}
                 <tjs:Row>
                     <tjs:K>{{ row[0] }}</tjs:K>
@@ -67,6 +68,7 @@
 {% endfor %}
                 </tjs:Row>
 {% endfor %}
+{% endif %}
             </tjs:Rowset>
         </tjs:Dataset>
     </tjs:Framework>

@@ -7,13 +7,11 @@ from flask import render_template
 from flask import send_from_directory
 from flask import Blueprint
 
-from werkzeug.urls import url_encode
+import logging
 
 from app import app
 
 public_blueprint = Blueprint('public_pages', __name__, template_folder="templates")
-
-# TODO: prettyfy XML output: http://stackoverflow.com/questions/749796/pretty-printing-xml-in-python
 
 
 @app.route('/favicon.ico')
@@ -87,5 +85,10 @@ def dataset(service_name, dataset_name):
     if this_dataset is None:
         return render_template("error.html", error_code=404), 404
 
-    return render_template("dataset.html", dataset=this_dataset,
-                           data=this_dataset.get_data())
+    try:
+        data = this_dataset.get_data()
+    except ValueError as e:
+        logging.error(e.message)
+        data = None
+
+    return render_template("dataset.html", dataset=this_dataset, data=data)
