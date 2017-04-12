@@ -19,12 +19,11 @@ from distutils.version import StrictVersion as Version
 from collections import OrderedDict
 
 from app import app
+from app import utils
 
 SUPPORTED_VERSIONS = (Version("1.0"),)
 
 tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
-
-# TODO: prettyfy XML output: http://stackoverflow.com/questions/749796/pretty-printing-xml-in-python
 
 
 @tjs_blueprint.route("/tjs/<service_name>", methods=['GET', 'POST'])
@@ -200,6 +199,7 @@ def get_capabilities(serv, args):
         arg_language = serv.languages[0]
 
         response_content = render_template(template_name, service=serv, tjs_version=tjs_version)
+        response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
         response = make_response(response_content)
         response.headers["Content-Type"] = "application/xml"
 
@@ -249,6 +249,7 @@ def describe_frameworks(serv, args):
 
     response_content = render_template(template_name, service=serv, frameworks=frameworks,
                                        tjs_version=arg_version, language=arg_language)
+    response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -319,6 +320,7 @@ def describe_datasets(serv, args):
 
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
                                        framework_uri=framework_uri, dataset_uri=dataset_uri)
+    response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -426,6 +428,7 @@ def describe_data(serv, args):
 
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
                                        framework=frwk, dataset=dtst, attributes=dtst_attributes)
+    response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -545,6 +548,7 @@ def get_data(serv, args):
     # TODO: handle correctly empty pd_dataframe (None for example)
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
                                        framework=frwk, dataset=dtst, attributes=dtst_attributes, data=data)
+    response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -635,6 +639,7 @@ def handle_tjs_exception(error):
         template_name = "ows_common_110_exception.xml"
 
     response_content = render_template(template_name, exceptions=error.exceptions)
+    response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
     response.status_code = error.status_code
