@@ -3,6 +3,7 @@
 import logging
 import os
 import pandas as pd
+import numpy as np
 
 from app.models.dataset_attribute import DatasetAttribute
 
@@ -121,16 +122,11 @@ class Dataset(object):
             raise ValueError("The framework with the uri {} is not available "
                              "for the dataset with the uri {}".format(framework.uri, self.uri))
 
-        # TODO: the data type for each column should be specified in order to avoid wrong type inferance
-        # example: insee code wrongly interpreted as integers
-        # forcing datatypes with pandas: d = pandas.read_csv('foo.csv', dtype={'BAR': 'S10'})
+        if not attributes:
+            attributes = self.ds_attributes
 
-        if attributes:
-            attributes_names = [at.name for at in attributes]
-            attributes_types = []
-        else:
-            attributes_names = [at.name for at in self.ds_attributes]
-            attributes_types = []
+        attributes_names = [at.name for at in attributes]
+        attributes_types = [at.type for at in attributes]
 
         if not self.frameworks:
             raise ValueError("There is not any framework available for the dataset with the uri {}.".format(
@@ -140,7 +136,7 @@ class Dataset(object):
             framework = self.get_one_framework()
 
         key_col_name = framework.key_col["name"]
-        key_col_type = None
+        key_col_type = framework.key_col["type"]
 
         data = self._get_data(attributes_names, attributes_types, key_col_name, key_col_type)
 
@@ -182,6 +178,19 @@ class FileDataset(Dataset):
         # TODO: check the attributes
 
 
+def convert_xmlschema_to_pandas_type(xmlschema_type):
+    pandas_type = object
+
+    if xmlschema_type == u"https://www.w3.org/TR/xmlschema-2/#decimal":
+        pandas_type = np.float64
+    elif xmlschema_type == u"https://www.w3.org/TR/xmlschema-2/#integer":
+        pandas_type = np.int64
+    elif xmlschema_type == u"https://www.w3.org/TR/xmlschema-2/#string":
+        pandas_type = str
+
+    return pandas_type
+
+
 class CsvFileDataset(FileDataset):
     DATA_SOURCE_TYPE = "csv"
 
@@ -192,9 +201,18 @@ class CsvFileDataset(FileDataset):
         super(CsvFileDataset, self).check_data_source()
 
     def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
+
+        dict_pd_types = dict()
+        for i in range(len(attributes_names)):
+            dict_pd_types[attributes_names[i]] = convert_xmlschema_to_pandas_type(attributes_types[i])
+        dict_pd_types[key_col_name] = convert_xmlschema_to_pandas_type(key_col_type)
+
         # TODO: add exception handling for data reading troubles
-        data = pd.read_csv(self.data_source["path"], index_col=key_col_name)
+        data = pd.read_csv(self.data_source["path"], dtype=dict_pd_types)
+        data = data.where((pd.notnull(data)), None)
+        data = data.set_index(key_col_name)
         dataframe = pd.DataFrame(data, columns=attributes_names)
+
         return dataframe
 
 
@@ -208,9 +226,19 @@ class XlsFileDataset(FileDataset):
         super(XlsFileDataset, self).check_data_source()
 
     def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
+
+        dict_pd_types = dict()
+        for i in range(len(attributes_names)):
+            dict_pd_types[attributes_names[i]] = convert_xmlschema_to_pandas_type(attributes_types[i])
+        dict_pd_types[key_col_name] = convert_xmlschema_to_pandas_type(key_col_type)
+
         # TODO: add exception handling for data reading troubles
-        data = pd.read_excel(self.data_source["path"], index_col=key_col_name)
+        data = pd.read_excel(self.data_source["path"], converters=dict_pd_types)
+        data = data.where((pd.notnull(data)), None)
+        data = data.set_index(key_col_name)
+
         dataframe = pd.DataFrame(data, columns=attributes_names)
+
         return dataframe
 
 
