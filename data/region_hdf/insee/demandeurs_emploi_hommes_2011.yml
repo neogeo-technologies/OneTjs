@@ -12,12 +12,12 @@ activated:         yes
 cached:            no
 frameworks:
   - name:            code_commune
-    uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune
+    uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune_2011
     complete:        yes
     relationship:    one
 data_source:
   type:  csv
-  path:  demandeurs_emploi_hommes.csv
+  path:  demandeurs_emploi_hommes_2011.csv
 attributes:
   - name:            demandeurs_emploi_homme
     title:           Nombre de demandeurs d'emploi dans les Hauts-de-France chez les hommes en 2011

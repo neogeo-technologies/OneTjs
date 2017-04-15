@@ -138,7 +138,11 @@ class Dataset(object):
         key_col_name = framework.key_col["name"]
         key_col_type = framework.key_col["type"]
 
-        data = self._get_data(attributes_names, attributes_types, key_col_name, key_col_type)
+        data = None
+        try:
+            data = self._get_data(attributes_names, attributes_types, key_col_name, key_col_type)
+        except ValueError as e:
+            logging.exception(e)
 
         return data
 
@@ -178,17 +182,24 @@ class FileDataset(Dataset):
         # TODO: check the attributes
 
 
-def convert_xmlschema_to_pandas_type(xmlschema_type):
-    pandas_type = object
-
+def get_converter_for_xmlschema_type(xmlschema_type):
     if xmlschema_type == u"https://www.w3.org/TR/xmlschema-2/#decimal":
-        pandas_type = np.float64
+        return pd.to_numeric
     elif xmlschema_type == u"https://www.w3.org/TR/xmlschema-2/#integer":
-        pandas_type = np.int64
-    elif xmlschema_type == u"https://www.w3.org/TR/xmlschema-2/#string":
-        pandas_type = str
+        return pd.to_numeric
+    else:
+        return str
 
-    return pandas_type
+
+def get_converters_for_attributes(attributes_names, attributes_types):
+    converters = dict()
+
+    for i in range(len(attributes_names)):
+        conv = get_converter_for_xmlschema_type(attributes_types[i])
+        if conv:
+            converters[attributes_names[i]] = conv
+
+    return converters
 
 
 class CsvFileDataset(FileDataset):
@@ -202,13 +213,12 @@ class CsvFileDataset(FileDataset):
 
     def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
 
-        dict_pd_types = dict()
-        for i in range(len(attributes_names)):
-            dict_pd_types[attributes_names[i]] = convert_xmlschema_to_pandas_type(attributes_types[i])
-        dict_pd_types[key_col_name] = convert_xmlschema_to_pandas_type(key_col_type)
+        converters = get_converters_for_attributes(
+            attributes_names+[key_col_name],
+            attributes_types+[key_col_type])
 
         # TODO: add exception handling for data reading troubles
-        data = pd.read_csv(self.data_source["path"], dtype=dict_pd_types)
+        data = pd.read_csv(self.data_source["path"], dtype=object, converters=converters)
         data = data.where((pd.notnull(data)), None)
         data = data.set_index(key_col_name)
         dataframe = pd.DataFrame(data, columns=attributes_names)
@@ -227,16 +237,14 @@ class XlsFileDataset(FileDataset):
 
     def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
 
-        dict_pd_types = dict()
-        for i in range(len(attributes_names)):
-            dict_pd_types[attributes_names[i]] = convert_xmlschema_to_pandas_type(attributes_types[i])
-        dict_pd_types[key_col_name] = convert_xmlschema_to_pandas_type(key_col_type)
+        converters = get_converters_for_attributes(
+            attributes_names+[key_col_name],
+            attributes_types+[key_col_type])
 
         # TODO: add exception handling for data reading troubles
-        data = pd.read_excel(self.data_source["path"], converters=dict_pd_types)
+        data = pd.read_excel(self.data_source["path"], converters=converters)
         data = data.where((pd.notnull(data)), None)
         data = data.set_index(key_col_name)
-
         dataframe = pd.DataFrame(data, columns=attributes_names)
 
         return dataframe
