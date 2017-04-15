@@ -10,8 +10,8 @@ reference_date:      2012-01-01
 activated:           yes
 cached:              no
 frameworks:
-  - name:            code_commune
-    uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune
+  - name:            code_commune_2012
+    uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune_2012
     complete:        yes
     relationship:    one
   - name:            code_departement
@@ -20,7 +20,7 @@ frameworks:
     relationship:    one
 data_source:
   type:  xls
-  path:  familles_monoparentales.xls
+  path:  familles_monoparentales_2012.xls
 attributes:
   - name:                       part_des_menages
     title:                      Part des familles monoparentales dans les Hauts-de-Frances en 2012
