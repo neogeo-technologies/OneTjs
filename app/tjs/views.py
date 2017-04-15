@@ -749,8 +749,15 @@ def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attrib
         args[u"dataseturi"] = dataset.uri
         if not framework and dataset.frameworks:
             args[u"frameworkuri"] = dataset.get_one_framework().uri
-    if attributes:
-        args[u"attributes"] = ",".join([attribute.name for attribute in attributes])
+    if dataset and attributes:
+        consolidated_attributes = []
+
+        # Add attributes that are not of "Attribute" type
+        for at in dataset.ds_attributes:
+            if at in attributes or at.purpose != "Attribute":
+                consolidated_attributes.append(at)
+
+        args[u"attributes"] = ",".join([attribute.name for attribute in consolidated_attributes])
 
     url = build_tjs_url(serv, args)
     return url

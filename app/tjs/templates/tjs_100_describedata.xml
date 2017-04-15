@@ -48,7 +48,7 @@
        <tjs:Abstract>{{ attribute.abstract }}</tjs:Abstract>
        <!--Documentation>{{ attribute.documentation }}</Documentation-->
        <tjs:Values>{{ attribute.values }}</tjs:Values>
-       <tjs:GetDataRequest xlink:href="{{ get_getdata_url(serv=service, tjs_version=tjs_version, framework=framework, dataset=dataset, attribute=attribute) }}"/>
+{% if attribute.purpose == "Attribute" %}       <tjs:GetDataRequest xlink:href="{{ get_getdata_url(serv=service, tjs_version=tjs_version, framework=framework, dataset=dataset, attributes=(attribute,)) }}"/>{% endif %}
       </tjs:Column>
 {% endfor %}
      </tjs:Attributes>
