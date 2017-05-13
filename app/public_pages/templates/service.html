@@ -1,120 +1,139 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2><small>Service</small></h2>
 
-    <table class="table table-condensed">
-        <tbody>
-            <tr>
-                <td>Name</td>
-                <td>{{ service.name }}</td>
-            </tr>
-            <tr>
-                <td>Title</td>
-                <td>{{ service.title }}</td>
-            </tr>
-            <tr>
-                <td>Abstract</td>
-                <td>{{ service.abstract }}</td>
-            </tr>
-            <tr>
-                <td>Keywwords</td>
-                <td>{{ service.keywords|join(", ") }}</td>
-            </tr>
-            <tr>
-                <td>Activated</td>
-                <td>{{ service.activated }}</td>
-            </tr>
-            <tr>
-                <td>TJS versions</td>
-                <td>{{ service.tjs_versions|join(", ") }}</td>
-            </tr>
-            <tr>
-                <td>Languages</td>
-                <td>{{ service.languages|join(", ") }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#service">Service</a></li>
+        <li><a data-toggle="tab" href="#frameworks">Frameworks</a></li>
+        <li><a data-toggle="tab" href="#datasets">Datasets</a></li>
+        <li><a data-toggle="tab" href="#requests">Sample TJS requests</a></li>
+    </ul>
 
-    <h2><small>Frameworks</small></h2>
+    <div class="tab-content">
+        <div id="service" class="tab-pane fade in active">
+            <br>
+            <table class="table table-condensed">
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ service.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Title</td>
+                        <td>{{ service.title }}</td>
+                    </tr>
+                    <tr>
+                        <td>Abstract</td>
+                        <td>{{ service.abstract }}</td>
+                    </tr>
+                    <tr>
+                        <td>Keywwords</td>
+                        <td>{{ service.keywords|join(", ") }}</td>
+                    </tr>
+                    <tr>
+                        <td>Activated</td>
+                        <td>{{ service.activated }}</td>
+                    </tr>
+                    <tr>
+                        <td>TJS versions</td>
+                        <td>{{ service.tjs_versions|join(", ") }}</td>
+                    </tr>
+                    <tr>
+                        <td>Languages</td>
+                        <td>{{ service.languages|join(", ") }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
+        </div>
+        <div id="frameworks" class="tab-pane fade">
+            <br>
 {% set frameworks = service.get_frameworks() %}
 {% if frameworks|length > 0 %}
-    <table class="table table-condensed">
-        <tbody>
-            <tr>
-                <td>Name</td>
-                <td>Title</td>
-                <td>URI</td>
-            </tr>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Title</th>
+                        <th>URI</th>
+                    </tr>
+                </thead>
+                <tbody>
 {% for framework in frameworks %}
-            <tr>
-                <td><a href="{{ url_for('.framework', service_name=service.name, framework_name=framework.name) }}">{{ framework.name }}</a></td>
-                <td>{{ framework.title }}</td>
-                <td>{{ framework.uri }}</td>
-            </tr>
+                    <tr>
+                        <td><a href="{{ url_for('.framework', service_name=service.name, framework_name=framework.name) }}">{{ framework.name }}</a></td>
+                        <td>{{ framework.title }}</td>
+                        <td>{{ framework.uri }}</td>
+                    </tr>
 {% endfor %}
-        </tbody>
-    </table>
+                </tbody>
+            </table>
 {% else %}
-    <p>Aucun framework n'est déclaré pour ce service</p>
+            <p>Aucun framework n'est déclaré pour ce service</p>
 {% endif %}
 
-    <h2><small>Datasets</small></h2>
-
+        </div>
+        <div id="datasets" class="tab-pane fade">
+            <br>
 {% set datasets = service.get_datasets() %}
 {% if datasets|length > 0 %}
-    <table class="table table-condensed">
-        <tbody>
-            <tr>
-                <td>Name</td>
-                <td>Title</td>
-                <td>URI</td>
-            </tr>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Title</th>
+                        <th>URI</th>
+                    </tr>
+                </thead>
+                <tbody>
 {% for dataset in datasets %}
-            <tr>
-                <td><a href="{{ url_for('.dataset', service_name=service.name, dataset_name=dataset.name) }}">{{ dataset.name }}</a></td>
-                <td>{{ dataset.title }}</td>
-                <td>{{ dataset.uri }}</td>
-            </tr>
+                    <tr>
+                        <td><a href="{{ url_for('.dataset', service_name=service.name, dataset_name=dataset.name) }}">{{ dataset.name }}</a></td>
+                        <td>{{ dataset.title }}</td>
+                        <td>{{ dataset.uri }}</td>
+                    </tr>
 {% endfor %}
-        </tbody>
-    </table>
+                </tbody>
+            </table>
 {% else %}
-    <p>Aucun dataset n'est déclaré pour ce service</p>
+            <p>Aucun dataset n'est déclaré pour ce service</p>
 {% endif %}
 
-    <h2><small>Sample TJS requests</small></h2>
-
-    <table class="table table-condensed">
-        <tbody>
-            <tr>
-                <td><a href="{{ get_getcapabilities_url(serv=service) }}">
-                    GetCapabilities</a></td>
-            </tr>
-            <tr>
-                <td><a href="{{ get_describeframeworks_url(serv=service) }}">
-                    DescribeFrameworks</a></td>
-            </tr>
-            <tr>
-                <td><a href="{{ get_describedatasets_url(serv=service) }}">
-                    DescribeDatasets for all frameworks and datasets</a></td>
-            </tr>
+        </div>
+        <div id="requests" class="tab-pane fade">
+            <br>
+            <table class="table table-condensed">
+                <tbody>
+                    <tr>
+                        <td><a href="{{ get_getcapabilities_url(serv=service) }}">
+                            GetCapabilities</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="{{ get_describeframeworks_url(serv=service) }}">
+                            DescribeFrameworks</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="{{ get_describedatasets_url(serv=service) }}">
+                            DescribeDatasets for all frameworks and datasets</a></td>
+                    </tr>
 {% for dataset in datasets %}
-            <tr>
-                <td><a href="{{ get_describedatasets_url(serv=service, dataset=dataset) }}">
-                    DescribeDatasets for {{ dataset.name }} dataset</a></td>
-            </tr>
-            <tr>
-                <td><a href="{{ get_describedata_url(serv=service, dataset=dataset) }}">
-                    DescribeData for {{ dataset.name }} dataset</a></td>
-            </tr>
-            <tr>
-                <td><a href="{{ get_getdata_url(serv=service, dataset=dataset) }}">
-                    GetData for {{ dataset.name }} dataset</a></td>
-            </tr>
+                    <tr>
+                        <td><a href="{{ get_describedatasets_url(serv=service, dataset=dataset) }}">
+                            DescribeDatasets for {{ dataset.name }} dataset</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="{{ get_describedata_url(serv=service, dataset=dataset) }}">
+                            DescribeData for {{ dataset.name }} dataset</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="{{ get_getdata_url(serv=service, dataset=dataset) }}">
+                            GetData for {{ dataset.name }} dataset</a></td>
+                    </tr>
 {% endfor %}
-        </tbody>
-    </table>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
 
 {% endblock %}

@@ -32,4 +32,6 @@ attributes:
     values:                     Measure
     uom_short_form:             '%'
     uom_long_form:              pourcentage
+    allow_agregation :  yes
     weighting_attribute_name :  nb_menages
+    weighting_attribute_source :  self
