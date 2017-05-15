@@ -4,7 +4,6 @@ import logging
 import os
 import yaml
 
-from app import app
 from app.models.service import Service
 
 SERVICES_FILE_NAME = "services.yml"
@@ -12,8 +11,9 @@ SERVICES_FILE_NAME = "services.yml"
 
 class ServicesManager(object):
 
-    def __init__(self):
+    def __init__(self, app):
 
+        self.app = app
         self.services_cfg_file_path = None
         self.services = {}
 
@@ -30,7 +30,7 @@ class ServicesManager(object):
                     v["name"] = k
                     s = Service(**v)
                     self.services[k] = s
-                    app.init_success = True
+                    self.app.init_success = True
             except yaml.YAMLError as e:
                 logging.exception(e)
                 logging.critical("The app config file is not correctly formed. The initialization porcess will stop."
@@ -39,7 +39,7 @@ class ServicesManager(object):
 
     def __find_services_yml_file_path(self):
 
-        config_data_dir_path = app.config['DATA_DIR_PATH']
+        config_data_dir_path = self.app.config['DATA_DIR_PATH']
         services_yml_file_path = None
 
         if os.path.exists(config_data_dir_path):
@@ -47,7 +47,7 @@ class ServicesManager(object):
 
         if services_yml_file_path is None:
             services_yml_file_path = self.__find_services_yml_file_in_path(
-                os.path.join(app.root_path, config_data_dir_path))
+                os.path.join(self.app.root_path, config_data_dir_path))
 
         self.services_cfg_file_path = services_yml_file_path
 

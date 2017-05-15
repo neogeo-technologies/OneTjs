@@ -1,6 +1,7 @@
 app/mdchecker/conf/*.json
 app/mdchecker/conf/*.cfg
 *.pyc
+log/*
 
 # virtualenv dir
 venv/*

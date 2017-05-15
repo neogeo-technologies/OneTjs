@@ -6,6 +6,8 @@ from flask import request
 from flask import redirect
 from flask import Blueprint
 
+from flask import current_app
+
 import logging
 
 try:
@@ -18,10 +20,9 @@ except:  # For Python 3
 from distutils.version import StrictVersion as Version
 from collections import OrderedDict
 
-from app import app
 from app import utils
 
-SUPPORTED_VERSIONS = (Version("1.0"),)
+SUPPORTED_VERSIONS = (Version(u"1.0"),)
 
 tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
 
@@ -45,7 +46,7 @@ def tjs_operation(service_name):
     arg_operation = args.get('request')
 
     # Service instance
-    service = app.services_manager.get_service_with_name(service_name)
+    service = current_app.services_manager.get_service_with_name(service_name)
 
     # If the service does not exist or is not activated -> 404
     if service is None or not service.activated:
@@ -199,7 +200,7 @@ def get_capabilities(serv, args):
         arg_language = serv.languages[0]
 
         response_content = render_template(template_name, service=serv, tjs_version=tjs_version)
-        response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
+        response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
         response = make_response(response_content)
         response.headers["Content-Type"] = "application/xml"
 
@@ -249,7 +250,7 @@ def describe_frameworks(serv, args):
 
     response_content = render_template(template_name, service=serv, frameworks=frameworks,
                                        tjs_version=arg_version, language=arg_language)
-    response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
+    response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -320,7 +321,7 @@ def describe_datasets(serv, args):
 
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
                                        framework_uri=framework_uri, dataset_uri=dataset_uri)
-    response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
+    response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -428,7 +429,7 @@ def describe_data(serv, args):
 
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
                                        framework=frwk, dataset=dtst, attributes=dtst_attributes)
-    response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
+    response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -548,7 +549,7 @@ def get_data(serv, args):
     # TODO: handle correctly empty pd_dataframe (None for example)
     response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
                                        framework=frwk, dataset=dtst, attributes=dtst_attributes, data=data)
-    response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
+    response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -614,7 +615,7 @@ class OwsCommonException(Exception):
         self.message = u"\n".join([exception.get("text") for exception in self.exceptions])
 
 
-@app.template_global()
+@tjs_blueprint.app_template_global()
 def get_service_url(serv):
     """
     Function building the URL to a service.
@@ -631,7 +632,7 @@ def get_service_url(serv):
     return service_url
 
 
-@app.errorhandler(OwsCommonException)
+@tjs_blueprint.errorhandler(OwsCommonException)
 def handle_tjs_exception(error):
     if error.tjs_version in ("1.0",):
         template_name = "ows_common_110_exception.xml"
@@ -639,7 +640,7 @@ def handle_tjs_exception(error):
         template_name = "ows_common_110_exception.xml"
 
     response_content = render_template(template_name, exceptions=error.exceptions)
-    response_content = utils.prettify_xml(xml_string=response_content, minify=not app.debug)
+    response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
     response.status_code = error.status_code
@@ -658,7 +659,7 @@ def build_tjs_url(service, args):
     return tjs_url
 
 
-@app.template_global()
+@tjs_blueprint.app_template_global()
 def get_getcapabilities_url(serv, language=None):
     args = OrderedDict()
     args[u"service"] = u"TJS"
@@ -670,7 +671,7 @@ def get_getcapabilities_url(serv, language=None):
     return url
 
 
-@app.template_global()
+@tjs_blueprint.app_template_global()
 def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=None):
     args = OrderedDict()
     args[u"service"] = u"TJS"
@@ -688,7 +689,7 @@ def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=
     return url
 
 
-@app.template_global()
+@tjs_blueprint.app_template_global()
 def get_describedatasets_url(serv, tjs_version=None, language=None, framework=None, dataset=None):
     args = OrderedDict()
     args[u"service"] = u"TJS"
@@ -710,7 +711,7 @@ def get_describedatasets_url(serv, tjs_version=None, language=None, framework=No
     return url
 
 
-@app.template_global()
+@tjs_blueprint.app_template_global()
 def get_describedata_url(serv, tjs_version=None, language=None, framework=None, dataset=None, attributes=None):
     args = OrderedDict()
     args[u"service"] = u"TJS"
@@ -734,7 +735,7 @@ def get_describedata_url(serv, tjs_version=None, language=None, framework=None, 
     return url
 
 
-@app.template_global()
+@tjs_blueprint.app_template_global()
 def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attributes=None):
     args = OrderedDict()
     args[u"service"] = u"TJS"

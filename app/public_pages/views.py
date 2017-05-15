@@ -2,39 +2,39 @@
 
 import os
 
-from flask import request
 from flask import render_template
 from flask import send_from_directory
 from flask import Blueprint
+from flask import current_app
 
 import logging
 
-from app import app
+# from app import app
 
 public_blueprint = Blueprint('public_pages', __name__, template_folder="templates")
 
 
-@app.route('/favicon.ico')
+@public_blueprint.route('/favicon.ico')
 def favicon():
     return send_from_directory(
-        os.path.join(app.root_path, 'static'),
+        os.path.join(current_app.root_path, 'static'),
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon')
 
 
-@app.route("/")
+@public_blueprint.route("/")
 def index():
-    return render_template("index.html", init_success=app.init_success)
+    return render_template("index.html", init_success=current_app.init_success)
 
 
-@app.route("/services/")
+@public_blueprint.route("/services/")
 def services():
-    return render_template("services_list.html", services=app.services_manager.get_services())
+    return render_template("services_list.html", services=current_app.services_manager.get_services())
 
 
-@app.route("/services/<service_name>")
+@public_blueprint.route("/services/<service_name>")
 def service(service_name):
-    this_service = app.services_manager.get_service_with_name(service_name)
+    this_service = current_app.services_manager.get_service_with_name(service_name)
 
     # If the service does not exist -> 404
     if this_service is None:
@@ -43,15 +43,15 @@ def service(service_name):
     return render_template("service.html", service=this_service)
 
 
-@app.route("/frameworks/")
+@public_blueprint.route("/frameworks/")
 def frameworks():
-    return render_template("frameworks_list.html", services=app.services_manager.get_services())
+    return render_template("frameworks_list.html", services=current_app.services_manager.get_services())
 
 
-@app.route("/services/<service_name>/frameworks/<framework_name>")
+@public_blueprint.route("/services/<service_name>/frameworks/<framework_name>")
 def framework(service_name, framework_name):
 
-    this_service = app.services_manager.get_service_with_name(service_name)
+    this_service = current_app.services_manager.get_service_with_name(service_name)
 
     # If the service does not exist -> 404
     if this_service is None:
@@ -66,14 +66,14 @@ def framework(service_name, framework_name):
     return render_template("framework.html", framework=this_framework)
 
 
-@app.route("/datasets/")
+@public_blueprint.route("/datasets/")
 def datasets():
-    return render_template("datasets_list.html", services=app.services_manager.get_services())
+    return render_template("datasets_list.html", services=current_app.services_manager.get_services())
 
 
-@app.route("/services/<service_name>/datasets/<dataset_name>")
+@public_blueprint.route("/services/<service_name>/datasets/<dataset_name>")
 def dataset(service_name, dataset_name):
-    this_service = app.services_manager.get_service_with_name(service_name)
+    this_service = current_app.services_manager.get_service_with_name(service_name)
 
     # If the service does not exist -> 404
     if this_service is None:
