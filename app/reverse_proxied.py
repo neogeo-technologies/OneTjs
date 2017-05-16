@@ -13,6 +13,14 @@ class ReverseProxied(object):
         proxy_set_header X-Script-Name /myprefix;
         }
 
+    In apache2 for example:
+        <Location "/simple-tjs">
+            ProxyPass http://0.0.0.0:5000
+            ProxyPassReverse http://0.0.0.0:5000
+            RequestHeader set X-SCRIPT-NAME /simple-tjs
+            RequestHeader set X-SCHEME http
+        </Location>
+
     :param app: the WSGI application
     '''
     def __init__(self, app):
