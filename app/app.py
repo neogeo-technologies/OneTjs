@@ -5,11 +5,6 @@ import os
 from flask import Flask
 from flask import render_template
 
-from extensions import bcrypt
-from extensions import bootstrap
-from extensions import toolbar
-
-
 __all__ = ('create_app', )
 
 
@@ -49,22 +44,61 @@ def blueprints_fabrics(app):
 
 
 def extensions_fabrics(app):
-# see https://github.com/xen/flask-project-template
-#     db.init_app(app)
-#     mail.init_app(app)
-#     babel.init_app(app)
-#     pages.init_app(app)
-#     init_social(app, db)
-#     login_manager.init_app(app)
-#     manager.init_app(app, flask_sqlalchemy_db=db)
-#     migrate.init_app(app, db)
-#     csrf.init_app(app)
-#     cache.init_app(app)
-#     celery.config_from_object(app.config)
+    # see https://github.com/xen/flask-project-template
+    # from flask_mail import Mail
+    # mail = Mail()
+    #
+    # from flask_sqlalchemy import SQLAlchemy
+    # db = SQLAlchemy()
+    #
+    # from flask_flatpages import FlatPages
+    # pages = FlatPages()
+    #
+    # import flask_restless
+    # manager = flask_restless.APIManager()
+    #
+    # from flask_login import LoginManager
+    # login_manager = LoginManager()
+    # login_manager.login_view = 'auth.login'
+    #
+    # from flask_babel import Babel
+    # babel = Babel()
+    #
+    # from flask_migrate import Migrate
+    # migrate = Migrate()
+    #
+    # from flask_wtf.csrf import CsrfProtect
+    # csrf = CsrfProtect()
+    #
+    # from flask_cache import Cache
+    # cache = Cache()
+    #
+    # from celery import Celery
+    # celery = Celery()
 
+    # db.init_app(app)
+    # mail.init_app(app)
+    # babel.init_app(app)
+    # pages.init_app(app)
+    # init_social(app, db)
+    # login_manager.init_app(app)
+    # manager.init_app(app, flask_sqlalchemy_db=db)
+    # migrate.init_app(app, db)
+    # csrf.init_app(app)
+    # cache.init_app(app)
+    # celery.config_from_object(app.config)
+
+    from flask_bcrypt import Bcrypt
+    bcrypt = Bcrypt()
     bcrypt.init_app(app)
-    toolbar.init_app(app)
+
+    from flask_bootstrap import Bootstrap
+    bootstrap = Bootstrap()
     bootstrap.init_app(app)
+
+    from flask_debugtoolbar import DebugToolbarExtension
+    toolbar = DebugToolbarExtension()
+    toolbar.init_app(app)
 
 # def api_fabrics(app):
 #     # initialize_api(app)

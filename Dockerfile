@@ -15,4 +15,4 @@ RUN pip install -r /tjs/requirements.txt
 
 WORKDIR /tjs
 ENTRYPOINT ["python"]
-CMD ["manage.py", "runserver", "-h",  "0.0.0.0", "-p", "5000", "-D"]
+CMD ["manage.py", "-c", "docker.cfg", "runserver", "-h",  "0.0.0.0", "-p", "5000"]

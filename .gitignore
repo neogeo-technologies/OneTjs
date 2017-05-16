@@ -1,7 +1,6 @@
-app/mdchecker/conf/*.json
-app/mdchecker/conf/*.cfg
 *.pyc
 log/*
+docker-compose.override.yml
 
 # virtualenv dir
 venv/*
