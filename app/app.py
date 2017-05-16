@@ -5,6 +5,8 @@ import os
 from flask import Flask
 from flask import render_template
 
+from reverse_proxied import ReverseProxied
+
 __all__ = ('create_app', )
 
 
@@ -13,6 +15,7 @@ def create_app(config=None, app_name='simple_tjs', blueprints=None):
                 static_folder=os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'static')),
                 template_folder=os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
                 )
+    app.wsgi_app = ReverseProxied(app.wsgi_app)
 
     app.config.from_object('app.config')
     local_cfg_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'local.cfg'))
