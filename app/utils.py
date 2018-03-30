@@ -8,7 +8,7 @@ def u(s):
     """
     decodes utf8
     """
-    if isinstance(s, unicode):
+    if isinstance(s, str):
         return s.encode("utf-8")
     if isinstance(s, str):
         return s.decode("utf-8")

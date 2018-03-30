@@ -25,7 +25,7 @@ class ServicesManager(object):
             try:
                 services_dict = yaml.load(stream)
 
-                for k, v in services_dict.iteritems():
+                for k, v in list(services_dict.items()):
                     v["cfg_file_path"] = self.services_cfg_file_path
                     v["name"] = k
                     s = Service(**v)

@@ -27,4 +27,4 @@ class DatasetAttribute(object):
         self.__dict__.update(kwargs)
 
     def __repr__(self):
-        return u"%s(%r)" % (self.__class__, self.__dict__)
+        return "%s(%r)" % (self.__class__, self.__dict__)

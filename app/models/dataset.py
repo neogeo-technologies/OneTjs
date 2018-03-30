@@ -150,7 +150,7 @@ class Dataset(object):
         pass
 
     def __repr__(self):
-        return u"%s(%r)" % (self.__class__, self.__dict__)
+        return "%s(%r)" % (self.__class__, self.__dict__)
 
 
 class FileDataset(Dataset):
@@ -183,9 +183,9 @@ class FileDataset(Dataset):
 
 
 def get_converter_for_xmlschema_type(xmlschema_type):
-    if xmlschema_type == u"https://www.w3.org/TR/xmlschema-2/#decimal":
+    if xmlschema_type == "https://www.w3.org/TR/xmlschema-2/#decimal":
         return pd.to_numeric
-    elif xmlschema_type == u"https://www.w3.org/TR/xmlschema-2/#integer":
+    elif xmlschema_type == "https://www.w3.org/TR/xmlschema-2/#integer":
         return pd.to_numeric
     else:
         return str

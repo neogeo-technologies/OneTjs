@@ -5,7 +5,7 @@ import os
 from flask import Flask
 from flask import render_template
 
-from reverse_proxied import ReverseProxied
+from .reverse_proxied import ReverseProxied
 
 __all__ = ('create_app', )
 
@@ -24,7 +24,7 @@ def create_app(config=None, app_name='simple_tjs', blueprints=None):
         app.config.from_pyfile(config)
 
     app.init_success = False
-    from models import services_manager
+    from .models import services_manager
     app.services_manager = services_manager.ServicesManager(app)
 
     blueprints_fabrics(app)
@@ -40,8 +40,8 @@ def create_app(config=None, app_name='simple_tjs', blueprints=None):
 def blueprints_fabrics(app):
     """Configure blueprints in views."""
 
-    from tjs.views import tjs_blueprint
-    from public_pages.views import public_blueprint
+    from .tjs.views import tjs_blueprint
+    from .public_pages.views import public_blueprint
     app.register_blueprint(tjs_blueprint)
     app.register_blueprint(public_blueprint)
 

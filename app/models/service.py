@@ -70,7 +70,7 @@ class Service(object):
                 try:
                     frameworks_dict = yaml.load(stream)
 
-                    for k, v in frameworks_dict.iteritems():
+                    for k, v in list(frameworks_dict.items()):
                         v["name"] = k
                         f = Framework(**v)
                         self.frameworks[f.uri] = f
@@ -102,10 +102,10 @@ class Service(object):
     def log_info(self):
         logging.info("Service: {0} ({1})".format(self.name, "activated" if self.activated else "deactivated"))
         logging.info("- datapath: {0}".format(self.data_dir_path))
-        for f in self.frameworks.items():
-            logging.info(u"- framework: {0} - {1}".format(f[1].title, f[0]))
-        for ds in self.datasets.items():
-            logging.info(u"- dataset: {0} - {1}".format(ds[1].title, ds[0]))
+        for f in list(self.frameworks.items()):
+            logging.info("- framework: {0} - {1}".format(f[1].title, f[0]))
+        for ds in list(self.datasets.items()):
+            logging.info("- dataset: {0} - {1}".format(ds[1].title, ds[0]))
 
     # factory function for datasets
     def create_dataset_instance(self, dataset_yaml_file_path):
@@ -172,4 +172,4 @@ class Service(object):
                 return f
 
     def __repr__(self):
-        return u"%s(%r)" % (self.__class__, self.__dict__)
+        return "%s(%r)" % (self.__class__, self.__dict__)
