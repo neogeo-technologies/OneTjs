@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tjs:Capabilities service="TJS"
+  version="1.0"
+  xml:lang="{{ service.languages[0] }}"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:tjs="http://www.opengis.net/tjs/1.0"
+  xmlns:ows="http://www.opengis.net/ows/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/tjs/1.0 http://schemas.opengis.net/tjs/1.0/tjsGetCapabilities_response.xsd">
+  <ows:ServiceIdentification>
+    <ows:Title>{{ service.title }}</ows:Title>
+    <ows:Abstract>{{ service.abstract}} (compatible avec GeoClip)</ows:Abstract>
+    <ows:Keywords>
+      {% for keyword in service.keywords %}
+      <ows:Keyword>{{ keyword }}</ows:Keyword>
+      {% endfor %}
+    </ows:Keywords>
+    <ows:ServiceType>TJS</ows:ServiceType>
+    <ows:ServiceTypeVersion>1.0</ows:ServiceTypeVersion>
+    <ows:Fees>{{ service.fees }}</ows:Fees>
+    <ows:AccessConstraints>{{ service.access_constraints }}</ows:AccessConstraints>
+  </ows:ServiceIdentification>
+  <ows:ServiceProvider>
+    {% if service.service_provider.organization %}
+    <ows:ProviderName>{{ service.service_provider.organization }}</ows:ProviderName>
+    {% endif %}
+    {% if service.service_provider.web_site %}
+    <ows:ProviderSite xlink:href="{{ service.service_provider.web_site }}"/>
+    {% endif %}
+    <ows:ServiceContact>
+      {% if service.service_provider.contact_name %}
+      <ows:IndividualName>{{ service.service_provider.contact_name }}</ows:IndividualName>
+      {% endif %}
+      {% if service.service_provider.contact_position %}
+      <ows:PositionName>{{ service.service_provider.contact_position }}</ows:PositionName>
+      {% endif %}
+      <ows:ContactInfo>
+        {% if service.service_provider.contact_phone or service.service_provider.contact_fax %}
+        <ows:Phone>
+          {% if service.service_provider.contact_phone %}
+          <ows:Voice>{{ service.service_provider.contact_phone }}</ows:Voice>
+          {% endif %}
+          {% if service.service_provider.contact_fax %}
+          <ows:Facsimile>{{ service.service_provider.contact_fax }}</ows:Facsimile>
+          {% endif %}
+        </ows:Phone>
+        {% endif %}
+        {% if service.service_provider.contact_address_delivery_point or service.service_provider.contact_address_city or
+        service.service_provider.contact_address_administrative_area or
+        service.service_provider.contact_address_postal_code or
+        service.service_provider.contact_address_country or
+        service.service_provider.contact_email
+        %}
+        <ows:Address>
+          {% if service.service_provider.contact_address_delivery_point %}
+          <ows:DeliveryPoint>{{ service.service_provider.contact_address_delivery_point }}</ows:DeliveryPoint>
+          {% endif %}
+          {% if service.service_provider.contact_address_city %}
+          <ows:City>{{ service.service_provider.contact_address_city }}</ows:City>
+          {% endif %}
+          {% if service.service_provider.contact_address_administrative_area %}
+          <ows:AdministrativeArea>{{ service.service_provider.contact_address_administrative_area }}</ows:AdministrativeArea>
+          {% endif %}
+          {% if service.service_provider.contact_address_postal_code %}
+          <ows:PostalCode>{{ service.service_provider.contact_address_postal_code }}</ows:PostalCode>
+          {% endif %}
+          {% if service.service_provider.contact_address_country %}
+          <ows:Country>{{ service.service_provider.contact_address_country }}</ows:Country>
+          {% endif %}
+          {% if service.service_provider.contact_email %}
+          <ows:ElectronicMailAddress>{{ service.service_provider.contact_email }}</ows:ElectronicMailAddress>
+          {% endif %}
+        </ows:Address>
+        {% endif %}
+      </ows:ContactInfo>
+    </ows:ServiceContact>
+  </ows:ServiceProvider>
+  <ows:OperationsMetadata>
+    <ows:Operation name="GetCapabilities">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="{{ get_service_url(serv=service) }}"/>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <ows:Operation name="DescribeFrameworks">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="{{ get_service_url(serv=service) }}"/>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <ows:Operation name="DescribeDatasets">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="{{ get_service_url(serv=service) }}"/>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <ows:Operation name="DescribeData">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="{{ get_service_url(serv=service) }}"/>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <ows:Operation name="GetData">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="{{ get_service_url(serv=service) }}"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Constraint name="GeolinkIdsLimit">
+        <ows:AllowedValues>
+          <ows:Range>
+            <ows:MaximumValue>40000</ows:MaximumValue>
+          </ows:Range>
+        </ows:AllowedValues>
+        <ows:Meaning>
+          The maximum number of GeolinkIds that can be specified as part of the GeolinkIds element in a GetData request.
+        </ows:Meaning>
+      </ows:Constraint>
+      <ows:Constraint name="AttributeLimit">
+        <ows:AllowedValues>
+          <ows:Range>
+            <ows:MaximumValue>10</ows:MaximumValue>
+          </ows:Range>
+        </ows:AllowedValues>
+        <ows:Meaning>
+          The maximum number of Attributes that can be requested in one GetData request.
+        </ows:Meaning>
+      </ows:Constraint>
+    </ows:Operation>
+  </ows:OperationsMetadata>
+  <tjs:Languages defaultLanguage="{{ service.languages[0] }}">
+    {% for language in service.languages %}
+    <ows:Language>{{ language }}</ows:Language>
+    {% endfor %}
+  </tjs:Languages>
+</tjs:Capabilities>

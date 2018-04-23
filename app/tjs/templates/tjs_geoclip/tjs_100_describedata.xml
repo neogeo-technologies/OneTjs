@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DataDescriptions
+  service="TJS"
+  version="1.0"
+  capabilities="{{ get_service_url(serv=service) }}"
+  xml:lang="{{ service.languages[0] }}"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:tjs="http://www.opengis.net/tjs/1.0"
+  xmlns:ows="http://www.opengis.net/ows/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/tjs/1.0 http://schemas.opengis.net/tjs/1.0/tjsDescribeDatasets_response.xsd">
+  <Framework>
+    <FrameworkURI>{{ framework.uri }}</FrameworkURI>
+    <Organization>{{ framework.organization }}</Organization>
+    <Title>{{ framework.title }}</Title>
+    <Abstract>{{ framework.abstract }}</Abstract>
+    <ReferenceDate {% if framework.start_date %}startDate="{{ framework.start_date }}"{% endif %}>{{ framework.reference_date }}</ReferenceDate>
+    <Version>{{ framework.version }}</Version>
+    {% if framework.documentation %}<Documentation>{{ framework.documentation }}</Documentation>{% endif %}
+    <FrameworkKey>
+      <Column name="{{ framework.key_col.name }}" type="{{ framework.key_col.type }}"
+        {% if framework.key_col.length %} length="{{ framework.key_col.length }}"{% endif %}
+        {% if framework.key_col.decimals %} decimals="{{ framework.key_col.decimals }}"{% endif %} />
+    </FrameworkKey>
+    <BoundingCoordinates>
+      <North>{{ framework.bbox.north }}</North>
+      <South>{{ framework.bbox.south }}</South>
+      <East>-{{ framework.bbox.east }}</East>
+      <West>-{{ framework.bbox.west }}</West>
+    </BoundingCoordinates>
+    <DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, language=language, framework=framework) }}"/>
+    <Dataset>
+      <DatasetURI>{{ dataset.uri }}</DatasetURI>
+      <Organization>{{ dataset.organization }}</Organization>
+      <Title>{{ dataset.name }}</Title>
+      <Abstract>{{ dataset.abstract }}</Abstract>
+      <ReferenceDate {% if dataset.start_date %}startDate="{{ dataset.start_date }}"{% endif %}>{{ dataset.reference_date }}</ReferenceDate>
+      <Version>{{ dataset.version }}</Version>
+      {% if dataset.documentation %}   <Documentation></Documentation>{% endif %}
+      <DescribeDataRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, language=language, framework=framework, dataset=dataset) }}"/>
+      <Columnset>
+        <FrameworkKey complete="{% if dataset.framework_complete %}true{% else %}false{% endif %}" relationship="{{ dataset.framework_relationship }}">
+          <Column name="{{ framework.key_col.name}}" type="{{ framework.key_col.type }}"
+            {% if framework.key_col.length %} length="{{ framework.key_col.length }}"{% endif %}
+            {% if framework.key_col.decimals %} decimals="{{ framework.key_col.decimals }}"{% endif %} />
+        </FrameworkKey>
+        <Attributes>
+          {% for attribute in attributes %}
+          <Column name="{{ attribute.name }}" type="{{ attribute.type }}"
+            {% if attribute.length %} length="{{ attribute.length }}"{% endif %}
+            {% if attribute.decimals %} decimals="{{ attribute.decimals }}"{% endif %} purpose="{{ attribute.purpose }}">
+            <Title>{{ attribute.title }}</Title>
+            <Abstract>{{ attribute.abstract }}</Abstract>
+            <!--Documentation>{{ attribute.documentation }}</Documentation-->
+            <Values>
+              {# attribute.values #}
+              <Count>
+                <UOM>
+                  <ShortForm>pers.</ShortForm>
+                  <LongForm>personnes</LongForm>
+                </UOM>
+                <Exceptions>
+                  <Null>
+                    <Identifier>-9999</Identifier>
+                    <title>valeur manquante</title>
+                    <Abstract>valeur manquante</Abstract>
+                  </Null>
+                  <Null>
+                    <Identifier>-99999</Identifier>
+                    <title>secret statistique</title>
+                    <Abstract>secret statistique</Abstract>
+                  </Null>
+                  <Null>
+                    <Identifier>-999999</Identifier>
+                    <title>division par zéro</title>
+                    <Abstract>division par zéro</Abstract>
+                  </Null>
+                </Exceptions>
+              </Count>
+            </Values>
+            {% if attribute.purpose == "Attribute" %}
+            <GetDataRequest xlink:href="{{ get_getdata_url(serv=service, tjs_version=tjs_version, framework=framework, dataset=dataset, attributes=(attribute,)) }}"/>
+            {% endif %}
+          </Column>
+          {% endfor %}
+        </Attributes>
+      </Columnset>
+    </Dataset>
+  </Framework>
+</DataDescriptions>

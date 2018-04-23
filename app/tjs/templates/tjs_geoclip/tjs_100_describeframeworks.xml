@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<tjs:FrameworkDescriptions
+  service="TJS"
+  version="1.0"
+  capabilities="{{ get_service_url(serv=service) }}"
+  xml:lang="{{ service.languages[0] }}"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:tjs="http://www.opengis.net/tjs/1.0"
+  xmlns:ows="http://www.opengis.net/ows/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/tjs/1.0 http://schemas.opengis.net/tjs/1.0/tjsDescribeFrameworks_response.xsd">
+  {% for framework in frameworks %}
+  <tjs:Framework>
+    <tjs:FrameworkURI>{{ framework.uri }}</tjs:FrameworkURI>
+    <tjs:Organization>{{ framework.organization }}</tjs:Organization>
+    <tjs:Title>{{ framework.title }}</tjs:Title>
+    <tjs:Abstract>{{ framework.abstract }}</tjs:Abstract>
+    <tjs:ReferenceDate {% if framework.start_date %}startDate="{{ framework.start_date }}"{% endif %}>{{ framework.reference_date }}</tjs:ReferenceDate>
+    <tjs:Version>{{ framework.version }}</tjs:Version>
+    {% if framework.documentation %}<tjs:Documentation>{{ framework.documentation }}</tjs:Documentation>{% endif %}
+    <tjs:FrameworkKey>
+      <tjs:Column name="{{ framework.key_col.name }}" type="{{ framework.key_col.type }}"
+        {% if framework.key_col.length %} length="{{ framework.key_col.length }}"{% endif %}
+        {% if framework.key_col.decimals %} decimals="{{ framework.key_col.decimals }}"{% endif %} />
+    </tjs:FrameworkKey>
+    <tjs:BoundingCoordinates>
+      <tjs:North>{{ framework.bbox.north }}</tjs:North>
+      <tjs:South>{{ framework.bbox.south }}</tjs:South>
+      <tjs:East>-{{ framework.bbox.east }}</tjs:East>
+      <tjs:West>-{{ framework.bbox.west }}</tjs:West>
+    </tjs:BoundingCoordinates>
+    <tjs:DescribeDatasetsRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, language=language, framework=framework) }}"/>
+  </tjs:Framework>
+  {% endfor %}
+</tjs:FrameworkDescriptions>
