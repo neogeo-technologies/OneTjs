@@ -25,9 +25,11 @@ from app import utils
 SUPPORTED_VERSIONS = (Version("1.0"),)
 
 tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
+tjs_geoclip_blueprint = Blueprint('tjs_geoclip', __name__, template_folder="templates")
 
 
 @tjs_blueprint.route("/tjs/<service_name>", methods=['GET', 'POST'])
+@tjs_geoclip_blueprint.route("/tjs_geoclip/<service_name>", methods=['GET', 'POST'])
 def tjs_operation(service_name):
     """
     Function responding to every TJS request and calling specialized functions for each TJS operation.
@@ -44,6 +46,8 @@ def tjs_operation(service_name):
     args = get_normalized_args()
     arg_service = args.get('service')
     arg_operation = args.get('request')
+
+    blueprint_name = request.blueprint
 
     # Service instance
     service = current_app.services_manager.get_service_with_name(service_name)
@@ -88,23 +92,23 @@ def tjs_operation(service_name):
 
         # GetCapabilities
         if arg_operation.lower() == "getcapabilities":
-            return get_capabilities(service, args)
+            return get_capabilities(service, args, blueprint_name)
 
         # DescribeFrameworks
         elif arg_operation.lower() == "describeframeworks":
-            return describe_frameworks(service, args)
+            return describe_frameworks(service, args, blueprint_name)
 
         # DescribeDatasets
         elif arg_operation.lower() == "describedatasets":
-            return describe_datasets(service, args)
+            return describe_datasets(service, args, blueprint_name)
 
         # DescribeData
         elif arg_operation.lower() == "describedata":
-            return describe_data(service, args)
+            return describe_data(service, args, blueprint_name)
 
         # GetData
         elif arg_operation.lower() == "getdata":
-            return get_data(service, args)
+            return get_data(service, args, blueprint_name)
 
         # Unsupported operations
         elif arg_operation.lower() in ("describejoinabilities", "describekey", "joindata"):
@@ -147,7 +151,7 @@ def get_normalized_args():
     return normalized_args
 
 
-def get_capabilities(serv, args):
+def get_capabilities(serv, args, blueprint_name):
     """
     Function used to answer to GetCapabilities requests
 
@@ -194,7 +198,7 @@ def get_capabilities(serv, args):
         tjs_version = str(SUPPORTED_VERSIONS[0])
 
     if tjs_version == "1.0":
-        template_name = "tjs_100_getcapabilities.xml"
+        template_name = blueprint_name+"/tjs_100_getcapabilities.xml"
 
         # TODO: handle language parameter
         arg_language = serv.languages[0]
@@ -209,7 +213,7 @@ def get_capabilities(serv, args):
     raise OwsCommonException(exceptions=exceptions)
 
 
-def describe_frameworks(serv, args):
+def describe_frameworks(serv, args, blueprint_name):
     """
     Function used to answer to DescribeFrameworks requests
 
@@ -236,7 +240,7 @@ def describe_frameworks(serv, args):
 
     # Get the jinja template corresponding to the TJS specifications version
     if arg_version in ("1.0",):
-        template_name = "tjs_100_describeframeworks.xml"
+        template_name = blueprint_name+"/tjs_100_describeframeworks.xml"
     else:
         # TJS exception
         exceptions.append({
@@ -257,7 +261,7 @@ def describe_frameworks(serv, args):
     return response
 
 
-def describe_datasets(serv, args):
+def describe_datasets(serv, args, blueprint_name):
     """
     Function used to answer to DescribeDatasets requests
 
@@ -307,7 +311,7 @@ def describe_datasets(serv, args):
 
     # Get the jinja template corresponding to the TJS specifications version
     if arg_version in ("1.0",):
-        template_name = "tjs_100_describedatasets.xml"
+        template_name = blueprint_name+"/tjs_100_describedatasets.xml"
     else:
         # TJS exception
         exceptions.append({
@@ -328,7 +332,7 @@ def describe_datasets(serv, args):
     return response
 
 
-def describe_data(serv, args):
+def describe_data(serv, args, blueprint_name):
     """
     Function used to answer to DescribeData requests
 
@@ -414,7 +418,7 @@ def describe_data(serv, args):
 
     # Get the jinja template corresponding to the TJS specifications version
     if arg_version in ("1.0",):
-        template_name = "tjs_100_describedata.xml"
+        template_name = blueprint_name+"/tjs_100_describedata.xml"
     else:
         # TJS exception
         exceptions.append({
@@ -436,7 +440,7 @@ def describe_data(serv, args):
     return response
 
 
-def get_data(serv, args):
+def get_data(serv, args, blueprint_name):
     """
     Function used to answer to GetData requests
 
@@ -462,7 +466,7 @@ def get_data(serv, args):
 
     # Get the jinja template corresponding to the TJS specifications version
     if arg_version in ("1.0",):
-        template_name = "tjs_100_getdata.xml"
+        template_name = blueprint_name+"/tjs_100_getdata.xml"
     else:
         # TJS exception
         exceptions.append({
