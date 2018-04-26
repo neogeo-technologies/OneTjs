@@ -53,18 +53,18 @@
             <tjs:Abstract>{{ attribute.abstract }}</tjs:Abstract>
             <!--Documentation>{{ attribute.documentation }}</Documentation-->
             <tjs:Values>
-              <{{ attribute.values }}>
+              <tjs:{{ attribute.values }}>
                 {% if attribute.values.lower() == "count" or attribute.values.lower() == "measure" %}
-                <UOM>
-                  <ShortForm>{{ attribute.uom_short_form }}</ShortForm>
-                  <LongForm>{{ attribute.uom_long_form }}</LongForm>
-                </UOM>
+                <tjs:UOM>
+                  <tjs:ShortForm>{{ attribute.uom_short_form }}</tjs:ShortForm>
+                  <tjs:LongForm>{{ attribute.uom_long_form }}</tjs:LongForm>
+                </tjs:UOM>
                 {% elif attribute.values.lower() == "nominal" or attribute.values.lower() == "ordinal" %}
-                <Classes/>
+                <tjs:Classes/>
                 {% else %}
                 Type error : {{ attribute.values }}
                 {% endif %}
-              </{{ attribute.values }}>
+              </tjs:{{ attribute.values }}>
             </tjs:Values>
             {% if attribute.purpose == "Attribute" %}
             <tjs:GetDataRequest xlink:href="{{ get_getdata_url(serv=service, tjs_version=tjs_version, framework=framework, dataset=dataset, attributes=(attribute,)) }}"/>
