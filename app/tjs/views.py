@@ -620,19 +620,23 @@ class OwsCommonException(Exception):
 
 
 @tjs_blueprint.app_template_global()
-def get_service_url(serv):
+def get_service_url(serv, geoclip=False):
     """
-    Function building the URL to a service.
+    Function building the URL to a service with specific blueprint (tjs/tjs_geoclip).
 
     :param serv:    Service instance
-    :return:        The UR
-    """
-
-    """
-
+    :return:        URL
     """
     app_path = request.url_root
-    service_url = urllib.parse.urljoin(app_path, "/".join(("tjs", serv.name)))
+    blueprint_name = request.blueprint
+
+    if blueprint_name == "public_pages":
+        if geoclip == True:
+            service_url = urllib.parse.urljoin(app_path, "/".join(("tjs_geoclip", serv.name)))
+        else:
+            service_url = urllib.parse.urljoin(app_path, "/".join(("tjs", serv.name)))
+    else:
+        service_url = urllib.parse.urljoin(app_path, "/".join((blueprint_name, serv.name)))
     return service_url
 
 
