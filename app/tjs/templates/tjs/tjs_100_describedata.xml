@@ -53,30 +53,18 @@
             <tjs:Abstract>{{ attribute.abstract }}</tjs:Abstract>
             <!--Documentation>{{ attribute.documentation }}</Documentation-->
             <tjs:Values>
-              {# attribute.values #}
-              <Count>
+              <{{ attribute.values }}>
+                {% if attribute.values.lower() == "count" or attribute.values.lower() == "measure" %}
                 <UOM>
-                  <ShortForm>%</ShortForm>
-                  <LongForm>%</LongForm>
+                  <ShortForm>{{ attribute.uom_short_form }}</ShortForm>
+                  <LongForm>{{ attribute.uom_long_form }}</LongForm>
                 </UOM>
-                <Exceptions>
-                  <Null>
-                    <Identifier>-9999</Identifier>
-                    <title>valeur manquante</title>
-                    <Abstract>valeur manquante</Abstract>
-                  </Null>
-                  <Null>
-                    <Identifier>-99999</Identifier>
-                    <title>secret statistique</title>
-                    <Abstract>secret statistique</Abstract>
-                  </Null>
-                  <Null>
-                    <Identifier>-999999</Identifier>
-                    <title>division par zéro</title>
-                    <Abstract>division par zéro</Abstract>
-                  </Null>
-                </Exceptions>
-              </Count>
+                {% elif attribute.values.lower() == "nominal" or attribute.values.lower() == "ordinal" %}
+                <Classes/>
+                {% else %}
+                Type error : {{ attribute.values }}
+                {% endif %}
+              </{{ attribute.values }}>
             </tjs:Values>
             {% if attribute.purpose == "Attribute" %}
             <tjs:GetDataRequest xlink:href="{{ get_getdata_url(serv=service, tjs_version=tjs_version, framework=framework, dataset=dataset, attributes=(attribute,)) }}"/>
