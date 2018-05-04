@@ -60,7 +60,21 @@
                   <LongForm>{{ attribute.uom_long_form }}</LongForm>
                 </UOM>
                 {% elif attribute.values.lower() == "nominal" or attribute.values.lower() == "ordinal" %}
-                <Classes/>
+                <Classes>
+                  <Title>{{ attribute.title }}</Title>
+                  <Abstract></Abstract>
+                  {% for choice in attribute.choices %}
+                  <Value>
+                    <Identifier>{{ choice.identifier }}</Identifier>
+                    <Title>{{ choice.title }}</Title>
+                    <Abstract>{{ choice.abstract }}</Abstract>
+                    {% if attribute.values.lower() == "ordinal" %}
+                    <rank>{{ choice.rank }}</rank>
+                    {% endif %}
+                    <color>{{ choice.color }}</color>
+                  </Value>
+                  {% endfor %}
+                </Classes>
                 {% else %}
                 Type error : {{ attribute.values }}
                 {% endif %}

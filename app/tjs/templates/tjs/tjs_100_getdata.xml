@@ -64,7 +64,21 @@
                   <tjs:LongForm>{{ attribute.uom_long_form }}</tjs:LongForm>
                 </tjs:UOM>
                 {% elif attribute.values.lower() == "nominal" or attribute.values.lower() == "ordinal" %}
-                <tjs:Classes/>
+                <tjs:Classes>
+                  <tjs:Title>{{ attribute.title }}</tjs:Title>
+                  <tjs:Abstract></tjs:Abstract>
+                  {% for choice in attribute.choices %}
+                  <tjs:Value>
+                    <tjs:Identifier>{{ choice.identifier }}</tjs:Identifier>
+                    <tjs:Title>{{ choice.title }}</tjs:Title>
+                    <tjs:Abstract>{{ choice.abstract }}</tjs:Abstract>
+                    {% if attribute.values.lower() == "ordinal" %}
+                    <tjs:rank>{{ choice.rank }}</tjs:rank>
+                    {% endif %}
+                    <tjs:color>{{ choice.color }}</tjs:color>
+                  </tjs:Value>
+                  {% endfor %}
+                </tjs:Classes>
                 {% else %}
                 Type error : {{ attribute.values }}
                 {% endif %}
