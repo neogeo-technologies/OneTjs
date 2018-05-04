@@ -48,7 +48,7 @@
       <tjs:ReferenceDate {% if dataset.start_date %}startDate="{{ dataset.start_date }}"{% endif %}>{{ dataset.reference_date }}</tjs:ReferenceDate>
       <tjs:Version>{{ dataset.version }}</tjs:Version>
       {% if dataset.documentation %}   <tjs:Documentation></tjs:Documentation>{% endif %}
-      <tjs:DescribeDataRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, language=language, framework=framework, dataset=dataset) }}"/>
+      <tjs:DescribeDataRequest xlink:href="{{ get_describedata_url(serv=service, tjs_version=tjs_version, language=language, framework=framework, dataset=dataset) }}"/>
     </tjs:Dataset>
     {% endfor %}
   </tjs:Framework>

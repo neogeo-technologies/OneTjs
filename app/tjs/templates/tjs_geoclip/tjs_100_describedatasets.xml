@@ -49,7 +49,7 @@
       <ReferenceDate {% if dataset.start_date %}startDate="{{ dataset.start_date }}"{% endif %}>{{ dataset.reference_date }}</ReferenceDate>
       <Version>{{ dataset.version }}</Version>
       {% if dataset.documentation %}<Documentation></Documentation>{% endif %}
-      <DescribeDataRequest xlink:href="{{ get_describedatasets_url(serv=service, tjs_version=tjs_version, language=language, framework=framework, dataset=dataset) }}"/>
+      <DescribeDataRequest xlink:href="{{ get_describedata_url(serv=service, tjs_version=tjs_version, language=language, framework=framework, dataset=dataset) }}"/>
     </Dataset>
     {% endfor %}
   </Framework>
