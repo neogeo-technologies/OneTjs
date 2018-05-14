@@ -28,8 +28,8 @@ tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
 tjs_geoclip_blueprint = Blueprint('tjs_geoclip', __name__, template_folder="templates")
 
 
-@tjs_blueprint.route("/tjs/<service_name>", methods=['GET', 'POST'])
-@tjs_geoclip_blueprint.route("/tjs_geoclip/<service_name>", methods=['GET', 'POST'])
+@tjs_blueprint.route("/tjs/<service_name>", methods=['GET'])
+@tjs_geoclip_blueprint.route("/tjs_geoclip/<service_name>", methods=['GET'])
 def tjs_operation(service_name):
     """
     Function responding to every TJS request and calling specialized functions for each TJS operation.
