@@ -16,7 +16,7 @@ activated:         yes
 cached:            no
 frameworks:
   - name:            epci_2017
-    uri:             epci_2017
+    uri:             fr/epci_2017
     complete:        no
     relationship:    one
 data_source:

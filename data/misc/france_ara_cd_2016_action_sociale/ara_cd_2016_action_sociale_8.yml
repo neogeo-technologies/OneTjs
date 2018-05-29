@@ -14,7 +14,7 @@ activated:         yes
 cached:            no
 frameworks:
   - name:            dept_2011
-    uri:             dept_2011
+    uri:             fr/dept_2011
     complete:        yes
     relationship:    one
 data_source:
