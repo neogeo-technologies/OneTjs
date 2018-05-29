@@ -28,7 +28,7 @@ region_hdf:
 
 divers:
   activated:         yes
-  data_dir_path:     divers
+  data_dir_path:     misc
   title:             Service TJS de données diverses de l'INSEE
   abstract:          "Prototype de service TJS développé par Neogeo Technologies à titre démonstratif sur d'autres
                      territoires"
