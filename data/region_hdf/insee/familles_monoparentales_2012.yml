@@ -10,12 +10,12 @@ reference_date:      2012-01-01
 activated:           yes
 cached:              no
 frameworks:
-  - name:            code_commune_2012
-    uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune_2012
+  - name:            commune_2012
+    uri:             region_hdf/commune_2012
     complete:        yes
     relationship:    one
-  - name:            code_departement
-    uri:             http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_departement
+  - name:            dept_2011
+    uri:             region_hdf/dept_2011
     complete:        yes
     relationship:    one
 data_source:

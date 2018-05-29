@@ -3,7 +3,7 @@
 dept_2011:
   uri:               dept_2011
   organization:      Neogeo Technologies
-  title:             Départements
+  title:             Départements (2011)
   abstract:          "Découpage territorial national français en départements.
                      L'identifiant utilisé est le code INSEE du département.
                      Inclus les DOM."
