@@ -4,7 +4,7 @@ uri:               insee/pop_totale_csp_2010
 organization:      INSEE
 title:             Population totale selon la catégorie socioprofessionnelle en 2010
 abstract:          "Population totale selon la catégorie socioprofessionnelle en 2010.
-                   Donées issues du recensement de la population.
+                   Données issues du recensement de la population.
                    Sources : Insee, RP2010 exploitation complémentaire."
 documentation:     ""
 version:           1
