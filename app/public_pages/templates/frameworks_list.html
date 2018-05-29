@@ -23,18 +23,20 @@
     <table class="table table-condensed">
         <thead>
             <tr>
+                <th>URI</th>
                 <th>Name</th>
                 <th>Title</th>
-                <th>URI</th>
+                <th>Abstract</th>
             </tr>
         </thead>
         <tbody>
             {% for framework in frameworks %}
             <tr>
                 <td><a href="{{ url_for('.framework', service_name=service.name, framework_name=framework.name) }}">
-                    {{ framework.name }}</a></td>
+                    {{ framework.uri }}</a></td>
+                <td>{{ framework.name }}</td>
                 <td>{{ framework.title }}</td>
-                <td>{{ framework.uri }}</td>
+                <td>{{ framework.abstract }}</td>
             </tr>
             {% endfor %}
         </tbody>
