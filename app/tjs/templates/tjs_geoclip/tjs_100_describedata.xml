@@ -32,7 +32,7 @@
     <Dataset>
       <DatasetURI>{{ dataset.uri }}</DatasetURI>
       <Organization>{{ dataset.organization }}</Organization>
-      <Title>{{ dataset.name }}</Title>
+      <Title>{{ dataset.title }}</Title>
       <Abstract>{{ dataset.abstract }}</Abstract>
       <ReferenceDate {% if dataset.start_date %}startDate="{{ dataset.start_date }}"{% endif %}>{{ dataset.reference_date }}</ReferenceDate>
       <Version>{{ dataset.version }}</Version>

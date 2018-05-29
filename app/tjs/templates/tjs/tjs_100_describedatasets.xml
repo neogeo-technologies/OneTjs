@@ -43,7 +43,7 @@
     <tjs:Dataset>
       <tjs:DatasetURI>{{ dataset.uri }}</tjs:DatasetURI>
       <tjs:Organization>{{ dataset.organization }}</tjs:Organization>
-      <tjs:Title>{{ dataset.name }}</tjs:Title>
+      <tjs:Title>{{ dataset.title }}</tjs:Title>
       <tjs:Abstract>{{ dataset.abstract }}</tjs:Abstract>
       <tjs:ReferenceDate {% if dataset.start_date %}startDate="{{ dataset.start_date }}"{% endif %}>{{ dataset.reference_date }}</tjs:ReferenceDate>
       <tjs:Version>{{ dataset.version }}</tjs:Version>
