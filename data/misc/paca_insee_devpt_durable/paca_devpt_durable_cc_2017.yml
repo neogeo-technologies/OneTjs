@@ -1,0 +1,138 @@
+---
+name:              paca_devpt_durable_cc_2017
+uri:               insee/paca_devpt_durable_cc_2017
+organization:      INSEE, DREAL PACA et Région PACA
+title:             Tableau de bord du développement durable en Provence-Alpes-Côte d'Azur
+abstract:          "En Provence-Alpes-Côte d’Azur, la Direction régionale de l’Insee, la DREAL et la Région se sont
+                   associées pour mettre à disposition du public un tableau de bord annuel d’indicateurs du
+                   développement durable. Cette quatrième édition poursuit l’objectif de contribuer à l’appropriation
+                   par tous des problématiques liées au développement durable et de fournir aux acteurs locaux un outil
+                   opérationnel."
+documentation:     http://www.paca.developpement-durable.gouv.fr/tableau-de-bord-du-developpement-durable-edition-a10440.html
+version:           1
+reference_date:    2011-01-01
+start_date:        2011-12-31
+activated:         yes
+cached:            no
+frameworks:
+  - name:            epci_2017
+    uri:             epci_2017
+    complete:        no
+    relationship:    one
+data_source:
+  type:  csv
+  path:  paca_devpt_durable_cc_2017.csv
+attributes:
+  - name:            lib_epci
+    title:           EPCI (nom)
+    abstract:        "Nom de l'EPCI."
+    type:            https://www.w3.org/TR/xmlschema-2/#string
+    length:          100
+    purpose:         Attribute
+    values:          Nominal
+  - name:            part_surf_natura_2000
+    title:           Part de superficie des sites Natura 2000 en 2015
+    abstract:        "Pourcentage de la superficie totale de l'EPCI couverte par des zones Natura 2000 en 2015.
+                     Données issues du tableau de bord du développement durable en Provence-Alpes-Côte d'Azur - Insee Paca - Septembre 2017
+                     Sources : SDES d'après Muséum national d'histoire naturelle (SIG), d'après données réglementaires du MTES/DGALN."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          8
+    decimals:        4
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
+  - name:            dens_etab_seveso
+    title:           Nombre d'établissements SEVESO pour 1 000 km² en 2012
+    abstract:        "Densité d'établissements classés SEVESO sur le territoire de l'EPCI en 2012. Cette densité est exprimée en nombre d'établissement pour 1 000 km².
+                     Données issues du tableau de bord du développement durable en Provence-Alpes-Côte d'Azur - Insee Paca - Septembre 2017
+                     Sources : SDES."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          8
+    decimals:        4
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  etab/1000km²
+    uom_long_form:   établissements/1000km²
+  - name:            duree_navettes_dom_travail
+    title:           Durée moyenne (en minutes) pour les navettes domicile-travail en 2013
+    abstract:        "Durée moyenne pour les navettes domicile-travail des résidents de l'EPCI en 2013. Cette durée est exprimée en minutes.
+                     Données issues du tableau de bord du développement durable en Provence-Alpes-Côte d'Azur - Insee Paca - Septembre 2017
+                     Sources : Insee - Recensements de la population - exploitation principale, Distancier Metric."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          8
+    decimals:        4
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  min
+    uom_long_form:   minutes
+  - name:            part_actifs_emploi_commune_residence
+    title:           Part des actifs ayant un emploi travaillant dans leur commune de résidence en 2013
+    abstract:        "Pourcentage des actifs de l'EPCI ayant un emploi travaillant dans leur commune de résidence en 2013.
+                     Données issues du tableau de bord du développement durable en Provence-Alpes-Côte d'Azur - Insee Paca - Septembre 2017
+                     Sources : Insee, Recensements de la  population - exploitation principale."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          8
+    decimals:        4
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
+  - name:            part_deplac_dom_travail_transp_commun
+    title:           Part des déplacements domicile-travail en transport en commun en 2013
+    abstract:        "Pourcentage des déplacements domicile-travail des résidents de l'EPCI en transport en commun en 2013.
+                     Données issues du tableau de bord du développement durable en Provence-Alpes-Côte d'Azur - Insee Paca - Septembre 2017
+                     Sources : Insee, Recensement de la  population, exploitation principale."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          8
+    decimals:        4
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
+  - name:            part_deplac_dom_travail_transp_voiture
+    title:           Part des déplacements domicile-travail effectués en voiture en 2013
+    abstract:        "Pourcentage des déplacements domicile-travail des résidents de l'EPCI effectués en voiture en 2013.
+                     Données issues du tableau de bord du développement durable en Provence-Alpes-Côte d'Azur - Insee Paca - Septembre 2017
+                     Sources : Insee, Recensement de la  population, exploitation principale."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          8
+    decimals:        4
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
+  - name:            nb_arretes_catastrophe_naturelle
+    title:           Nombre d'arrêtés de catastrophe naturelle en 2015
+    abstract:        "Nombre d'arrétés de catastrophes naturelles pris entre le 1er janvier 1996 et le 31 décembre 2015 et concernant l'EPCI.
+                     Données issues du tableau de bord du développement durable en Provence-Alpes-Côte d'Azur - Insee Paca - Septembre 2017
+                     Sources : Gaspar, Dreal Paca/SDES."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  Arrêtés
+    uom_long_form:   Nb arrêtés
+  - name:            part_pop_risque_inondation
+    title:           Part de la population exposée au risque inondation en 2013
+    abstract:        "Pourcentage de la population exposée au risque inondation de l'EPCI en 2013.
+                     Données issues du tableau de bord du développement durable en Provence-Alpes-Côte d'Azur - Insee Paca - Septembre 2017
+                     Sources : MTES, Base de données Cartorisque ; Insee, Recensement de la population 2013 ; Corine land Cover ; IGN, Bdcarto."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          8
+    decimals:        4
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
+  - name:            surf_herbe
+    title:           Surfaces toujours en herbe en ha en 2010
+    abstract:        "Surface en hectares de l'EPCI toujours en herbe en 2010.
+                     Données issues du tableau de bord du développement durable en Provence-Alpes-Côte d'Azur - Insee Paca - Septembre 2017
+                     Sources : SRISE, Recensement agricole 2010."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  ha
+    uom_long_form:   hectares

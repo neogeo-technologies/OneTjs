@@ -1,0 +1,100 @@
+---
+name:              logements_sur_occupes_1999_2010
+uri:               insee/logements_sur_occupes_1999_2010
+organization:      INSEE
+title:             Logements sur-occupés en 1999 et 2010
+abstract:          "Logements sur-occupés en 1999 et 2010."
+documentation:     ""
+version:           1
+reference_date:    1999-01-01
+start_date:        2010-12-31
+activated:         yes
+cached:            no
+frameworks:
+  - name:            dept_2011
+    uri:             dept_2011
+    complete:        yes
+    relationship:    one
+data_source:
+  type:  csv
+  path:  ara_cd_2016_action_sociale_11.csv
+attributes:
+  - name:            lib_dept
+    title:           Département
+    abstract:        "Nom du département."
+    type:            https://www.w3.org/TR/xmlschema-2/#string
+    length:          100
+    purpose:         Attribute
+    values:          Nominal
+  - name:            sous_occup_1999
+    title:           Sous-occupation en 1999
+    abstract:        "Part des résidences principales de 1999 en situation de sous-occupation.
+                     Données issues du recensement de la population.
+                     Source : Insee, RP1999 et exploitations complémentaires."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          6
+    decimals:        2
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
+  - name:            occup_norm_1999
+    title:           Occupation normale en 1999
+    abstract:        "Part des résidences principales de 1999 en situation de occupation normale.
+                     Données issues du recensement de la population.
+                     Source : Insee, RP1999 et exploitations complémentaires."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          6
+    decimals:        2
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
+  - name:            sur_occup_1999
+    title:           Sur-occupation en 1999
+    abstract:        "Part des résidences principales de 1999 en situation de sur-occupation.
+                     Données issues du recensement de la population.
+                     Source : Insee, RP1999 et exploitations complémentaires."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          6
+    decimals:        2
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
+  - name:            sous_occup_2010
+    title:           Sous-occupation en 2010
+    abstract:        "Part des résidences principales de 2010 en situation de sous-occupation.
+                     Données issues du recensement de la population.
+                     Source : Insee, RP2010 et exploitations complémentaires."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          6
+    decimals:        2
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
+  - name:            occup_norm_2010
+    title:           Occupation normale en 2010
+    abstract:        "Part des résidences principales de 2010 en situation de occupation normale.
+                     Données issues du recensement de la population.
+                     Source : Insee, RP2010 et exploitations complémentaires."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          6
+    decimals:        2
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
+  - name:            sur_occup_2010
+    title:           Sur-occupation en 2010
+    abstract:        "Part des résidences principales de 2010 en situation de sur-occupation.
+                     Données issues du recensement de la population.
+                     Source : Insee, RP2010 et exploitations complémentaires."
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
+    length:          6
+    decimals:        2
+    purpose:         Attribute
+    values:          Measure
+    uom_short_form:  '%'
+    uom_long_form:   '%'
