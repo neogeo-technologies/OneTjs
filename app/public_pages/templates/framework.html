@@ -35,10 +35,13 @@
             </tr>
             <tr>
                 <td>Key col</td>
-                <td>{{ framework.key_col["name"] }}
-                    (type: {{ framework.key_col["type"] }}
-                    {% if framework.key_col.length %}- length: {{ framework.key_col.length }}{% endif %}
-                    {% if framework.key_col.decimals %}- length: {{ framework.key_col.decimals }}{% endif %}
+                <td>
+                    {% set key_col_descriptors = [] %}
+                    {% do key_col_descriptors.append("type: " + framework.key_col["type"]) %}
+                    {% do key_col_descriptors.append("length: " + framework.key_col["length"]|string) %}
+                    {% if framework.key_col.decimals %}{% do key_col_descriptors.append("decimals: " + framework.key_col["decimals"]|string) %}{% endif -%}
+                    {{ framework.key_col["name"] }}
+                    ({{ key_col_descriptors|join(" - ") }})
                 </td>
             </tr>
             <tr>
