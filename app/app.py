@@ -20,6 +20,7 @@ def create_app(config=None, app_name='simple_tjs', blueprints=None):
     app.config.from_object('app.config')
     local_cfg_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'local.cfg'))
     app.config.from_pyfile(local_cfg_file_path, silent=True)
+
     if config:
         app.config.from_pyfile(config)
 
@@ -30,7 +31,7 @@ def create_app(config=None, app_name='simple_tjs', blueprints=None):
     blueprints_fabrics(app)
     extensions_fabrics(app)
     # see https://github.com/xen/flask-project-template
-    # api_fabrics(api)  # this must be called after extensions_fabrics
+
     configure_logging(app)
     error_pages(app)
 
@@ -50,48 +51,6 @@ def blueprints_fabrics(app):
 
 def extensions_fabrics(app):
     # see https://github.com/xen/flask-project-template
-    # from flask_mail import Mail
-    # mail = Mail()
-    #
-    # from flask_sqlalchemy import SQLAlchemy
-    # db = SQLAlchemy()
-    #
-    # from flask_flatpages import FlatPages
-    # pages = FlatPages()
-    #
-    # import flask_restless
-    # manager = flask_restless.APIManager()
-    #
-    # from flask_login import LoginManager
-    # login_manager = LoginManager()
-    # login_manager.login_view = 'auth.login'
-    #
-    # from flask_babel import Babel
-    # babel = Babel()
-    #
-    # from flask_migrate import Migrate
-    # migrate = Migrate()
-    #
-    # from flask_wtf.csrf import CsrfProtect
-    # csrf = CsrfProtect()
-    #
-    # from flask_cache import Cache
-    # cache = Cache()
-    #
-    # from celery import Celery
-    # celery = Celery()
-
-    # db.init_app(app)
-    # mail.init_app(app)
-    # babel.init_app(app)
-    # pages.init_app(app)
-    # init_social(app, db)
-    # login_manager.init_app(app)
-    # manager.init_app(app, flask_sqlalchemy_db=db)
-    # migrate.init_app(app, db)
-    # csrf.init_app(app)
-    # cache.init_app(app)
-    # celery.config_from_object(app.config)
 
     from flask_bcrypt import Bcrypt
     bcrypt = Bcrypt()
@@ -104,10 +63,6 @@ def extensions_fabrics(app):
     from flask_debugtoolbar import DebugToolbarExtension
     toolbar = DebugToolbarExtension()
     toolbar.init_app(app)
-
-# def api_fabrics(app):
-#     # initialize_api(app)
-#     pass
 
 
 def error_pages(app):
@@ -155,22 +110,3 @@ def configure_logging(app):
         '[in %(pathname)s:%(lineno)d]')
     )
     app.logger.addHandler(info_file_handler)
-
-    # Testing
-    # app.logger.info("testing info.")
-    # app.logger.warn("testing warn.")
-    # app.logger.error("testing error.")
-
-    # see https://github.com/xen/flask-project-template
-    # mail_handler = SMTPHandler(app.config['MAIL_SERVER'],
-    #                            app.config['MAIL_USERNAME'],
-    #                            app.config['ADMINS'],
-    #                            'O_ops... %s failed!' % app.config['PROJECT'],
-    #                            (app.config['MAIL_USERNAME'],
-    #                             app.config['MAIL_PASSWORD']))
-    # mail_handler.setLevel(logging.ERROR)
-    # mail_handler.setFormatter(logging.Formatter(
-    #     '%(asctime)s %(levelname)s: %(message)s '
-    #     '[in %(pathname)s:%(lineno)d]')
-    # )
-    # app.logger.addHandler(mail_handler)
