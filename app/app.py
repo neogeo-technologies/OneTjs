@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
+import logging
 
 from flask import Flask
 from flask import render_template
@@ -91,22 +93,30 @@ def error_pages(app):
 def configure_logging(app):
     """Configure file(info) and email(error) logging."""
 
+    log_format = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+    date_format = '%Y-%m-%dT%H:%M:%SZ'
+    log_levels = {
+        'CRITICAL': logging.CRITICAL,
+        'ERROR': logging.ERROR,
+        'WARNING': logging.WARNING,
+        'INFO': logging.INFO,
+        'DEBUG': logging.DEBUG,
+        'NOTSET': logging.NOTSET,
+    }
+
+    # Set info level on logger
+    log_level = log_levels['INFO']
     if app.debug or app.testing:
-        # Skip debug and test mode. Just check standard output.
-        return
+        log_level = log_levels['DEBUG']
+    if 'LOG_LEVEL' in app.config:
+        log_level = log_levels[app.config['LOG_LEVEL']]
 
-    import logging
-    from logging.handlers import SMTPHandler
+    if 'LOG_FILE' in app.config:
+        logging.basicConfig(level=log_level, datefmt=date_format,
+                            format=log_format,
+                            filename=app.config['LOG_FILE'])
+    else:
+        logging.basicConfig(level=log_level, datefmt=date_format,
+                            format=log_format, stream=sys.stdout)
 
-    # Set info level on logger, which might be overwritten by handlers.
-    # Suppress DEBUG messages.
-    app.logger.setLevel(logging.INFO)
-
-    info_log = os.path.join(app.config['LOG_DIR_PATH'], 'info.log')
-    info_file_handler = logging.handlers.RotatingFileHandler(info_log, maxBytes=100000, backupCount=10)
-    info_file_handler.setLevel(logging.INFO)
-    info_file_handler.setFormatter(logging.Formatter(
-        '%(asctime)s %(levelname)s: %(message)s '
-        '[in %(pathname)s:%(lineno)d]')
-    )
-    app.logger.addHandler(info_file_handler)
+    app.logger.debug('Logging initialized')
