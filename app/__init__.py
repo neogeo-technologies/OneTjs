@@ -2,5 +2,5 @@
 
 from .app import create_app
 
-__version__ = '0.1.1.dev'
+__version__ = '0.1.2.dev'
 __description__ = 'TJS server'
