@@ -31,12 +31,41 @@ Download the repository or clone it with:
 
 Install the required python modules:
 
-    (tjs-venv) $ pip install -r /tjs/requirements.txt
+    (tjs-venv) $ cd simple-tjs
+    (tjs-venv) $ pip install -r requirements.txt
 
 
-### Run server
+## Run the server
 
-    (tjs-venv) $ cd simple-tjs-master
+### ...using the Flask command
+
+    (tjs-venv) $ flask run
+
+This command launches the Flask development server (werkzeug).  
+Do not use it for production.  
+Default port: 5000.
+
+
+### ...using the manage.py script
+
     (tjs-venv) $ python manage.py runserver
 
-The server should run on port 5000.
+This command launches the Flask development server (werkzeug).  
+Do not use it for production.  
+Default port: 5000.
+
+
+### ...using gunicorn
+
+    (tjs-venv) $ gunicorn --bind 0.0.0.0:8000 app.wsgi:app
+
+
+### ...using uwsgi
+
+    (tjs-venv) $ uwsgi --socket 0.0.0.0:8000 --protocol=http -w app.wsgi:app
+    
+
+### ...using uwsgi and an ini file
+
+    (tjs-venv) $ uwsgi --socket 0.0.0.0:8000 --protocol=http --ini uwsgi.ini
+

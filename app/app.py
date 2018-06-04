@@ -51,6 +51,7 @@ def blueprints_fabrics(app):
     from .tjs.views import tjs_geoclip_blueprint
     app.register_blueprint(tjs_geoclip_blueprint)
 
+
 def extensions_fabrics(app):
     # see https://github.com/xen/flask-project-template
 
