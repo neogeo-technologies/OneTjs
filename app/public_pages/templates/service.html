@@ -4,9 +4,9 @@
 
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#service">Service</a></li>
-        <li><a data-toggle="tab" href="#frameworks">Frameworks</a></li>
-        <li><a data-toggle="tab" href="#datasets">Datasets</a></li>
-        <li><a data-toggle="tab" href="#requests">Sample TJS requests</a></li>
+        <li><a data-toggle="tab" href="#frameworks">Référentiels</a></li>
+        <li><a data-toggle="tab" href="#datasets">Jeux de données</a></li>
+        <li><a data-toggle="tab" href="#requests">Exemples de requêtes TJS</a></li>
     </ul>
 
     <div class="tab-content">
@@ -15,31 +15,31 @@
             <table class="table table-condensed">
                 <tbody>
                     <tr>
-                        <td>Name</td>
+                        <td>Nom</td>
                         <td>{{ service.name }}</td>
                     </tr>
                     <tr>
-                        <td>Title</td>
+                        <td>Titre</td>
                         <td>{{ service.title }}</td>
                     </tr>
                     <tr>
-                        <td>Abstract</td>
+                        <td>Description</td>
                         <td>{{ service.abstract }}</td>
                     </tr>
                     <tr>
-                        <td>Keywords</td>
+                        <td>Mots-clefs</td>
                         <td>{{ service.keywords|join(", ") }}</td>
                     </tr>
                     <tr>
-                        <td>Activated</td>
+                        <td>Activé ?</td>
                         <td>{{ service.activated }}</td>
                     </tr>
                     <tr>
-                        <td>TJS versions</td>
+                        <td>Versions de TJS</td>
                         <td>{{ service.tjs_versions|join(", ") }}</td>
                     </tr>
                     <tr>
-                        <td>Languages</td>
+                        <td>Langues</td>
                         <td>{{ service.languages|join(", ") }}</td>
                     </tr>
                     <tr>
@@ -49,15 +49,15 @@
                 </tbody>
             </table>
 
-            <label>Service URLs</label>
+            <label>URLs du service</label>
             <table class="table table-condensed">
               <tbody>
                 <tr>
-                  <td>Standard TJS</td>
+                  <td>Interface TJS standard</td>
                   <td>{{ get_service_url(serv=service, geoclip=False) }}</td>
                 </tr>
                 <tr>
-                  <td>Geoclip Compatible</td>
+                  <td>Interface TJS compatible avec Géoclip</td>
                   <td>{{ get_service_url(serv=service, geoclip=True) }}</td>
                 </tr>
               </tbody>
@@ -71,8 +71,8 @@
             <table class="table table-condensed">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Title</th>
+                        <th>Nom</th>
+                        <th>Titre</th>
                         <th>URI</th>
                     </tr>
                 </thead>
@@ -98,8 +98,8 @@
             <table class="table table-condensed">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Title</th>
+                        <th>Nom</th>
+                        <th>Titre</th>
                         <th>URI</th>
                     </tr>
                 </thead>
@@ -132,20 +132,20 @@
                     </tr>
                     <tr>
                         <td><a href="{{ get_describedatasets_url(serv=service) }}">
-                            DescribeDatasets for all frameworks and datasets</a></td>
+                            DescribeDatasets pour tous les référentiels et jeux de données</a></td>
                     </tr>
 {% for dataset in datasets %}
                     <tr>
                         <td><a href="{{ get_describedatasets_url(serv=service, dataset=dataset) }}">
-                            DescribeDatasets for {{ dataset.name }} dataset</a></td>
+                            DescribeDatasets pour le jeu de données {{ dataset.name }}</a></td>
                     </tr>
                     <tr>
                         <td><a href="{{ get_describedata_url(serv=service, dataset=dataset) }}">
-                            DescribeData for {{ dataset.name }} dataset</a></td>
+                            DescribeData pour le jeu de données {{ dataset.name }}</a></td>
                     </tr>
                     <tr>
                         <td><a href="{{ get_getdata_url(serv=service, dataset=dataset) }}">
-                            GetData for {{ dataset.name }} dataset</a></td>
+                            GetData pour le jeu de données {{ dataset.name }}</a></td>
                     </tr>
 {% endfor %}
                 </tbody>

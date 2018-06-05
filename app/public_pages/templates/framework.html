@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2><small>Framework</small></h2>
+    <h2><small>Référentiel</small></h2>
 
     <table class="table table-condensed">
         <tbody>
             <tr>
-                <td>Name</td>
+                <td>Nom</td>
                 <td>{{ framework.name }}</td>
             </tr>
             <tr>
@@ -14,11 +14,11 @@
                 <td>{{ framework.uri }}</td>
             </tr>
             <tr>
-                <td>Title</td>
+                <td>Titre</td>
                 <td>{{ framework.title }}</td>
             </tr>
             <tr>
-                <td>Abstract</td>
+                <td>Description</td>
                 <td>{{ framework.abstract }}</td>
             </tr>
             <tr>
@@ -26,30 +26,30 @@
                 <td>{{ framework.version }}</td>
             </tr>
             <tr>
-                <td>Reference date</td>
+                <td>Date de référence</td>
                 <td>{{ framework.reference_date }}</td>
             </tr>
             <tr>
-                <td>Start date</td>
+                <td>Date de début</td>
                 <td>{{ framework.start_date }}</td>
             </tr>
             <tr>
-                <td>Key col</td>
+                <td>Identifiant</td>
                 <td>
                     {% set key_col_descriptors = [] %}
-                    {% do key_col_descriptors.append("type: " + framework.key_col["type"]) %}
-                    {% do key_col_descriptors.append("length: " + framework.key_col["length"]|string) %}
-                    {% if framework.key_col.decimals %}{% do key_col_descriptors.append("decimals: " + framework.key_col["decimals"]|string) %}{% endif -%}
+                    {% do key_col_descriptors.append("type : " + framework.key_col["type"]) %}
+                    {% do key_col_descriptors.append("longueur : " + framework.key_col["length"]|string) %}
+                    {% if framework.key_col.decimals %}{% do key_col_descriptors.append("nombre de décimales après la virugule : " + framework.key_col["decimals"]|string) %}{% endif -%}
                     {{ framework.key_col["name"] }}
                     ({{ key_col_descriptors|join(" - ") }})
                 </td>
             </tr>
             <tr>
-                <td>Bounding box</td>
-                <td>South: {{ framework.bbox["south"] }} -
-                    North: {{ framework.bbox["north"] }} -
-                    West: {{ framework.bbox["west"] }} -
-                    East: {{ framework.bbox["east"] }}</td>
+                <td>Emprise géographique</td>
+                <td>Sud : {{ framework.bbox["south"] }} -
+                    Nord : {{ framework.bbox["north"] }} -
+                    Ouest : {{ framework.bbox["west"] }} -
+                    Est : {{ framework.bbox["east"] }}</td>
             </tr>
         </tbody>
     </table>

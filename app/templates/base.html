@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-    <html lang="en">
+    <html lang="fr">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <title>TJS</title>
+        <title>OneTjs</title>
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
@@ -27,14 +27,14 @@
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="{{ url_for('public_pages.index') }}">{% block branding %}TJS simple server{% endblock %}</a>
+                    <a class="navbar-brand" href="{{ url_for('public_pages.index') }}">{% block branding %}OneTjs{% endblock %}</a>
                 </div>
 
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url_for('public_pages.services') }}">Services</a></li>
-                        <li><a href="{{ url_for('public_pages.frameworks') }}">Frameworks</a></li>
-                        <li><a href="{{ url_for('public_pages.datasets') }}">Datasets</a></li>
+                        <li><a href="{{ url_for('public_pages.frameworks') }}">Référentiels</a></li>
+                        <li><a href="{{ url_for('public_pages.datasets') }}">Jeux de données</a></li>
                         {% block extra_nav %}{% endblock %}
                     </ul>
                 </div>

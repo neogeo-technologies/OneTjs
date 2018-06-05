@@ -13,7 +13,7 @@
 
 {% block content %}
 
-    <h2><small>Datasets</small></h2>
+    <h2><small>Jeux de données</small></h2>
 
 {% if services|length > 0 %}
 {% for service in services %}
@@ -23,8 +23,8 @@
     <table class="table table-condensed">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Title</th>
+                <th>Nom</th>
+                <th>Titre</th>
                 <th>URI</th>
             </tr>
         </thead>
@@ -40,7 +40,7 @@
         </tbody>
     </table>
 {% else %}
-    <p>Aucun dataset n'est déclaré pour ce service</p>
+    <p>Aucun jeu de données n'est déclaré pour ce service</p>
 {% endif %}
 {% endfor %}
 

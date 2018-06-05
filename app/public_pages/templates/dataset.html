@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2><small>Dataset</small></h2>
+    <h2><small>Jeu de données</small></h2>
 
     <table class="table table-condensed">
         <tbody>
             <tr>
-                <td>Name</td>
+                <td>Nom</td>
                 <td>{{ dataset.name }}</td>
             </tr>
             <tr>
@@ -14,11 +14,11 @@
                 <td>{{ dataset.uri }}</td>
             </tr>
             <tr>
-                <td>Title</td>
+                <td>Titre</td>
                 <td>{{ dataset.title }}</td>
             </tr>
             <tr>
-                <td>Abstract</td>
+                <td>Description</td>
                 <td>{{ dataset.abstract }}</td>
             </tr>
             <tr>
@@ -26,29 +26,28 @@
                 <td>{{ dataset.version }}</td>
             </tr>
             <tr>
-                <td>Reference date</td>
+                <td>Date de référence</td>
                 <td>{{ dataset.reference_date }}</td>
             </tr>
             <tr>
-                <td>Start date</td>
+                <td>Date de début</td>
                 <td>{{ dataset.start_date }}</td>
             </tr>
-            <tr>
-                <td>Activated</td>
+            <!--tr>
+                <td>Activé ?</td>
                 <td>{{ dataset.activated }}</td>
             </tr>
             <tr>
-                <td>Cached</td>
+                <td>Mis en cache ?</td>
                 <td>{{ dataset.activated }}</td>
-            </tr>
+            </tr-->
         </tbody>
     </table>
 
-
-    <h2><small>Data preview</small></h2>
+    <h2><small>Aperçu des données</small></h2>
 {% if data is not none %}
 {{ data.to_html(max_rows=10, border=0, bold_rows=False, classes="table table-condensed") | safe}}
 {% else %}
-<p>Unable to retrieve data</p>
+<p>Echec lors de la récupération des données</p>
 {% endif %}
 {% endblock %}

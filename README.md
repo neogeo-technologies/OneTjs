@@ -2,13 +2,14 @@
 
 ## Installation
 
+### Git Repository
+
+Download the repository or clone it with:
+
+`$ git clone https://github.com/neogeo-technologies/OneTjs.git`
+
+
 ### Virtual environment - Python 3
-
-
-Create a project folder:
-
-    $ mkdir tjs-server
-    $ cd tjs-server
 
 Install a python virtual environment:
 
@@ -17,21 +18,14 @@ Install a python virtual environment:
 
 Activate the virtual environment:
 
-    $ cd tjs-venv
-    $ . bin/activate
-
-
-### Git Repository
-
-Download the repository or clone it with:
-`$ git clone git@github.com:neogeo-technologies/simple-tjs.git`
+    $ source tjs-venv/bin/activate
 
 
 ### Requirements
 
 Install the required python modules:
 
-    (tjs-venv) $ cd simple-tjs
+    (tjs-venv) $ cd OneTjs
     (tjs-venv) $ pip install -r requirements.txt
 
 
@@ -41,7 +35,7 @@ Install the required python modules:
 
     (tjs-venv) $ flask run
 
-This command launches the Flask development server (werkzeug).  
+This command launches the Flask development server (Werkzeug).  
 Do not use it for production.  
 Default port: 5000.
 
@@ -50,7 +44,7 @@ Default port: 5000.
 
     (tjs-venv) $ python manage.py runserver
 
-This command launches the Flask development server (werkzeug).  
+This command launches the Flask development server (Werkzeug).  
 Do not use it for production.  
 Default port: 5000.
 

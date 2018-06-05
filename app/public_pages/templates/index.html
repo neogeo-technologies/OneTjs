@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>TJS Simple Server</h1>
-    <p>TJS Simple Server est un prototype de serveur TJS implémentant le standard de l'OGC Georeferenced Table Joining Service.</p>
-    <p><u>Les opérations de type Data Access en HTTP GET sont implémentées</u> :
+    <h1>OneTjs</h1>
+    <p>OneTjs est un serveur implémentant le standard de l'OGC Table Joining Service.</p>
+    <p>Les opérations de type Data Access en HTTP GET sont implémentées :
         <ul>
             <li>GetCapabilities</li>
             <li>DescribeFrameworks</li>
@@ -12,7 +12,7 @@
             <li>GetData</li>
         </ul>
     </p>
-    <p><u>Eléments non supportés pour l'instant</u> :
+    <p>Eléments non supportés (à l'heure actuelle) :
         <ul>
             <li>Requêtes HTTP POST</li>
             <li>Requêtes SOAP</li>
@@ -21,11 +21,11 @@
             <li>Le multilinguisme</li>
             <li>Le champ <em>documentation</em> des attributs</li>
             <li>Pour la requête GetCapabilities : les paramètres language, AcceptFormats, Sections et updateSequence</li>
-            <li>Pour la requête DescribeFramewroks : le paramètre language</li>
+            <li>Pour la requête DescribeFrameworks : le paramètre language</li>
             <li>Pour la requête GetData : les paramètres language, LinkageKeys , FilterColumn, FilterValue, XSL, Aid</li>
         </ul>
     </p>
-    <p><u>Autres limitations</u> :
+    <p>Autres limitations :
         <ul>
             <li>Les jeux de données stockés dans une base SQL ne sont pas encore supportés</li>
         </ul>
