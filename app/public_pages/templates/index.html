@@ -2,38 +2,18 @@
 
 {% block content %}
     <h1>OneTjs</h1>
-    <p>OneTjs est un serveur implémentant le standard de l'OGC Table Joining Service.</p>
-    <p>Les opérations de type Data Access en HTTP GET sont implémentées :
-        <ul>
-            <li>GetCapabilities</li>
-            <li>DescribeFrameworks</li>
-            <li>DescribeDatasets</li>
-            <li>DescribeData</li>
-            <li>GetData</li>
-        </ul>
-    </p>
-    <p>Eléments non supportés (à l'heure actuelle) :
-        <ul>
-            <li>Requêtes HTTP POST</li>
-            <li>Requêtes SOAP</li>
-            <li>WSDL</li>
-            <li>Valeurs de types <em>ordinal</em> et <em>nominal</em></li>
-            <li>Le multilinguisme</li>
-            <li>Le champ <em>documentation</em> des attributs</li>
-            <li>Pour la requête GetCapabilities : les paramètres language, AcceptFormats, Sections et updateSequence</li>
-            <li>Pour la requête DescribeFrameworks : le paramètre language</li>
-            <li>Pour la requête GetData : les paramètres language, LinkageKeys , FilterColumn, FilterValue, XSL, Aid</li>
-        </ul>
-    </p>
-    <p>Autres limitations :
-        <ul>
-            <li>Les jeux de données stockés dans une base SQL ne sont pas encore supportés</li>
-        </ul>
-    </p>
+    <p>OneTjs est un serveur implémentant les opérations Data Access du standard de l'OGC Table Joining Service.</p>
     <p>
       Initialisation de l'application :
       {% if init_success %}<span class="label label-success">Succès</span>
       {% else %}<span class="label label-danger">Echec</span>
       {% endif %}
     </p>
+
+    <div>Copyright 2018
+        <a href="https://www.neogeo.fr/" target="_blank">Neogeo Technologies</a></div>
+    <div>Publié sous licence
+        <a href="https://choosealicense.com/licenses/apache-2.0/" target="_blank">Apache Version 2.0</a></div>
+    <div><a href="https://github.com/neogeo-technologies/OneTjs" target="_blank">OneTjs sur Github</a></div>
+
 {% endblock %}
