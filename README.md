@@ -1,6 +1,6 @@
 # README.md
 
-##Description
+## Description
 
 OneTjs is a server implementing the Open Geospatial Consortium standard called "Table Joining Service".
 
