@@ -11,15 +11,16 @@ import logging
 
 # from app import app
 
-public_blueprint = Blueprint('public_pages', __name__, template_folder="templates")
+public_blueprint = Blueprint("public_pages", __name__, template_folder="templates")
 
 
-@public_blueprint.route('/favicon.ico')
+@public_blueprint.route("/favicon.ico")
 def favicon():
     return send_from_directory(
-        os.path.join(current_app.root_path, 'static'),
-        'favicon.ico',
-        mimetype='image/vnd.microsoft.icon')
+        os.path.join(current_app.root_path, "static"),
+        "favicon.ico",
+        mimetype="image/vnd.microsoft.icon",
+    )
 
 
 @public_blueprint.route("/")
@@ -29,7 +30,9 @@ def index():
 
 @public_blueprint.route("/services/")
 def services():
-    return render_template("services_list.html", services=current_app.services_manager.get_services())
+    return render_template(
+        "services_list.html", services=current_app.services_manager.get_services()
+    )
 
 
 @public_blueprint.route("/services/<service_name>")
@@ -45,7 +48,9 @@ def service(service_name):
 
 @public_blueprint.route("/frameworks/")
 def frameworks():
-    return render_template("frameworks_list.html", services=current_app.services_manager.get_services())
+    return render_template(
+        "frameworks_list.html", services=current_app.services_manager.get_services()
+    )
 
 
 @public_blueprint.route("/services/<service_name>/frameworks/<framework_name>")
@@ -68,7 +73,9 @@ def framework(service_name, framework_name):
 
 @public_blueprint.route("/datasets/")
 def datasets():
-    return render_template("datasets_list.html", services=current_app.services_manager.get_services())
+    return render_template(
+        "datasets_list.html", services=current_app.services_manager.get_services()
+    )
 
 
 @public_blueprint.route("/services/<service_name>/datasets/<dataset_name>")

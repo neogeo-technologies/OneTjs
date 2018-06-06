@@ -43,7 +43,10 @@ class Dataset(object):
             dataset_attributes_dicts = dataset_dict.pop("attributes")
         except KeyError as e:
             logging.error(
-                "'attributes' parameter not defined in dataset config file {0}".format(self.yaml_file_path))
+                "'attributes' parameter not defined in dataset config file {0}".format(
+                    self.yaml_file_path
+                )
+            )
             logging.exception(e)
 
         # Get the frameworks info
@@ -52,7 +55,10 @@ class Dataset(object):
             frameworks_relations = dataset_dict.pop("frameworks")
         except KeyError as e:
             logging.error(
-                "'frameworks' parameter not defined in dataset config file {0}".format(self.yaml_file_path))
+                "'frameworks' parameter not defined in dataset config file {0}".format(
+                    self.yaml_file_path
+                )
+            )
             logging.exception(e)
 
         # Update the dataset object properties
@@ -79,10 +85,17 @@ class Dataset(object):
         self.check_data_source()
 
         if not self.uri:
-            raise ValueError("'uri' parameter not defined in service config file {0}".format(self.yaml_file_path))
+            raise ValueError(
+                "'uri' parameter not defined in service config file {0}".format(
+                    self.yaml_file_path
+                )
+            )
         if not self.frameworks:
-            raise ValueError("'frameworks' parameter not defined in service config file {0}".format(
-                self.yaml_file_path))
+            raise ValueError(
+                "'frameworks' parameter not defined in service config file {0}".format(
+                    self.yaml_file_path
+                )
+            )
 
     def check_data_source(self):
         raise NotImplementedError()
@@ -119,8 +132,10 @@ class Dataset(object):
     def get_data(self, attributes=None, framework=None):
 
         if framework and framework not in self.get_frameworks():
-            raise ValueError("The framework with the uri {} is not available "
-                             "for the dataset with the uri {}".format(framework.uri, self.uri))
+            raise ValueError(
+                "The framework with the uri {} is not available "
+                "for the dataset with the uri {}".format(framework.uri, self.uri)
+            )
 
         if not attributes:
             attributes = self.ds_attributes
@@ -129,8 +144,11 @@ class Dataset(object):
         attributes_types = [at.type for at in attributes]
 
         if not self.frameworks:
-            raise ValueError("There is not any framework available for the dataset with the uri {}.".format(
-                framework.uri, self.uri))
+            raise ValueError(
+                "There is not any framework available for the dataset with the uri {}.".format(
+                    framework.uri, self.uri
+                )
+            )
 
         if not framework:
             framework = self.get_one_framework()
@@ -140,7 +158,9 @@ class Dataset(object):
 
         data = None
         try:
-            data = self._get_data(attributes_names, attributes_types, key_col_name, key_col_type)
+            data = self._get_data(
+                attributes_names, attributes_types, key_col_name, key_col_type
+            )
         except ValueError as e:
             logging.exception(e)
 
@@ -154,7 +174,6 @@ class Dataset(object):
 
 
 class FileDataset(Dataset):
-
     def __init__(self, service, dataset_dict):
         super(FileDataset, self).__init__(service, dataset_dict)
 
@@ -165,18 +184,26 @@ class FileDataset(Dataset):
         if os.path.exists(self.data_source["path"]):
             data_source_found = True
         else:
-            temp_file_path = os.path.join(os.path.dirname(self.yaml_file_path), self.data_source["path"])
+            temp_file_path = os.path.join(
+                os.path.dirname(self.yaml_file_path), self.data_source["path"]
+            )
             if os.path.exists(temp_file_path):
                 data_source_found = True
                 self.data_source["path"] = temp_file_path
 
         if not data_source_found:
-            raise ValueError("data source specified in dataset config file {0} cannot be found: {1}".format(
-                self.yaml_file_path, self.data_source["path"]))
+            raise ValueError(
+                "data source specified in dataset config file {0} cannot be found: {1}".format(
+                    self.yaml_file_path, self.data_source["path"]
+                )
+            )
 
         if not os.path.isfile(self.data_source["path"]):
-            raise ValueError("data source specified in dataset config file {0} is not a file: {1}".format(
-                self.yaml_file_path, self.data_source["path"]))
+            raise ValueError(
+                "data source specified in dataset config file {0} is not a file: {1}".format(
+                    self.yaml_file_path, self.data_source["path"]
+                )
+            )
 
         # Check the existence of the attributes in the data source
         # TODO: check the attributes
@@ -214,11 +241,13 @@ class CsvFileDataset(FileDataset):
     def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
 
         converters = get_converters_for_attributes(
-            attributes_names+[key_col_name],
-            attributes_types+[key_col_type])
+            attributes_names + [key_col_name], attributes_types + [key_col_type]
+        )
 
         # TODO: add exception handling for data reading troubles
-        data = pd.read_csv(self.data_source["path"], dtype=object, converters=converters)
+        data = pd.read_csv(
+            self.data_source["path"], dtype=object, converters=converters
+        )
         data = data.where((pd.notnull(data)), None)
         data = data.set_index(key_col_name)
         dataframe = pd.DataFrame(data, columns=attributes_names)
@@ -238,8 +267,8 @@ class XlsFileDataset(FileDataset):
     def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
 
         converters = get_converters_for_attributes(
-            attributes_names+[key_col_name],
-            attributes_types+[key_col_type])
+            attributes_names + [key_col_name], attributes_types + [key_col_type]
+        )
 
         # TODO: add exception handling for data reading troubles
         data = pd.read_excel(self.data_source["path"], converters=converters)

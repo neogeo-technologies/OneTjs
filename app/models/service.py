@@ -20,9 +20,7 @@ class Service(object):
         self.activated = False
         self.title = "Default service title"
         self.abstract = "Default service abstract"
-        self.service_provider = {
-
-        }
+        self.service_provider = {}
         self.keywords = ["TJS", "geospatial"]
         self.fees = "NONE"
         self.access_constraints = "NONE"
@@ -30,7 +28,7 @@ class Service(object):
         self.languages = ["fr"]
         self.data_dir_path = None
         self.abs_data_dir_path = None
-        self.frameworks = {}     # keys of this dictionary are the frameworks uris
+        self.frameworks = {}  # keys of this dictionary are the frameworks uris
         self.datasets = {}
 
         self.update_service_info(**kwargs)
@@ -45,7 +43,9 @@ class Service(object):
             temp_path = self.abs_data_dir_path
         else:
             # Concatenating the paths of directory containing the service config file and the data relative path
-            temp_path = os.path.join(os.path.dirname(self.cfg_file_path), self.data_dir_path)
+            temp_path = os.path.join(
+                os.path.dirname(self.cfg_file_path), self.data_dir_path
+            )
 
         # print(temp_path)
         if os.path.exists(temp_path):
@@ -53,7 +53,9 @@ class Service(object):
 
         # print(u"Répertoire du service {0}".format(self.abs_data_dir_path))
 
-        if self.abs_data_dir_path is not None and os.path.exists(self.abs_data_dir_path):
+        if self.abs_data_dir_path is not None and os.path.exists(
+            self.abs_data_dir_path
+        ):
             self.update_frameworks_info()
             self.update_datasets_info()
 
@@ -66,7 +68,7 @@ class Service(object):
         frwks_yml_path = os.path.join(self.abs_data_dir_path, FRAMEWORKS_FILE_NAME)
         if os.path.exists(frwks_yml_path):
 
-            with open(frwks_yml_path, 'r') as stream:
+            with open(frwks_yml_path, "r") as stream:
                 try:
                     frameworks_dict = yaml.load(stream)
 
@@ -92,15 +94,23 @@ class Service(object):
                         logging.exception(e)
                     except KeyError as e:
                         logging.exception(e)
-                        logging.error("Some critical fields are missing in the following dataset config file:"
-                                         " {0}".format(yaml_file_path))
+                        logging.error(
+                            "Some critical fields are missing in the following dataset config file:"
+                            " {0}".format(yaml_file_path)
+                        )
                     except yaml.YAMLError as e:
                         logging.exception(e)
-                        logging.error("The following dataset config file cannot be correctly read:"
-                                         " {0}".format(yaml_file_path))
+                        logging.error(
+                            "The following dataset config file cannot be correctly read:"
+                            " {0}".format(yaml_file_path)
+                        )
 
     def log_info(self):
-        logging.info("Service: {0} ({1})".format(self.name, "activated" if self.activated else "deactivated"))
+        logging.info(
+            "Service: {0} ({1})".format(
+                self.name, "activated" if self.activated else "deactivated"
+            )
+        )
         logging.info("- datapath: {0}".format(self.data_dir_path))
         for f in list(self.frameworks.items()):
             logging.info("- framework: {0} - {1}".format(f[1].title, f[0]))
@@ -116,7 +126,7 @@ class Service(object):
 
         # Get the data source type
         dataset_dict = {}
-        with open(dataset_yaml_file_path, 'r') as stream:
+        with open(dataset_yaml_file_path, "r") as stream:
             # try:
             # Read the yaml file
             dataset_dict = yaml.load(stream)
@@ -130,7 +140,10 @@ class Service(object):
 
         if data_source_type is None:
             raise ValueError(
-                "'data_source/type' parameter not defined in dataset config file {0}".format(dataset_yaml_file_path))
+                "'data_source/type' parameter not defined in dataset config file {0}".format(
+                    dataset_yaml_file_path
+                )
+            )
 
         # Get the dataset class with this data source type
         for sc in dataset_subclasses:

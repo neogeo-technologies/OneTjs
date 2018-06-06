@@ -4,6 +4,7 @@
 # TODO: documentation property of attributes are not supported at the moment.
 # To do so, we would need a unique identifier per attribute
 
+
 class DatasetAttribute(object):
     """DatasetAttribute represents an attribute of a dataset in the OGC TJS terminology
     One dataset attribute in associated with one and only one dataset

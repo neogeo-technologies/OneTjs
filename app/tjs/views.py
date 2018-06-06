@@ -24,12 +24,12 @@ from app import utils
 
 SUPPORTED_VERSIONS = (Version("1.0"),)
 
-tjs_blueprint = Blueprint('tjs', __name__, template_folder="templates")
-tjs_geoclip_blueprint = Blueprint('tjs_geoclip', __name__, template_folder="templates")
+tjs_blueprint = Blueprint("tjs", __name__, template_folder="templates")
+tjs_geoclip_blueprint = Blueprint("tjs_geoclip", __name__, template_folder="templates")
 
 
-@tjs_blueprint.route("/tjs/<service_name>", methods=['GET'])
-@tjs_geoclip_blueprint.route("/tjs_geoclip/<service_name>", methods=['GET'])
+@tjs_blueprint.route("/tjs/<service_name>", methods=["GET"])
+@tjs_geoclip_blueprint.route("/tjs_geoclip/<service_name>", methods=["GET"])
 def tjs_operation(service_name):
     """
     Function responding to every TJS request and calling specialized functions for each TJS operation.
@@ -44,8 +44,8 @@ def tjs_operation(service_name):
     right_service_type = True
 
     args = get_normalized_args()
-    arg_service = args.get('service')
-    arg_operation = args.get('request')
+    arg_service = args.get("service")
+    arg_operation = args.get("request")
 
     blueprint_name = request.blueprint
 
@@ -63,30 +63,38 @@ def tjs_operation(service_name):
 
     # Missing service parameter
     if not arg_service:
-        exceptions.append({
-            "code": "MissingParameterValue",
-            "text": "Oh là là ! "
-                    "The 'service' parameter must be present.",
-            "locator": "service"})
+        exceptions.append(
+            {
+                "code": "MissingParameterValue",
+                "text": "Oh là là ! " "The 'service' parameter must be present.",
+                "locator": "service",
+            }
+        )
         right_service_type = False
 
     # Wrong service name
     if arg_service and arg_service.lower() != "tjs":
-        exceptions.append({
-            "code": "InvalidParameterValue",
-            "text": "Oh là là ! "
-                    "The service type requested is not supported: {}. "
-                    "The only supported service type is TJS.".format(arg_service),
-            "locator": "service={}".format(arg_service)})
+        exceptions.append(
+            {
+                "code": "InvalidParameterValue",
+                "text": "Oh là là ! "
+                "The service type requested is not supported: {}. "
+                "The only supported service type is TJS.".format(arg_service),
+                "locator": "service={}".format(arg_service),
+            }
+        )
         right_service_type = False
 
     # Missing request parameter
     if not arg_operation:
-        exceptions.append({
-            "code": "MissingParameterValue",
-            "text": "Oh là là ! "
-                    "The 'request' parameter must be present. This TJS server cannot make a guess for this parameter.",
-            "locator": "request"})
+        exceptions.append(
+            {
+                "code": "MissingParameterValue",
+                "text": "Oh là là ! "
+                "The 'request' parameter must be present. This TJS server cannot make a guess for this parameter.",
+                "locator": "request",
+            }
+        )
 
     if arg_operation and right_service_type:
 
@@ -111,24 +119,34 @@ def tjs_operation(service_name):
             return get_data(service, args, blueprint_name)
 
         # Unsupported operations
-        elif arg_operation.lower() in ("describejoinabilities", "describekey", "joindata"):
-            exceptions.append({
-                "code": "OperationNotSupported",
-                "text": "Oh là là ! "
-                        "This operation is not supported by this TJS implementation: {}. "
-                        "Supported operations are GetCapabilities, DescribeFrameworks, DescribeDatasets "
-                        "and DescribeData.".format(arg_operation),
-                "locator": "request"})
+        elif arg_operation.lower() in (
+            "describejoinabilities",
+            "describekey",
+            "joindata",
+        ):
+            exceptions.append(
+                {
+                    "code": "OperationNotSupported",
+                    "text": "Oh là là ! "
+                    "This operation is not supported by this TJS implementation: {}. "
+                    "Supported operations are GetCapabilities, DescribeFrameworks, DescribeDatasets "
+                    "and DescribeData.".format(arg_operation),
+                    "locator": "request",
+                }
+            )
 
         # Unknown operations
         else:
-            exceptions.append({
-                "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
-                        "This operation is not a TJS operation: {}. "
-                        "Supported operations are GetCapabilities, DescribeFrameworks, DescribeDatasets "
-                        "and DescribeData.".format(arg_operation),
-                "locator": "request={}".format(arg_operation)})
+            exceptions.append(
+                {
+                    "code": "InvalidParameterValue",
+                    "text": "Oh là là ! "
+                    "This operation is not a TJS operation: {}. "
+                    "Supported operations are GetCapabilities, DescribeFrameworks, DescribeDatasets "
+                    "and DescribeData.".format(arg_operation),
+                    "locator": "request={}".format(arg_operation),
+                }
+            )
 
     raise OwsCommonException(exceptions=exceptions)
 
@@ -162,9 +180,9 @@ def get_capabilities(serv, args, blueprint_name):
 
     exceptions = []
 
-    arg_accept_versions = args.get('acceptversions')
+    arg_accept_versions = args.get("acceptversions")
     # TODO: handle language parameter
-    arg_language = args.get('language')
+    arg_language = args.get("language")
 
     tjs_version = None
 
@@ -178,33 +196,44 @@ def get_capabilities(serv, args, blueprint_name):
                     if strict_vrs == supported_vrs:
                         accepted_and_supported_versions.append(strict_vrs)
             except ValueError as e:
-                exceptions.append({
-                    "code": "VersionNegotiationFailed",
-                    "text": "Oh là là ! "
-                            "{}".format(e.message),
-                    "locator": "acceptversions"})
+                exceptions.append(
+                    {
+                        "code": "VersionNegotiationFailed",
+                        "text": "Oh là là ! " "{}".format(e.message),
+                        "locator": "acceptversions",
+                    }
+                )
 
         if accepted_and_supported_versions:
             tjs_version = str(accepted_and_supported_versions[0])
             print(tjs_version)
         else:
-            exceptions.append({
-                "code": "VersionNegotiationFailed",
-                "text": "Oh là là ! "
-                        "The 'acceptversions' does not include any version supported by this server."
-                        "Supported versions are: {}".format(",".join([str(vrs) for vrs in SUPPORTED_VERSIONS])),
-                "locator": "acceptversions"})
+            exceptions.append(
+                {
+                    "code": "VersionNegotiationFailed",
+                    "text": "Oh là là ! "
+                    "The 'acceptversions' does not include any version supported by this server."
+                    "Supported versions are: {}".format(
+                        ",".join([str(vrs) for vrs in SUPPORTED_VERSIONS])
+                    ),
+                    "locator": "acceptversions",
+                }
+            )
     else:
         tjs_version = str(SUPPORTED_VERSIONS[0])
 
     if tjs_version == "1.0":
-        template_name = blueprint_name+"/tjs_100_getcapabilities.xml"
+        template_name = blueprint_name + "/tjs_100_getcapabilities.xml"
 
         # TODO: handle language parameter
         arg_language = serv.languages[0]
 
-        response_content = render_template(template_name, service=serv, tjs_version=tjs_version)
-        response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
+        response_content = render_template(
+            template_name, service=serv, tjs_version=tjs_version
+        )
+        response_content = utils.prettify_xml(
+            xml_string=response_content, minify=not current_app.debug
+        )
         response = make_response(response_content)
         response.headers["Content-Type"] = "application/xml"
 
@@ -224,10 +253,10 @@ def describe_frameworks(serv, args, blueprint_name):
 
     exceptions = []
 
-    arg_version = args.get('version')
+    arg_version = args.get("version")
     # TODO: handle language parameter
-    arg_language = args.get('language')
-    arg_framework_uri = args.get('frameworkuri')
+    arg_language = args.get("language")
+    arg_framework_uri = args.get("frameworkuri")
 
     # TODO: handle language parameter
     arg_language = serv.languages[0]
@@ -240,21 +269,33 @@ def describe_frameworks(serv, args, blueprint_name):
 
     # Get the jinja template corresponding to the TJS specifications version
     if arg_version in ("1.0",):
-        template_name = blueprint_name+"/tjs_100_describeframeworks.xml"
+        template_name = blueprint_name + "/tjs_100_describeframeworks.xml"
     else:
         # TJS exception
-        exceptions.append({
-            "code": "InvalidParameterValue",
-            "text": "Oh là là ! "
-                    "This version of the TJS specifications is not supported by this TJS implementation: {}. "
-                    "Supported version numbers are: {}.".format(arg_version, ", ".join(SUPPORTED_VERSIONS)),
-            "locator": "version={}".format(arg_version)})
+        exceptions.append(
+            {
+                "code": "InvalidParameterValue",
+                "text": "Oh là là ! "
+                "This version of the TJS specifications is not supported by this TJS implementation: {}. "
+                "Supported version numbers are: {}.".format(
+                    arg_version, ", ".join(SUPPORTED_VERSIONS)
+                ),
+                "locator": "version={}".format(arg_version),
+            }
+        )
 
         raise OwsCommonException(exceptions=exceptions)
 
-    response_content = render_template(template_name, service=serv, frameworks=frameworks,
-                                       tjs_version=arg_version, language=arg_language)
-    response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
+    response_content = render_template(
+        template_name,
+        service=serv,
+        frameworks=frameworks,
+        tjs_version=arg_version,
+        language=arg_language,
+    )
+    response_content = utils.prettify_xml(
+        xml_string=response_content, minify=not current_app.debug
+    )
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -272,11 +313,11 @@ def describe_datasets(serv, args, blueprint_name):
 
     exceptions = []
 
-    arg_version = args.get('version')
+    arg_version = args.get("version")
     # TODO: handle language parameter
-    arg_language = args.get('language')
-    arg_framework_uri = args.get('frameworkuri')
-    arg_dataset_uri = args.get('dataseturi')
+    arg_language = args.get("language")
+    arg_framework_uri = args.get("frameworkuri")
+    arg_dataset_uri = args.get("dataseturi")
 
     # TODO: handle language parameter
     arg_language = serv.languages[0]
@@ -286,11 +327,14 @@ def describe_datasets(serv, args, blueprint_name):
         framework_uris = [item.strip() for item in arg_framework_uri.split(",")]
         if len(framework_uris) > 1:
             # TJS exception
-            exceptions.append({
-                "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
-                        "The frameworkuri parameter of the DescribeDatasets operation can only contain one uri. ",
-                "locator": "frameworkuri={}".format(arg_framework_uri)})
+            exceptions.append(
+                {
+                    "code": "InvalidParameterValue",
+                    "text": "Oh là là ! "
+                    "The frameworkuri parameter of the DescribeDatasets operation can only contain one uri. ",
+                    "locator": "frameworkuri={}".format(arg_framework_uri),
+                }
+            )
 
             raise OwsCommonException(exceptions=exceptions)
         framework_uri = framework_uris[0]
@@ -300,32 +344,48 @@ def describe_datasets(serv, args, blueprint_name):
         dataset_uris = [item.strip() for item in arg_dataset_uri.split(",")]
         if len(dataset_uris) > 1:
             # TJS exception
-            exceptions.append({
-                "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
-                        "The dataseturi parameter of the DescribeDatasets operation can only contain one uri. ",
-                "locator": "dataseturi={}".format(arg_dataset_uri)})
+            exceptions.append(
+                {
+                    "code": "InvalidParameterValue",
+                    "text": "Oh là là ! "
+                    "The dataseturi parameter of the DescribeDatasets operation can only contain one uri. ",
+                    "locator": "dataseturi={}".format(arg_dataset_uri),
+                }
+            )
 
             raise OwsCommonException(exceptions=exceptions)
         dataset_uri = dataset_uris[0]
 
     # Get the jinja template corresponding to the TJS specifications version
     if arg_version in ("1.0",):
-        template_name = blueprint_name+"/tjs_100_describedatasets.xml"
+        template_name = blueprint_name + "/tjs_100_describedatasets.xml"
     else:
         # TJS exception
-        exceptions.append({
-            "code": "InvalidParameterValue",
-            "text": "Oh là là ! "
-                    "This version of the TJS specifications is not supported by this TJS implementation: {}. "
-                    "Supported version numbers are: {}.".format(arg_version, ", ".join(SUPPORTED_VERSIONS)),
-            "locator": "version={}".format(arg_version)})
+        exceptions.append(
+            {
+                "code": "InvalidParameterValue",
+                "text": "Oh là là ! "
+                "This version of the TJS specifications is not supported by this TJS implementation: {}. "
+                "Supported version numbers are: {}.".format(
+                    arg_version, ", ".join(SUPPORTED_VERSIONS)
+                ),
+                "locator": "version={}".format(arg_version),
+            }
+        )
 
         raise OwsCommonException(exceptions=exceptions)
 
-    response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
-                                       framework_uri=framework_uri, dataset_uri=dataset_uri)
-    response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
+    response_content = render_template(
+        template_name,
+        service=serv,
+        tjs_version=arg_version,
+        language=arg_language,
+        framework_uri=framework_uri,
+        dataset_uri=dataset_uri,
+    )
+    response_content = utils.prettify_xml(
+        xml_string=response_content, minify=not current_app.debug
+    )
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -343,12 +403,12 @@ def describe_data(serv, args, blueprint_name):
 
     exceptions = []
 
-    arg_version = args.get('version')
+    arg_version = args.get("version")
     # TODO: handle language parameter
-    arg_language = args.get('language')
-    arg_framework_uri = args.get('frameworkuri')
-    arg_dataset_uri = args.get('dataseturi')
-    arg_attributes = args.get('attributes')
+    arg_language = args.get("language")
+    arg_framework_uri = args.get("frameworkuri")
+    arg_dataset_uri = args.get("dataseturi")
+    arg_attributes = args.get("attributes")
 
     # TODO: handle language parameter
     arg_language = serv.languages[0]
@@ -358,59 +418,79 @@ def describe_data(serv, args, blueprint_name):
         framework_uris = [item.strip() for item in arg_framework_uri.split(",")]
         if len(framework_uris) > 1:
             # TJS exception
-            exceptions.append({
-                "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
-                        "The frameworkuri parameter of the DescribeData operation can only contain one uri. ",
-                "locator": "frameworkuri={}".format(arg_framework_uri)})
+            exceptions.append(
+                {
+                    "code": "InvalidParameterValue",
+                    "text": "Oh là là ! "
+                    "The frameworkuri parameter of the DescribeData operation can only contain one uri. ",
+                    "locator": "frameworkuri={}".format(arg_framework_uri),
+                }
+            )
         framework_uri = framework_uris[0]
     else:
-        exceptions.append({
-            "code": "MissingParameterValue",
-            "text": "Oh là là ! "
-                    "The 'frameworkuri' parameter must be present.",
-            "locator": "frameworkuri"})
+        exceptions.append(
+            {
+                "code": "MissingParameterValue",
+                "text": "Oh là là ! " "The 'frameworkuri' parameter must be present.",
+                "locator": "frameworkuri",
+            }
+        )
 
     dataset_uri = None
     if arg_dataset_uri:
         dataset_uris = [item.strip() for item in arg_dataset_uri.split(",")]
         if len(dataset_uris) > 1:
             # TJS exception
-            exceptions.append({
-                "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
-                        "The dataseturi parameter of the DescribeData operation can only contain one uri. ",
-                "locator": "dataseturi={}".format(arg_dataset_uri)})
+            exceptions.append(
+                {
+                    "code": "InvalidParameterValue",
+                    "text": "Oh là là ! "
+                    "The dataseturi parameter of the DescribeData operation can only contain one uri. ",
+                    "locator": "dataseturi={}".format(arg_dataset_uri),
+                }
+            )
         dataset_uri = dataset_uris[0]
     else:
-        exceptions.append({
-            "code": "MissingParameterValue",
-            "text": "Oh là là ! "
-                    "The 'dataseturi' parameter must be present.",
-            "locator": "dataseturi"})
+        exceptions.append(
+            {
+                "code": "MissingParameterValue",
+                "text": "Oh là là ! " "The 'dataseturi' parameter must be present.",
+                "locator": "dataseturi",
+            }
+        )
 
     # Check if the frameworkuri and dataseturi values are compatible
     dtst = serv.get_dataset_with_uri(dataset_uri)
     frwk = serv.get_framework_with_uri(framework_uri)
     if frwk not in dtst.get_frameworks():
-        exceptions.append({
-            "code": "InvalidParameterValue",
-            "text": "Oh là là ! "
-                    "The specified framework is not available for the specified dataseturi.",
-            "locator": "frameworkuri"})
+        exceptions.append(
+            {
+                "code": "InvalidParameterValue",
+                "text": "Oh là là ! "
+                "The specified framework is not available for the specified dataseturi.",
+                "locator": "frameworkuri",
+            }
+        )
 
     # Retrieve the DatasetAttribute records
     dtst_attributes = []
     if arg_attributes:
-        attributes_names = [attribute_name.strip() for attribute_name in arg_attributes.split(",")]
+        attributes_names = [
+            attribute_name.strip() for attribute_name in arg_attributes.split(",")
+        ]
         for attribute_name in attributes_names:
             attribute = dtst.get_attribute_with_name(attribute_name)
             if attribute is None:
-                exceptions.append({
-                    "code": "InvalidParameterValue",
-                    "text": "Oh là là ! "
-                            "The requested attribute is not valid: {}.".format(attribute_name),
-                    "locator": "attributes={}".format(arg_attributes)})
+                exceptions.append(
+                    {
+                        "code": "InvalidParameterValue",
+                        "text": "Oh là là ! "
+                        "The requested attribute is not valid: {}.".format(
+                            attribute_name
+                        ),
+                        "locator": "attributes={}".format(arg_attributes),
+                    }
+                )
             else:
                 dtst_attributes.append(attribute)
     else:
@@ -418,22 +498,36 @@ def describe_data(serv, args, blueprint_name):
 
     # Get the jinja template corresponding to the TJS specifications version
     if arg_version in ("1.0",):
-        template_name = blueprint_name+"/tjs_100_describedata.xml"
+        template_name = blueprint_name + "/tjs_100_describedata.xml"
     else:
         # TJS exception
-        exceptions.append({
-            "code": "InvalidParameterValue",
-            "text": "Oh là là ! "
-                    "This version of the TJS specifications is not supported by this TJS implementation: {}. "
-                    "Supported version numbers are: {}.".format(arg_version, ", ".join(SUPPORTED_VERSIONS)),
-            "locator": "version={}".format(arg_version)})
+        exceptions.append(
+            {
+                "code": "InvalidParameterValue",
+                "text": "Oh là là ! "
+                "This version of the TJS specifications is not supported by this TJS implementation: {}. "
+                "Supported version numbers are: {}.".format(
+                    arg_version, ", ".join(SUPPORTED_VERSIONS)
+                ),
+                "locator": "version={}".format(arg_version),
+            }
+        )
 
     if exceptions:
         raise OwsCommonException(exceptions=exceptions)
 
-    response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
-                                       framework=frwk, dataset=dtst, attributes=dtst_attributes)
-    response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
+    response_content = render_template(
+        template_name,
+        service=serv,
+        tjs_version=arg_version,
+        language=arg_language,
+        framework=frwk,
+        dataset=dtst,
+        attributes=dtst_attributes,
+    )
+    response_content = utils.prettify_xml(
+        xml_string=response_content, minify=not current_app.debug
+    )
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -451,30 +545,35 @@ def get_data(serv, args, blueprint_name):
 
     exceptions = []
 
-    arg_version = args.get('version')
+    arg_version = args.get("version")
     # TODO: handle language parameter
-    arg_language = args.get('language')
-    arg_framework_uri = args.get('frameworkuri')
-    arg_dataset_uri = args.get('dataseturi')
-    arg_attributes = args.get('attributes')
+    arg_language = args.get("language")
+    arg_framework_uri = args.get("frameworkuri")
+    arg_dataset_uri = args.get("dataseturi")
+    arg_attributes = args.get("attributes")
     # TODO: handle linkagekeys parameter
-    arg_linkage_keys = args.get('linkagekeys')
+    arg_linkage_keys = args.get("linkagekeys")
     # TODO: handle xsl parameter
-    arg_xsl = args.get('xsl')
+    arg_xsl = args.get("xsl")
     # TODO: handle aid parameter
-    arg_aid = args.get('aid')
+    arg_aid = args.get("aid")
 
     # Get the jinja template corresponding to the TJS specifications version
     if arg_version in ("1.0",):
-        template_name = blueprint_name+"/tjs_100_getdata.xml"
+        template_name = blueprint_name + "/tjs_100_getdata.xml"
     else:
         # TJS exception
-        exceptions.append({
-            "code": "InvalidParameterValue",
-            "text": "Oh là là ! "
-                    "This version of the TJS specifications is not supported by this TJS implementation: {}. "
-                    "Supported version numbers are: {}.".format(arg_version, ", ".join(SUPPORTED_VERSIONS)),
-            "locator": "version={}".format(arg_version)})
+        exceptions.append(
+            {
+                "code": "InvalidParameterValue",
+                "text": "Oh là là ! "
+                "This version of the TJS specifications is not supported by this TJS implementation: {}. "
+                "Supported version numbers are: {}.".format(
+                    arg_version, ", ".join(SUPPORTED_VERSIONS)
+                ),
+                "locator": "version={}".format(arg_version),
+            }
+        )
 
         raise OwsCommonException(exceptions=exceptions)
 
@@ -483,21 +582,27 @@ def get_data(serv, args, blueprint_name):
 
     # Missing frameworkuri parameter
     if not arg_framework_uri:
-        exceptions.append({
-            "code": "MissingParameterValue",
-            "text": "Oh là là ! "
-                    "The 'frameworkuri' parameter is mandatory for GetData operation. "
-                    "This TJS server cannot make a guess for this parameter.",
-            "locator": "frameworkuri"})
+        exceptions.append(
+            {
+                "code": "MissingParameterValue",
+                "text": "Oh là là ! "
+                "The 'frameworkuri' parameter is mandatory for GetData operation. "
+                "This TJS server cannot make a guess for this parameter.",
+                "locator": "frameworkuri",
+            }
+        )
 
     # Missing dataseturi parameter
     if not arg_dataset_uri:
-        exceptions.append({
-            "code": "MissingParameterValue",
-            "text": "Oh là là ! "
-                    "The 'dataseturi' parameter is mandatory for GetData operation. "
-                    "This TJS server cannot make a guess for this parameter.",
-            "locator": "dataseturi"})
+        exceptions.append(
+            {
+                "code": "MissingParameterValue",
+                "text": "Oh là là ! "
+                "The 'dataseturi' parameter is mandatory for GetData operation. "
+                "This TJS server cannot make a guess for this parameter.",
+                "locator": "dataseturi",
+            }
+        )
 
     if not (arg_framework_uri and arg_dataset_uri):
         raise OwsCommonException(exceptions=exceptions)
@@ -505,35 +610,52 @@ def get_data(serv, args, blueprint_name):
     # Retrieve the Framework record
     frwk = serv.get_framework_with_uri(arg_framework_uri)
     if frwk is None:
-        exceptions.append({
-            "code": "InvalidParameterValue",
-            "text": "Oh là là ! "
-                    "The parameter value for 'frameworkuri' is not valid: {}.".format(arg_framework_uri),
-            "locator": "frameworkuri={}".format(arg_framework_uri)})
+        exceptions.append(
+            {
+                "code": "InvalidParameterValue",
+                "text": "Oh là là ! "
+                "The parameter value for 'frameworkuri' is not valid: {}.".format(
+                    arg_framework_uri
+                ),
+                "locator": "frameworkuri={}".format(arg_framework_uri),
+            }
+        )
         raise OwsCommonException(exceptions=exceptions)
 
     # Retrieve the Dataset record
     dtst = serv.get_dataset_with_uri(arg_dataset_uri)
     if dtst is None:
-        exceptions.append({
-            "code": "InvalidParameterValue",
-            "text": "Oh là là ! "
-                    "The parameter value for 'dataseturi' is not valid: {}.".format(arg_dataset_uri),
-            "locator": "dataseturi={}".format(arg_dataset_uri)})
+        exceptions.append(
+            {
+                "code": "InvalidParameterValue",
+                "text": "Oh là là ! "
+                "The parameter value for 'dataseturi' is not valid: {}.".format(
+                    arg_dataset_uri
+                ),
+                "locator": "dataseturi={}".format(arg_dataset_uri),
+            }
+        )
         raise OwsCommonException(exceptions=exceptions)
 
     # Retrieve the DatasetAttribute records
     dtst_attributes = []
     if arg_attributes:
-        attributes_names = [attribute_name.strip() for attribute_name in arg_attributes.split(",")]
+        attributes_names = [
+            attribute_name.strip() for attribute_name in arg_attributes.split(",")
+        ]
         for attribute_name in attributes_names:
             attribute = dtst.get_attribute_with_name(attribute_name)
             if attribute is None:
-                exceptions.append({
-                    "code": "InvalidParameterValue",
-                    "text": "Oh là là ! "
-                            "The requested attribute is not valid: {}.".format(attribute_name),
-                    "locator": "attributes={}".format(arg_attributes)})
+                exceptions.append(
+                    {
+                        "code": "InvalidParameterValue",
+                        "text": "Oh là là ! "
+                        "The requested attribute is not valid: {}.".format(
+                            attribute_name
+                        ),
+                        "locator": "attributes={}".format(arg_attributes),
+                    }
+                )
             else:
                 dtst_attributes.append(attribute)
         if len(attributes_names) != len(dtst_attributes):
@@ -551,9 +673,19 @@ def get_data(serv, args, blueprint_name):
         data = None
 
     # TODO: handle correctly empty pd_dataframe (None for example)
-    response_content = render_template(template_name, service=serv, tjs_version=arg_version, language=arg_language,
-                                       framework=frwk, dataset=dtst, attributes=dtst_attributes, data=data)
-    response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
+    response_content = render_template(
+        template_name,
+        service=serv,
+        tjs_version=arg_version,
+        language=arg_language,
+        framework=frwk,
+        dataset=dtst,
+        attributes=dtst_attributes,
+        data=data,
+    )
+    response_content = utils.prettify_xml(
+        xml_string=response_content, minify=not current_app.debug
+    )
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -616,7 +748,9 @@ class OwsCommonException(Exception):
         if status_code is not None:
             self.status_code = status_code
         self.exceptions = exceptions
-        self.message = "\n".join([exception.get("text") for exception in self.exceptions])
+        self.message = "\n".join(
+            [exception.get("text") for exception in self.exceptions]
+        )
 
 
 @tjs_blueprint.app_template_global()
@@ -632,11 +766,15 @@ def get_service_url(serv, geoclip=False):
 
     if blueprint_name == "public_pages":
         if geoclip == True:
-            service_url = urllib.parse.urljoin(app_path, "/".join(("tjs_geoclip", serv.name)))
+            service_url = urllib.parse.urljoin(
+                app_path, "/".join(("tjs_geoclip", serv.name))
+            )
         else:
             service_url = urllib.parse.urljoin(app_path, "/".join(("tjs", serv.name)))
     else:
-        service_url = urllib.parse.urljoin(app_path, "/".join((blueprint_name, serv.name)))
+        service_url = urllib.parse.urljoin(
+            app_path, "/".join((blueprint_name, serv.name))
+        )
     return service_url
 
 
@@ -648,7 +786,9 @@ def handle_tjs_exception(error):
         template_name = "ows_common_110_exception.xml"
 
     response_content = render_template(template_name, exceptions=error.exceptions)
-    response_content = utils.prettify_xml(xml_string=response_content, minify=not current_app.debug)
+    response_content = utils.prettify_xml(
+        xml_string=response_content, minify=not current_app.debug
+    )
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
     response.status_code = error.status_code
@@ -698,7 +838,9 @@ def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=
 
 
 @tjs_blueprint.app_template_global()
-def get_describedatasets_url(serv, tjs_version=None, language=None, framework=None, dataset=None):
+def get_describedatasets_url(
+    serv, tjs_version=None, language=None, framework=None, dataset=None
+):
     args = OrderedDict()
     args["service"] = "TJS"
     if tjs_version:
@@ -720,7 +862,9 @@ def get_describedatasets_url(serv, tjs_version=None, language=None, framework=No
 
 
 @tjs_blueprint.app_template_global()
-def get_describedata_url(serv, tjs_version=None, language=None, framework=None, dataset=None, attributes=None):
+def get_describedata_url(
+    serv, tjs_version=None, language=None, framework=None, dataset=None, attributes=None
+):
     args = OrderedDict()
     args["service"] = "TJS"
     if tjs_version:
@@ -744,7 +888,9 @@ def get_describedata_url(serv, tjs_version=None, language=None, framework=None, 
 
 
 @tjs_blueprint.app_template_global()
-def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attributes=None):
+def get_getdata_url(
+    serv, tjs_version=None, dataset=None, framework=None, attributes=None
+):
     args = OrderedDict()
     args["service"] = "TJS"
     if tjs_version:
@@ -766,7 +912,9 @@ def get_getdata_url(serv, tjs_version=None, dataset=None, framework=None, attrib
             if at in attributes or at.purpose != "Attribute":
                 consolidated_attributes.append(at)
 
-        args["attributes"] = ",".join([attribute.name for attribute in consolidated_attributes])
+        args["attributes"] = ",".join(
+            [attribute.name for attribute in consolidated_attributes]
+        )
 
     url = build_tjs_url(serv, args)
     return url

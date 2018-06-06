@@ -23,18 +23,8 @@ class Framework(object):
         self.version = None
         self.reference_date = None
         self.start_date = None
-        self.key_col = {
-            "name": None,
-            "type": None,
-            "length": None,
-            "decimals": None
-        }
-        self.bbox = {
-            "south": -90,
-            "north": 90,
-            "west": -180,
-            "east": 180,
-        }
+        self.key_col = {"name": None, "type": None, "length": None, "decimals": None}
+        self.bbox = {"south": -90, "north": 90, "west": -180, "east": 180}
 
         self.__dict__.update(kwargs)
 

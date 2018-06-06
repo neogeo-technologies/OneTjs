@@ -9,18 +9,25 @@ from flask import render_template
 
 from werkzeug.contrib.fixers import ProxyFix
 
-__all__ = ('create_app', )
+__all__ = ("create_app",)
 
 
-def create_app(config=None, app_name='simple_tjs', blueprints=None):
-    app = Flask(app_name,
-                static_folder=os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'static')),
-                template_folder=os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
-                )
+def create_app(config=None, app_name="simple_tjs", blueprints=None):
+    app = Flask(
+        app_name,
+        static_folder=os.path.abspath(
+            os.path.join(os.path.dirname(__file__), os.path.pardir, "static")
+        ),
+        template_folder=os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "templates")
+        ),
+    )
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
-    app.config.from_object('app.config')
-    local_cfg_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'local.cfg'))
+    app.config.from_object("app.config")
+    local_cfg_file_path = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), os.path.pardir, "local.cfg")
+    )
     app.config.from_pyfile(local_cfg_file_path, silent=True)
 
     if config:
@@ -28,6 +35,7 @@ def create_app(config=None, app_name='simple_tjs', blueprints=None):
 
     app.init_success = False
     from .models import services_manager
+
     app.services_manager = services_manager.ServicesManager(app)
 
     blueprints_fabrics(app)
@@ -45,10 +53,12 @@ def blueprints_fabrics(app):
 
     from .tjs.views import tjs_blueprint
     from .public_pages.views import public_blueprint
+
     app.register_blueprint(tjs_blueprint)
     app.register_blueprint(public_blueprint)
 
     from .tjs.views import tjs_geoclip_blueprint
+
     app.register_blueprint(tjs_geoclip_blueprint)
 
 
@@ -56,14 +66,17 @@ def extensions_fabrics(app):
     # see https://github.com/xen/flask-project-template
 
     from flask_bcrypt import Bcrypt
+
     bcrypt = Bcrypt()
     bcrypt.init_app(app)
 
     from flask_bootstrap import Bootstrap
+
     bootstrap = Bootstrap()
     bootstrap.init_app(app)
 
     from flask_debugtoolbar import DebugToolbarExtension
+
     toolbar = DebugToolbarExtension()
     toolbar.init_app(app)
 
@@ -94,30 +107,34 @@ def error_pages(app):
 def configure_logging(app):
     """Configure file(info) and email(error) logging."""
 
-    log_format = '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-    date_format = '%Y-%m-%dT%H:%M:%SZ'
+    log_format = "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"
+    date_format = "%Y-%m-%dT%H:%M:%SZ"
     log_levels = {
-        'CRITICAL': logging.CRITICAL,
-        'ERROR': logging.ERROR,
-        'WARNING': logging.WARNING,
-        'INFO': logging.INFO,
-        'DEBUG': logging.DEBUG,
-        'NOTSET': logging.NOTSET,
+        "CRITICAL": logging.CRITICAL,
+        "ERROR": logging.ERROR,
+        "WARNING": logging.WARNING,
+        "INFO": logging.INFO,
+        "DEBUG": logging.DEBUG,
+        "NOTSET": logging.NOTSET,
     }
 
     # Set info level on logger
-    log_level = log_levels['INFO']
+    log_level = log_levels["INFO"]
     if app.debug or app.testing:
-        log_level = log_levels['DEBUG']
-    if 'LOG_LEVEL' in app.config:
-        log_level = log_levels[app.config['LOG_LEVEL']]
+        log_level = log_levels["DEBUG"]
+    if "LOG_LEVEL" in app.config:
+        log_level = log_levels[app.config["LOG_LEVEL"]]
 
-    if 'LOG_FILE' in app.config:
-        logging.basicConfig(level=log_level, datefmt=date_format,
-                            format=log_format,
-                            filename=app.config['LOG_FILE'])
+    if "LOG_FILE" in app.config:
+        logging.basicConfig(
+            level=log_level,
+            datefmt=date_format,
+            format=log_format,
+            filename=app.config["LOG_FILE"],
+        )
     else:
-        logging.basicConfig(level=log_level, datefmt=date_format,
-                            format=log_format, stream=sys.stdout)
+        logging.basicConfig(
+            level=log_level, datefmt=date_format, format=log_format, stream=sys.stdout
+        )
 
-    app.logger.debug('Logging initialized')
+    app.logger.debug("Logging initialized")
