@@ -12,7 +12,7 @@ from werkzeug.contrib.fixers import ProxyFix
 __all__ = ("create_app",)
 
 
-def create_app(config=None, app_name="simple_tjs", blueprints=None):
+def create_app(config=None, app_name="onetjs", blueprints=None):
     app = Flask(
         app_name,
         static_folder=os.path.abspath(
