@@ -80,6 +80,9 @@ Install the required python modules:
     (tjs-venv) $ cd OneTjs
     (tjs-venv) $ pip install -r requirements.txt
 
+Note that some frameworks (Bootstrap and JQuery for instance) are used via CDN (see app/templates/base.html for example). You therefore need an internet 
+connexion in order to make these web pages fully fonctionnal.
+
 
 ## Run the server
 
