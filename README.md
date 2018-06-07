@@ -122,3 +122,16 @@ Default port: 5000.
 ### ...using uwsgi and an ini file
 
     (tjs-venv) $ uwsgi --socket 0.0.0.0:8000 --protocol=http --ini uwsgi.ini
+
+## Specify a config file
+
+The environment variable `ONETJS_CONFIG_FILE_PATH` is used for specifying a custom config file.
+Example:
+
+    (tjs-venv) $ export ONETJS_CONFIG_FILE_PATH=/path/to/settings.cfg
+    (tjs-venv) $ gunicorn --bind 0.0.0.0:8000 app.wsgi:app
+
+You may also create a `onetjs.cfg` file at the root of the app.  
+For example, copy the `onetjs.example.cfg` file, set its name to `onetjs.cfg` and edit its content.
+
+See the docs for further details.

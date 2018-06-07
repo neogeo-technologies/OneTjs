@@ -1,11 +1,13 @@
 # Configuration
 
-At present, OneTjs can only be configured via various YAML files.
+At present, OneTjs can only be configured via various config files (there is no tool to ease the configuration 
+process).
 
-3 levels of YAML files must be used:
-* services.yml: configuration files for your services
-* frameworks.yml: configuration files for your frameworks
-* what_ever_you_want.yml: configuration files for your datasets
+4 levels of config files must be used:
+* onetjs.cfg: cfg file (.ini syntax) used to configure the options at app level
+* services.yml: YAML file used for declaring your services
+* frameworks.yml: YAML files for declaring the frameworks used by the datasets of each service
+* what_ever_you_want.yml: YAML files for declaring the published datasets
 
 The term "spatial framework" (framework for short in the TJS documentation) is defined in the TJS standard:
 > a GIS representation, either point, line, or polygon, of any collection of physical or conceptual geographic objects. 
@@ -15,6 +17,32 @@ lighthouses are all examples of spatial frameworks.
 Please note that OneTjs has no idea of the geometries of the items composing a framework since it only implements the 
 Data access set of TJS operations. Therefore, the spatial joining operation (if needed) is delegated to the TJS client
 application.
+
+## App configuration
+
+The default file for the app level configuration is onetjs.cfg. By default it should be located where the 
+onetjs.example.cfg file is located. To create one follow these steps:
+* copy the `onetjs.example.cfg` file
+* set its name to `onetjs.cfg`
+* edit its content (don't forget to change the secret key)
+
+Example of customized config file:
+
+```
+SECRET_KEY = 'my new secret key'
+ENV = 'production'
+```
+
+You may find useful to look at the Flask configuration documention:  
+http://flask.pocoo.org/docs/1.0/config/#builtin-configuration-values
+
+The name and location of this cfg file may be specified using the following environment variable: 
+`ONETJS_CONFIG_FILE_PATH`.
+
+    $ export ONETJS_CONFIG_FILE_PATH=/path/to/settings.cfg
+
+If such a file is not provided to the app, the parameters defined in the app.config.BaseConfig class is applied by 
+OneTjs.
 
 ## Services
 
