@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
 
-from .app import create_app
-
-__version__ = "0.1.11.dev"
+__version__ = "0.1.12.dev"
 __description__ = "TJS server"

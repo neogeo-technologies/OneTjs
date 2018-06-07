@@ -12,7 +12,8 @@ from werkzeug.contrib.fixers import ProxyFix
 __all__ = ("create_app",)
 
 
-def create_app(config=None, app_name="onetjs", blueprints=None):
+def create_app(app_name="onetjs", blueprints=None):
+
     app = Flask(
         app_name,
         static_folder=os.path.abspath(
@@ -24,14 +25,22 @@ def create_app(config=None, app_name="onetjs", blueprints=None):
     )
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
-    app.config.from_object("app.config")
-    local_cfg_file_path = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), os.path.pardir, "local.cfg")
-    )
+    # Default config
+    app.config.from_object("app.config.BaseConfig")
+
+    # Local config file set via the ONETJS_CONFIG_FILE_PATH environment variable or a onetjs.cfg file
+    local_cfg_file_path = os.environ.get(
+        'ONETJS_CONFIG_FILE_PATH',
+        os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "onetjs.cfg")
+    ))
     app.config.from_pyfile(local_cfg_file_path, silent=True)
 
-    if config:
-        app.config.from_pyfile(config)
+    # Some adjustments for development and testing configs
+    if app.config['ENV'] == "development":
+        app.config.from_object("app.config.DevConfig")
+
+    if app.config['TESTING'] == True:
+        app.config.from_object("app.config.TestConfig")
 
     app.init_success = False
     from .models import services_manager

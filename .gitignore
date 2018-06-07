@@ -1,3 +1,4 @@
 *.pyc
 log/*
 docker-compose.override.yml
+onetjs.cfg
