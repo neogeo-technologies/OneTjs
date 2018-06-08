@@ -754,6 +754,7 @@ class OwsCommonException(Exception):
 
 
 @tjs_blueprint.app_template_global()
+@tjs_geoclip_blueprint.app_template_global()
 def get_service_url(serv, geoclip=False):
     """
     Function building the URL to a service with specific blueprint (tjs/tjs_geoclip).
@@ -779,7 +780,9 @@ def get_service_url(serv, geoclip=False):
 
 
 @tjs_blueprint.errorhandler(OwsCommonException)
+@tjs_geoclip_blueprint.errorhandler(OwsCommonException)
 def handle_tjs_exception(error):
+
     if error.tjs_version in ("1.0",):
         template_name = "ows_common_110_exception.xml"
     else:
@@ -808,6 +811,7 @@ def build_tjs_url(service, args):
 
 
 @tjs_blueprint.app_template_global()
+@tjs_geoclip_blueprint.app_template_global()
 def get_getcapabilities_url(serv, language=None):
     args = OrderedDict()
     args["service"] = "TJS"
@@ -820,6 +824,7 @@ def get_getcapabilities_url(serv, language=None):
 
 
 @tjs_blueprint.app_template_global()
+@tjs_geoclip_blueprint.app_template_global()
 def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=None):
     args = OrderedDict()
     args["service"] = "TJS"
@@ -838,6 +843,7 @@ def get_describeframeworks_url(serv, tjs_version=None, language=None, framework=
 
 
 @tjs_blueprint.app_template_global()
+@tjs_geoclip_blueprint.app_template_global()
 def get_describedatasets_url(
     serv, tjs_version=None, language=None, framework=None, dataset=None
 ):
@@ -862,6 +868,7 @@ def get_describedatasets_url(
 
 
 @tjs_blueprint.app_template_global()
+@tjs_geoclip_blueprint.app_template_global()
 def get_describedata_url(
     serv, tjs_version=None, language=None, framework=None, dataset=None, attributes=None
 ):
@@ -888,6 +895,7 @@ def get_describedata_url(
 
 
 @tjs_blueprint.app_template_global()
+@tjs_geoclip_blueprint.app_template_global()
 def get_getdata_url(
     serv, tjs_version=None, dataset=None, framework=None, attributes=None
 ):
