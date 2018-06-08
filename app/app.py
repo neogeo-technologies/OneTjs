@@ -3,9 +3,11 @@
 import os
 import sys
 import logging
+from logging.handlers import RotatingFileHandler
 
 from flask import Flask
 from flask import render_template
+from flask.logging import default_handler
 
 from werkzeug.contrib.fixers import ProxyFix
 
@@ -30,16 +32,18 @@ def create_app(app_name="onetjs", blueprints=None):
 
     # Local config file set via the ONETJS_CONFIG_FILE_PATH environment variable or a onetjs.cfg file
     local_cfg_file_path = os.environ.get(
-        'ONETJS_CONFIG_FILE_PATH',
-        os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "onetjs.cfg")
-    ))
+        "ONETJS_CONFIG_FILE_PATH",
+        os.path.abspath(
+            os.path.join(os.path.dirname(__file__), os.path.pardir, "onetjs.cfg")
+        ),
+    )
     app.config.from_pyfile(local_cfg_file_path, silent=True)
 
     # Some adjustments for development and testing configs
-    if app.config['ENV'] == "development":
+    if app.config["ENV"] == "development":
         app.config.from_object("app.config.DevConfig")
 
-    if app.config['TESTING'] == True:
+    if app.config["TESTING"] == True:
         app.config.from_object("app.config.TestConfig")
 
     app.init_success = False
@@ -116,7 +120,10 @@ def error_pages(app):
 def configure_logging(app):
     """Configure file(info) and email(error) logging."""
 
-    log_format = "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"
+    log_format = app.config.get(
+        "LOGGING_FORMAT",
+        "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]",
+    )
     date_format = "%Y-%m-%dT%H:%M:%SZ"
     log_levels = {
         "CRITICAL": logging.CRITICAL,
@@ -127,23 +134,31 @@ def configure_logging(app):
         "NOTSET": logging.NOTSET,
     }
 
-    # Set info level on logger
-    log_level = log_levels["INFO"]
-    if app.debug or app.testing:
-        log_level = log_levels["DEBUG"]
-    if "LOG_LEVEL" in app.config:
-        log_level = log_levels[app.config["LOG_LEVEL"]]
+    log_formatter = logging.Formatter(log_format, date_format)
+    log_level = log_levels.get(app.config["LOGGING_LEVEL"], log_levels["INFO"])
 
-    if "LOG_FILE" in app.config:
-        logging.basicConfig(
-            level=log_level,
-            datefmt=date_format,
-            format=log_format,
-            filename=app.config["LOG_FILE"],
+    if "LOGGING_LOCATION" in app.config:
+
+        log_file_name = app.config["LOGGING_LOCATION"]
+        parent_dir = os.path.abspath(os.path.join(log_file_name, os.pardir))
+
+        if not os.path.exists(parent_dir):
+            os.makedirs(parent_dir)
+
+        log_handler = RotatingFileHandler(
+            filename=log_file_name, maxBytes=10000, backupCount=5
+        )
+        log_handler.setLevel(log_level)
+        log_handler.setFormatter(log_formatter)
+        app.logger.addHandler(log_handler)
+
+        app.logger.debug("Logging initialized...")
+        app.logger.debug(
+            "... log gile location: {}".format(app.config.get("LOGGING_LOCATION"))
         )
     else:
-        logging.basicConfig(
-            level=log_level, datefmt=date_format, format=log_format, stream=sys.stdout
-        )
-
-    app.logger.debug("Logging initialized")
+        default_handler.setLevel(log_level)
+        default_handler.setFormatter(log_formatter)
+        log_handler = logging.basicConfig(stream=sys.stdout)
+        app.logger.debug("Logging initialized...")
+        app.logger.debug("... default flask logging handler")
