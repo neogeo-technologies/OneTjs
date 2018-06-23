@@ -27,6 +27,10 @@ maintained in the long term. Géoclip Air will probably be able to consume the f
 the first one (much cleaner/compact XML syntax).
 
 
+Géoclip O3 is quite surprised when finding orphan frameworks (framework not used by any dataset). Make sure that all 
+the frameworks you have configured in OneTjs are used by at least one dataset.
+
+
 ### Géoclip Air
 
 Géoclip O3 is not yet a TJS client.  
