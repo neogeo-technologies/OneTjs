@@ -1,41 +1,5 @@
 # frameworks
 ---
-commune_2017:
-  uri:               region_hdf/commune_2017
-  organization:      Région Hauts-de-France
-  title:             Communes (2017)
-  abstract:          Découpage territorial à la commune en 2017. L'identifiant utilisé est le code INSEE de la commune.
-  # documentation:     http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune_2017.html
-  version:           2017
-  start_date:        2017-01-01
-  reference_date:    2017-12-31
-  key_col:
-    name:            code_com
-    type:            https://www.w3.org/TR/xmlschema-2/#string
-    length:          5
-  bbox:
-    south:           48.83
-    north:           51.09
-    west:            1.38
-    east:            4.25
-commune_2016:
-  uri:               region_hdf/commune_2016
-  organization:      Région Hauts-de-France
-  title:             Communes (2016)
-  abstract:          Découpage territorial à la commune en 2016. L'identifiant utilisé est le code INSEE de la commune.
-  # documentation:     http://www.regionhautsdefrance.fr/data/geostats/frameworks/code_commune_2016.html
-  version:           2016
-  start_date:        2016-01-01
-  reference_date:    2016-12-31
-  key_col:
-    name:            code_com
-    type:            https://www.w3.org/TR/xmlschema-2/#string
-    length:          5
-  bbox:
-    south:           48.83
-    north:           51.09
-    west:            1.38
-    east:            4.25
 commune_2012:
   uri:               region_hdf/commune_2012
   organization:      Région Hauts-de-France

@@ -1,0 +1,178 @@
+---
+name:              capacite_touristique_normandie_2016
+uri:               insee/capacite_touristique_normandie_2016
+organization:      INSEE
+title:             Capacité touristique 2016
+abstract:          "Les données portent sur les hôtels de tourisme, classés ou pas, de plus de 5 chambres et sur les
+                   campings  de plus de 10 emplacements, classés ou pas, y compris les campings résidentiels. Elles
+                   portent également sur les autres hébergements collectifs touristiques.
+                   Les statistiques sur l'offre d'hébergements sont établies en relation avec les comités régionaux de
+                   tourisme (CRT) et la direction générale des entreprises (DGE).
+                   Les statistiques concernant l'hôtellerie de plein air portent sur les campings offrant des
+                   emplacements à la clientèle de passage destinés aux touristes n'y élisant pas domicile ainsi que sur
+                   les campings proposant des emplacements loués à l'année, c'est à-dire à un seul client pour
+                   l'ensemble de la période d'ouverture du camping.
+                   Les statistiques de l'année 2016 sont proposées dans la géographie communale en vigueur au
+                   01/01/2015."
+documentation:     ""
+version:           1
+reference_date:    2016-03-17
+start_date:        2016-03-17
+activated:         yes
+cached:            no
+frameworks:
+  - name:            commune_2016
+    uri:             fr/commune_2016
+    complete:        yes
+    relationship:    one
+data_source:
+  type:  csv
+  path:  communes_2016_normandie_capacite_touristique.csv
+attributes:
+  - name:            LIBGEO
+    title:           Libellé commune
+    abstract:        "Nom de la commune."
+    type:            https://www.w3.org/TR/xmlschema-2/#string
+    length:          100
+    purpose:         Attribute
+    values:          Nominal
+  - name:            REG
+    title:           Région
+    abstract:        "Code de la région."
+    type:            https://www.w3.org/TR/xmlschema-2/#string
+    length:          2
+    purpose:         Attribute
+    values:          Nominal
+  - name:            DEP
+    title:           Département
+    abstract:        "Code du département."
+    type:            https://www.w3.org/TR/xmlschema-2/#string
+    length:          3
+    purpose:         Attribute
+    values:          Nominal
+  - name:            HT16
+    title:           Hôtels en 2016
+    abstract:        "Nombre d'hôtels en 2016"
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'hôtels'
+    uom_long_form:   'hôtels'
+  - name:            HTCH16
+    title:           Chambres dans hôtels en 2016
+    abstract:        "Nombre de chambres d'hôtel en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'chambres'
+    uom_long_form:   'chambres'
+  - name:            CPG16
+    title:           Campings en 2016
+    abstract:        "Nombre de campings en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'campings'
+    uom_long_form:   'campings'
+  - name:            CPGE16
+    title:           Emplacements de camping en 2016
+    abstract:        "Nombre d'emplacements de camping en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'emplacements'
+    uom_long_form:   'emplacements'
+  - name:            CPGEL16
+    title:           Emplacements loués à l'année en 2016
+    abstract:        "Nombre d'emplacements de camping loués à l'année en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'emplacements'
+    uom_long_form:   'emplacements'
+  - name:            VV16
+    title:           Villages vacances en 2016
+    abstract:        "Nombre de villages vacances en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'villages'
+    uom_long_form:   'villages'
+  - name:            VVUH16
+    title:           Unités d'hébergements dans Villages vacances en 2016
+    abstract:        "Nombre d'unités d'hébergements dans Villages vacances en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'hébergements'
+    uom_long_form:   'hébergements'
+  - name:            VVLIT16
+    title:           Lits dans Villages vacances en 2016
+    abstract:        "Nombre de lits dans Villages vacances en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'lits'
+    uom_long_form:   'lits'
+  - name:            RT16
+    title:           Résidences de tourisme en 2016
+    abstract:        "Nombre de résidences de tourisme en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'résidences'
+    uom_long_form:   'résidences'
+  - name:            RTUH16
+    title:           Unités d'hébergements dans Résidences de tourisme en 2016
+    abstract:        "Nombre d'unités d'hébergements dans Résidences de tourisme en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'hébergements'
+    uom_long_form:   'hébergements'
+  - name:            RTLIT16
+    title:           Lits dans Résidences de tourisme en 2016
+    abstract:        "Nombre de lits dans Résidences de tourisme en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'lits'
+    uom_long_form:   'lits'
+  - name:            AJCS16
+    title:           Auberges de jeunesse - Centres sportifs en 2016
+    abstract:        "Nombre d'auberges de jeunesse - Centres sportifs en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'auberges - centres'
+    uom_long_form:   'auberges de jeunesse - centres sportifs'
+  - name:            AJCSUH16
+    title:           Unités d'hébergements dans Auberges de jeunesse - Centres sportifs en 2016
+    abstract:        "Nombre d'unités d'hébergements dans Auberges de jeunesse - Centres sportifs en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'hébergements'
+    uom_long_form:   'hébergements'
+  - name:            AJCSLIT16
+    title:           Lits dans Auberges de jeunesse - Centre sportif en 2016
+    abstract:        "Nombre de lits dans Auberges de jeunesse - Centre sportif en 2016."
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  'lits'
+    uom_long_form:   'lits'

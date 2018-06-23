@@ -130,8 +130,9 @@ attributes:
     abstract:        "Surface en hectares de l'EPCI toujours en herbe en 2010.
                      Données issues du tableau de bord du développement durable en Provence-Alpes-Côte d'Azur - Insee Paca - Septembre 2017
                      Sources : SRISE, Recensement agricole 2010."
-    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    type:            https://www.w3.org/TR/xmlschema-2/#decimal
     length:          8
+    decimals:        4
     purpose:         Attribute
     values:          Count
     uom_short_form:  ha
