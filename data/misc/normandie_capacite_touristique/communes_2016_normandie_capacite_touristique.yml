@@ -29,27 +29,27 @@ data_source:
   type:  csv
   path:  communes_2016_normandie_capacite_touristique.csv
 attributes:
-  - name:            LIBGEO
-    title:           Libellé commune
-    abstract:        "Nom de la commune."
-    type:            https://www.w3.org/TR/xmlschema-2/#string
-    length:          100
-    purpose:         Attribute
-    values:          Nominal
-  - name:            REG
-    title:           Région
-    abstract:        "Code de la région."
-    type:            https://www.w3.org/TR/xmlschema-2/#string
-    length:          2
-    purpose:         Attribute
-    values:          Nominal
-  - name:            DEP
-    title:           Département
-    abstract:        "Code du département."
-    type:            https://www.w3.org/TR/xmlschema-2/#string
-    length:          3
-    purpose:         Attribute
-    values:          Nominal
+  # - name:            LIBGEO
+  #   title:           Libellé commune
+  #   abstract:        "Nom de la commune."
+  #   type:            https://www.w3.org/TR/xmlschema-2/#string
+  #   length:          100
+  #   purpose:         Attribute
+  #   values:          Nominal
+  # - name:            REG
+  #   title:           Région
+  #   abstract:        "Code de la région."
+  #   type:            https://www.w3.org/TR/xmlschema-2/#string
+  #   length:          2
+  #   purpose:         Attribute
+  #   values:          Nominal
+  # - name:            DEP
+  #   title:           Département
+  #   abstract:        "Code du département."
+  #   type:            https://www.w3.org/TR/xmlschema-2/#string
+  #   length:          3
+  #   purpose:         Attribute
+  #   values:          Nominal
   - name:            HT16
     title:           Hôtels en 2016
     abstract:        "Nombre d'hôtels en 2016"

@@ -23,13 +23,13 @@ data_source:
   type:  csv
   path:  paca_devpt_durable_cc_2017.csv
 attributes:
-  - name:            lib_epci
-    title:           EPCI (nom)
-    abstract:        "Nom de l'EPCI."
-    type:            https://www.w3.org/TR/xmlschema-2/#string
-    length:          100
-    purpose:         Attribute
-    values:          Nominal
+  # - name:            lib_epci
+  #   title:           EPCI (nom)
+  #   abstract:        "Nom de l'EPCI."
+  #   type:            https://www.w3.org/TR/xmlschema-2/#string
+  #   length:          100
+  #   purpose:         Attribute
+  #   values:          Nominal
   - name:            part_surf_natura_2000
     title:           Part de superficie des sites Natura 2000 en 2015
     abstract:        "Pourcentage de la superficie totale de l'EPCI couverte par des zones Natura 2000 en 2015.

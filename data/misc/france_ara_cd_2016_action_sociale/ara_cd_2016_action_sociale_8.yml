@@ -21,13 +21,13 @@ data_source:
   type:  csv
   path:  ara_cd_2016_action_sociale_8.csv
 attributes:
-  - name:            lib_dept
-    title:           Département
-    abstract:        "Nom du département."
-    type:            https://www.w3.org/TR/xmlschema-2/#string
-    length:          100
-    purpose:         Attribute
-    values:          Nominal
+  # - name:            lib_dept
+  #   title:           Département
+  #   abstract:        "Nom du département."
+  #   type:            https://www.w3.org/TR/xmlschema-2/#string
+  #   length:          100
+  #   purpose:         Attribute
+  #   values:          Nominal
   - name:            agri_expl
     title:           Agriculteurs exploitants
     abstract:        "Pourcentage de la population du département pour la catégorie socioprofessionnelle suivante : Agriculteurs exploitants.

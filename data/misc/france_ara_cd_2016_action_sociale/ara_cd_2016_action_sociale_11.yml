@@ -19,13 +19,13 @@ data_source:
   type:  csv
   path:  ara_cd_2016_action_sociale_11.csv
 attributes:
-  - name:            lib_dept
-    title:           Département
-    abstract:        "Nom du département."
-    type:            https://www.w3.org/TR/xmlschema-2/#string
-    length:          100
-    purpose:         Attribute
-    values:          Nominal
+  # - name:            lib_dept
+  #   title:           Département
+  #   abstract:        "Nom du département."
+  #   type:            https://www.w3.org/TR/xmlschema-2/#string
+  #   length:          100
+  #   purpose:         Attribute
+  #   values:          Nominal
   - name:            sous_occup_1999
     title:           Sous-occupation en 1999
     abstract:        "Part des résidences principales de 1999 en situation de sous-occupation.
