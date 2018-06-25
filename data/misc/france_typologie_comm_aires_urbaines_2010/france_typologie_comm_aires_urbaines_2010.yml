@@ -32,9 +32,9 @@ frameworks:
     relationship:    one
 data_source:
   type:  csv
-  path:  typologie_communale_aires_urbaines_2010.csv
+  path:  france_typologie_comm_aires_urbaines_2010.csv
 attributes:
-  - name:            typologie_communale_aires_urbaines_2010
+  - name:            typologie
     title:           Typologie communale / aires urbaines en 2010
     abstract:        Typologie communale / aires urbaines en 2010
     type:            https://www.w3.org/TR/xmlschema-2/#string
