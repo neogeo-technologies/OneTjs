@@ -55,3 +55,21 @@ commune_2016:
     north:           52.0
     west:            -62.0
     east:            56.0
+commune_2010:
+  uri:               fr/commune_2010
+  organization:      Neogeo Technologies
+  title:             Communes (2010)
+  abstract:          "Découpage territorial à la commune en 2010.
+                     L'identifiant utilisé est le code INSEE de la commune."
+  version:           2010
+  start_date:        2010-01-01
+  reference_date:    2010-12-31
+  key_col:
+    name:            code_com
+    type:            https://www.w3.org/TR/xmlschema-2/#string
+    length:          5
+  bbox:
+    south:           -22.0
+    north:           52.0
+    west:            -62.0
+    east:            56.0

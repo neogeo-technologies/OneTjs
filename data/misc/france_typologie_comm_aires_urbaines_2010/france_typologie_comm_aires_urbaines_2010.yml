@@ -1,0 +1,84 @@
+---
+name:              france_typologie_comm_aires_urbaines_2010
+uri:               insee/france_typologie_comm_aires_urbaines_2010
+organization:      INSEE
+title:             Typologie communale / aires urbaines 2010
+abstract:          "Aire urbaine : Une aire urbaine ou 'grande aire urbaine' est un ensemble de communes, d'un seul tenant
+                   et sans enclave, constitué par un pôle urbain (unité urbaine) de plus de 10 000 emplois, et par des communes
+                   rurales ou unités urbaines (couronne périurbaine) dont au moins 40 % de la population résidente ayant
+                   un emploi travaille dans le pôle ou dans des communes attirées par celui-ci.
+                   Le zonage en aires urbaines 2010 distingue également :
+                   - les 'moyennes aires', ensemble de communes, d'un seul tenant et sans enclave, constitué par un pôle (unité
+                   urbaine) de 5 000 à 10 000 emplois, et par des communes rurales ou unités urbaines dont au moins 40 % de la
+                   population résidente ayant un emploi travaille dans le pôle ou dans des communes attirées par celui-ci.
+                   - les 'petites aires', ensemble de communes, d'un seul tenant et sans enclave, constitué par un pôle (unité
+                   urbaine) de 1 500 à 5 000 emplois, et par des communes rurales ou unités urbaines dont au moins 40 % de la
+                   population résidente ayant un emploi travaille dans le pôle ou dans des communes attirées par celui-ci.
+                   L'espace des grandes aires urbaines est composé des communes dont la modalité vaut 111, 112, ou 120.
+                   L'espace des autres aires urbaines et composé des communes dont la modalité vaut 211, 212, 221 ou 222.
+                   Par ailleurs :
+                   - l'espace péri-urbain est composé des communes dont la modalité vaut 112 ou 120 ;
+                   - l'autre espace sous influence urbaine est composé des communes dont la modalité vaut 212, 222 ou 300."
+documentation:     ""
+version:           1
+reference_date:    2010-12-31
+start_date:        2010-12-31
+activated:         yes
+cached:            no
+frameworks:
+  - name:            commune_2010
+    uri:             fr/commune_2010
+    complete:        yes
+    relationship:    one
+data_source:
+  type:  csv
+  path:  typologie_communale_aires_urbaines_2010.csv
+attributes:
+  - name:            typologie_communale_aires_urbaines_2010
+    title:           Typologie communale / aires urbaines en 2010
+    abstract:        Typologie communale / aires urbaines en 2010
+    type:            https://www.w3.org/TR/xmlschema-2/#string
+    length:
+    purpose:         Attribute
+    values:          Nominal
+    choices:
+      - identifier:    111
+        title:         Grands pôles
+        abstract:      Grands pôles
+        color:         ca011a
+      - identifier:    112
+        title:         Couronnes des grands pôles
+        abstract:      Couronnes des grands pôles
+        color:         f59c2b
+      - identifier:    120
+        title:         Com. multipolar. des gdes aires urb.
+        abstract:      Com. multipolar. des gdes aires urb.
+        color:         f9d434
+      - identifier:    211
+        title:         Pôles moyens
+        abstract:      Pôles moyens
+        color:         a20672
+      - identifier:    212
+        title:         Couronnes des pôles moyens
+        abstract:      Couronnes des pôles moyens
+        color:         ca74a9
+      - identifier:    221
+        title:         Petits pôles
+        abstract:      Petits pôles
+        color:         1d9b9d
+      - identifier:    222
+        title:         Couronnes des petits pôles
+        abstract:      Couronnes des petits pôles
+        color:         8bcdcf
+      - identifier:    300
+        title:         Autres communes multipolarisées
+        abstract:      Autres communes multipolarisées
+        color:         d4d6e7
+      - identifier:    400
+        title:         Com. isolées hors influence des pôles
+        abstract:      Com. isolées hors influence des pôles
+        color:         f3f4ed
+      - identifier:    null
+        title:         N/A - Résultat non disponible
+        abstract:      N/A - Résultat non disponible
+        color:         cccccc
