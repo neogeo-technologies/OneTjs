@@ -3,6 +3,7 @@
 import logging
 import os
 import pandas as pd
+import psycopg2
 import numpy as np
 
 from app.models.dataset_attribute import DatasetAttribute
@@ -286,7 +287,17 @@ class SqlDataset(Dataset):
         super(SqlDataset, self).__init__(service, dataset_dict)
 
     def check_data_source(self):
-        pass
+        super(SqlDataset, self).check_data_source()
 
     def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
-        pass
+        conn_str = self.data_source["path"]
+        conn = psycopg2.connect(conn_str)
+
+        query = self.data_source["subset"]
+        dataframe = pd.DataFrame()
+        for chunk in pd.read_sql(query, con=conn, chunksize=5000):
+            dataframe = dataframe.append(chunk)
+
+        dataframe = dataframe.set_index(key_col_name)
+
+        return dataframe
