@@ -229,7 +229,10 @@ def get_capabilities(serv, args, blueprint_name):
         arg_language = serv.languages[0]
 
         response_content = render_template(
-            template_name, service=serv, tjs_version=tjs_version
+            template_name,
+            service=serv,
+            tjs_version=tjs_version,
+            onetjs_version=current_app.version,
         )
         response_content = utils.prettify_xml(
             xml_string=response_content, minify=not current_app.debug
@@ -292,6 +295,7 @@ def describe_frameworks(serv, args, blueprint_name):
         frameworks=frameworks,
         tjs_version=arg_version,
         language=arg_language,
+        onetjs_version=current_app.version,
     )
     response_content = utils.prettify_xml(
         xml_string=response_content, minify=not current_app.debug
@@ -382,6 +386,7 @@ def describe_datasets(serv, args, blueprint_name):
         language=arg_language,
         framework_uri=framework_uri,
         dataset_uri=dataset_uri,
+        onetjs_version=current_app.version,
     )
     response_content = utils.prettify_xml(
         xml_string=response_content, minify=not current_app.debug
@@ -524,6 +529,7 @@ def describe_data(serv, args, blueprint_name):
         framework=frwk,
         dataset=dtst,
         attributes=dtst_attributes,
+        onetjs_version=current_app.version,
     )
     response_content = utils.prettify_xml(
         xml_string=response_content, minify=not current_app.debug
@@ -682,6 +688,7 @@ def get_data(serv, args, blueprint_name):
         dataset=dtst,
         attributes=dtst_attributes,
         data=data,
+        onetjs_version=current_app.version,
     )
     response_content = utils.prettify_xml(
         xml_string=response_content, minify=not current_app.debug

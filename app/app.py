@@ -10,6 +10,7 @@ from flask import render_template
 from flask.logging import default_handler
 
 from werkzeug.contrib.fixers import ProxyFix
+from . import __version__
 
 __all__ = ("create_app",)
 
@@ -57,6 +58,7 @@ def create_app(app_name="onetjs", blueprints=None):
 
     configure_logging(app)
     error_pages(app)
+    app.version = __version__
 
     return app
 

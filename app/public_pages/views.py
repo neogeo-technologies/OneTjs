@@ -25,13 +25,18 @@ def favicon():
 
 @public_blueprint.route("/")
 def index():
-    return render_template("index.html", init_success=current_app.init_success)
-
+    return render_template(
+        "index.html",
+        init_success=current_app.init_success,
+        version=current_app.version
+    )
 
 @public_blueprint.route("/services/")
 def services():
     return render_template(
-        "services_list.html", services=current_app.services_manager.get_services()
+        "services_list.html",
+        services=current_app.services_manager.get_services(),
+        version=current_app.version
     )
 
 
@@ -43,13 +48,19 @@ def service(service_name):
     if this_service is None:
         return render_template("error.html", error_code=404), 404
 
-    return render_template("service.html", service=this_service)
+    return render_template(
+        "service.html",
+        service=this_service,
+        version=current_app.version
+    )
 
 
 @public_blueprint.route("/frameworks/")
 def frameworks():
     return render_template(
-        "frameworks_list.html", services=current_app.services_manager.get_services()
+        "frameworks_list.html",
+        services=current_app.services_manager.get_services(),
+        version=current_app.version
     )
 
 
@@ -68,13 +79,19 @@ def framework(service_name, framework_name):
     if this_framework is None:
         return render_template("error.html", error_code=404), 404
 
-    return render_template("framework.html", framework=this_framework)
+    return render_template(
+        "framework.html",
+        framework=this_framework,
+        version=current_app.version
+    )
 
 
 @public_blueprint.route("/datasets/")
 def datasets():
     return render_template(
-        "datasets_list.html", services=current_app.services_manager.get_services()
+        "datasets_list.html",
+        services=current_app.services_manager.get_services(),
+        version=current_app.version
     )
 
 
@@ -98,4 +115,9 @@ def dataset(service_name, dataset_name):
         logging.error(e.message)
         data = None
 
-    return render_template("dataset.html", dataset=this_dataset, data=data)
+    return render_template(
+        "dataset.html",
+        dataset=this_dataset,
+        data=data,
+        version=current_app.version
+    )

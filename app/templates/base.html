@@ -37,6 +37,9 @@
                         <li><a href="{{ url_for('public_pages.datasets') }}">Jeux de données</a></li>
                         {% block extra_nav %}{% endblock %}
                     </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                      <p class="navbar-text">v{{ version }}</p>
+                    </ul>
                 </div>
             </div>
         </nav>
