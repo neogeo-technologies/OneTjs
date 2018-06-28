@@ -100,23 +100,23 @@ def error_pages(app):
     # HTTP error pages definitions
     @app.errorhandler(401)
     def unauthorized(error):
-        return render_template("error.html", error_code=error.code), 401
+        return render_template("error.html", error_code=401), 401
 
     @app.errorhandler(403)
     def forbidden_page(error):
-        return render_template("error.html", error_code=error.code), 403
+        return render_template("error.html", error_code=403), 403
 
     @app.errorhandler(404)
     def page_not_found(error):
-        return render_template("error.html", error_code=error.code), 404
+        return render_template("error.html", error_code=404), 404
 
     @app.errorhandler(405)
     def method_not_allowed(error):
-        return render_template("error.html", error_code=error.code), 405
+        return render_template("error.html", error_code=405), 405
 
     @app.errorhandler(500)
     def server_error_page(error):
-        return render_template("error.html", error_code=error.code), 500
+        return render_template("error.html", error_code=500), 500
 
 
 def configure_logging(app):
