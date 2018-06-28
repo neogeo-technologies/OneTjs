@@ -280,24 +280,40 @@ class XlsFileDataset(FileDataset):
         return dataframe
 
 
-class SqlDataset(Dataset):
+class PostgreSqlDataset(Dataset):
     DATA_SOURCE_TYPE = "sql"
 
     def __init__(self, service, dataset_dict):
-        super(SqlDataset, self).__init__(service, dataset_dict)
+        super(PostgreSqlDataset, self).__init__(service, dataset_dict)
 
     def check_data_source(self):
-        super(SqlDataset, self).check_data_source()
+        param_con = []
+        for param in self.data_source["db_connection"]:
+            param_con.append("{0}={1}".format(param, self.data_source["db_connection"][param]))
+        conn_str = " ".join(param_con)
+        conn = psycopg2.connect(conn_str)
+        df = pd.read_sql(self.data_source["query"], con=conn)
+        if df.empty:
+            raise ValueError(
+                "Connection error : please check 'db_connection' or 'query' parameters in the dataset config file {0}".format(
+                    self.yaml_file_path
+                )
+            )
 
     def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
-        conn_str = self.data_source["path"]
-        conn = psycopg2.connect(conn_str)
 
-        query = self.data_source["subset"]
+        param_con = []
+
+        for param in self.data_source["db_connection"]:
+            param_con.append("{0}={1}".format(param, self.data_source["db_connection"][param]))
+
+        query = self.data_source["query"]
+
+        conn_str = " ".join(param_con)
+        conn = psycopg2.connect(conn_str)
         dataframe = pd.DataFrame()
         for chunk in pd.read_sql(query, con=conn, chunksize=5000):
             dataframe = dataframe.append(chunk)
-
         dataframe = dataframe.set_index(key_col_name)
 
         return dataframe

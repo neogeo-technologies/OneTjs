@@ -6,7 +6,7 @@ import logging
 
 from app.models.dataset import CsvFileDataset
 from app.models.dataset import XlsFileDataset
-from app.models.dataset import SqlDataset
+from app.models.dataset import PostgreSqlDataset
 from app.models.framework import Framework
 
 FRAMEWORKS_FILE_NAME = "frameworks.yml"
@@ -119,7 +119,7 @@ class Service(object):
 
     # factory function for datasets
     def create_dataset_instance(self, dataset_yaml_file_path):
-        dataset_subclasses = [CsvFileDataset, XlsFileDataset, SqlDataset]
+        dataset_subclasses = [CsvFileDataset, XlsFileDataset, PostgreSqlDataset]
         dataset_subclass = None
         data_source_type = None
         frameworks = None
