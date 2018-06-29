@@ -13,7 +13,6 @@ version:           1
 reference_date:    2011-01-01
 start_date:        2011-12-31
 activated:         yes
-cached:            no
 frameworks:
   - name:            epci_2017
     uri:             fr/epci_2017

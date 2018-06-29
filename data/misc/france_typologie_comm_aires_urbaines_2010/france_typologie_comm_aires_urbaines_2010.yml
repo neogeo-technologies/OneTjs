@@ -24,7 +24,6 @@ version:           1
 reference_date:    2010-12-31
 start_date:        2010-12-31
 activated:         yes
-cached:            no
 frameworks:
   - name:            commune_2010
     uri:             fr/commune_2010

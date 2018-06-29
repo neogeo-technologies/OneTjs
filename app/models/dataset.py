@@ -22,7 +22,7 @@ class Dataset(object):
         self.frameworks = {}
         self.frameworks_complete = {}
         self.frameworks_relationship = {}
-        self.data_source = {"type": None, "path": None, "subset": None}
+        self.data_source = {"type": None, "path": None}
         self.organization = None
         self.name = "default_dataset_name"
         self.title = "Default dataset title"
@@ -32,7 +32,6 @@ class Dataset(object):
         self.reference_date = None
         self.start_date = None
         self.activated = False
-        self.cached = False
         self.cache_max_age = 0
         self.yaml_file_path = None
 

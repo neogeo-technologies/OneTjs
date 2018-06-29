@@ -9,7 +9,6 @@ version:           1
 reference_date:    2011-01-01
 start_date:        2011-12-31
 activated:         yes
-cached:            no
 frameworks:
   - name:            commune_2011
     uri:             region_hdf/commune_2011

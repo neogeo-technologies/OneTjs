@@ -8,7 +8,6 @@ documentation:       http://www.regionhautsdefrance.fr/data/geostats/datasets/fa
 version:             1
 reference_date:      2012-01-01
 activated:           yes
-cached:              no
 frameworks:
   - name:            commune_2012
     uri:             region_hdf/commune_2012
@@ -32,6 +31,3 @@ attributes:
     values:                     Measure
     uom_short_form:             '%'
     uom_long_form:              pourcentage
-    allow_agregation :  yes
-    weighting_attribute_name :  nb_menages
-    weighting_attribute_source :  self

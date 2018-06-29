@@ -9,7 +9,6 @@ version:           1
 reference_date:    1999-01-01
 start_date:        2010-12-31
 activated:         yes
-cached:            no
 frameworks:
   - name:            dept_2011
     uri:             fr/dept_2011

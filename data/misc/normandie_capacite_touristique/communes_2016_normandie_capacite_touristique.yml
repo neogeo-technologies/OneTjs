@@ -19,7 +19,6 @@ version:           1
 reference_date:    2016-03-17
 start_date:        2016-03-17
 activated:         yes
-cached:            no
 frameworks:
   - name:            commune_2016
     uri:             fr/commune_2016

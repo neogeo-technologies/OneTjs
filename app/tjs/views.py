@@ -696,10 +696,10 @@ def get_data(serv, args, blueprint_name):
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
-    if dtst.cached:
-        max_age = dtst.cache_max_age or 3600
-        response.cache_control.max_age = max_age
-        response.cache_control.public = True
+    # if dtst.cached:
+    #     max_age = dtst.cache_max_age or 3600
+    #     response.cache_control.max_age = max_age
+    #     response.cache_control.public = True
 
     return response
 
