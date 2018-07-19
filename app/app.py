@@ -9,7 +9,8 @@ from flask import Flask
 from flask import render_template
 from flask.logging import default_handler
 
-from werkzeug.contrib.fixers import ProxyFix
+from .reverse_proxied import ReverseProxied
+
 from . import __version__
 
 __all__ = ("create_app",)
@@ -26,7 +27,7 @@ def create_app(app_name="onetjs", blueprints=None):
             os.path.join(os.path.dirname(__file__), "templates")
         ),
     )
-    app.wsgi_app = ProxyFix(app.wsgi_app)
+    app.wsgi_app = ReverseProxied(app.wsgi_app)
 
     # Default config
     app.config.from_object("app.config.BaseConfig")
