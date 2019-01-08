@@ -7,6 +7,6 @@ Flask-WTF==0.14.2
 Werkzeug==0.14.1
 PyYAML==3.13
 xlrd==1.1.0
-pandas==0.23.0
+pandas==0.20.3
 uWSGI==2.0.17
 psycopg2-binary==2.7.5
