@@ -22,7 +22,7 @@ class ServicesManager(object):
         # Read the services param file
         with open(self.services_cfg_file_path, "r") as stream:
             try:
-                services_dict = yaml.load(stream)
+                services_dict = yaml.safe_load(stream)
 
                 for k, v in list(services_dict.items()):
                     v["cfg_file_path"] = self.services_cfg_file_path

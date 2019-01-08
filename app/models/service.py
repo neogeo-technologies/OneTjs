@@ -70,7 +70,7 @@ class Service(object):
 
             with open(frwks_yml_path, "r") as stream:
                 try:
-                    frameworks_dict = yaml.load(stream)
+                    frameworks_dict = yaml.safe_load(stream)
 
                     for k, v in list(frameworks_dict.items()):
                         v["name"] = k
@@ -129,7 +129,7 @@ class Service(object):
         with open(dataset_yaml_file_path, "r") as stream:
             # try:
             # Read the yaml file
-            dataset_dict = yaml.load(stream)
+            dataset_dict = yaml.safe_load(stream)
 
             # Save the yaml file path
             dataset_dict["yaml_file_path"] = dataset_yaml_file_path
