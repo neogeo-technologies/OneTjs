@@ -4,7 +4,7 @@ Flask-Bootstrap==3.3.7.1
 Flask-DebugToolbar==0.10.1
 Flask-Script==2.0.6
 Flask-WTF==0.14.2
-Werkzeug==0.14.1
+Werkzeug>=0.16.0,<0.17
 PyYAML>=4.2b1
 xlrd==1.1.0
 pandas==0.20.3
