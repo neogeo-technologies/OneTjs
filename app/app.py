@@ -159,7 +159,7 @@ def configure_logging(app):
 
         app.logger.debug("Logging initialized...")
         app.logger.debug(
-            "... log gile location: {}".format(app.config.get("LOGGING_LOCATION"))
+            "... log file location: {}".format(app.config.get("LOGGING_LOCATION"))
         )
     else:
         default_handler.setLevel(log_level)
