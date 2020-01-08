@@ -24,9 +24,10 @@ Unsupported options:
 * one DescribeFrameworks request parameters: language
 * some GetData request parameters: language, LinkageKeys , FilterColumn, FilterValue, XSL, Aid
 
-OneTjs is able to read CSV and Excel data files stored in the local file system.
-
-OneTjs is not yet able to read table (nor views) from SQL databases (this a planned feature).
+OneTjs is able to read data from:
+* data files stored in the local file system: CSV and XLS files
+* MySQL databases
+* PostgreSQL (planned)
 
 
 ## License and contributors
