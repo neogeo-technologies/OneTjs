@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import logging
 import os
 import yaml
 
@@ -31,8 +30,8 @@ class ServicesManager(object):
                     self.services[k] = s
                     self.app.init_success = True
             except yaml.YAMLError as e:
-                logging.exception(e)
-                logging.critical(
+                self.app.logger.exception(e)
+                self.app.logger.critical(
                     "The app config file is not correctly formed. The initialization porcess will stop."
                     "The following configuration file must be fixed before the application is restarted : "
                     "{}".format(self.services_cfg_file_path)

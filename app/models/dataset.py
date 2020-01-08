@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import logging
+from flask import current_app
+
 import os
 import pandas as pd
 import psycopg2
@@ -42,24 +43,24 @@ class Dataset(object):
         try:
             dataset_attributes_dicts = dataset_dict.pop("attributes")
         except KeyError as e:
-            logging.error(
+            current_app.logger.error(
                 "'attributes' parameter not defined in dataset config file {0}".format(
                     self.yaml_file_path
                 )
             )
-            logging.exception(e)
+            current_app.logger.exception(e)
 
         # Get the frameworks info
         frameworks_relations = {}
         try:
             frameworks_relations = dataset_dict.pop("frameworks")
         except KeyError as e:
-            logging.error(
+            current_app.logger.error(
                 "'frameworks' parameter not defined in dataset config file {0}".format(
                     self.yaml_file_path
                 )
             )
-            logging.exception(e)
+            current_app.logger.exception(e)
 
         # Update the dataset object properties
         self.__dict__.update(dataset_dict)
@@ -162,7 +163,7 @@ class Dataset(object):
                 attributes_names, attributes_types, key_col_name, key_col_type
             )
         except ValueError as e:
-            logging.exception(e)
+            current_app.logger.exception(e)
 
         return data
 

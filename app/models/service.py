@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from flask import current_app
+
 import yaml
 import os
-import logging
 
 from app.models.dataset import CsvFileDataset
 from app.models.dataset import XlsFileDataset
@@ -77,7 +78,7 @@ class Service(object):
                         f = Framework(**v)
                         self.frameworks[f.uri] = f
                 except yaml.YAMLError as e:
-                    logging.exception(e)
+                    current_app.logger.exception(e)
 
     def update_datasets_info(self):
         self.datasets = {}
@@ -91,31 +92,31 @@ class Service(object):
                         ds = self.create_dataset_instance(yaml_file_path)
                         self.datasets[ds.name] = ds
                     except ValueError as e:
-                        logging.exception(e)
+                        current_app.logger.exception(e)
                     except KeyError as e:
-                        logging.exception(e)
-                        logging.error(
+                        current_app.logger.exception(e)
+                        current_app.logger.error(
                             "Some critical fields are missing in the following dataset config file:"
                             " {0}".format(yaml_file_path)
                         )
                     except yaml.YAMLError as e:
-                        logging.exception(e)
-                        logging.error(
+                        current_app.logger.exception(e)
+                        current_app.logger.error(
                             "The following dataset config file cannot be correctly read:"
                             " {0}".format(yaml_file_path)
                         )
 
     def log_info(self):
-        logging.info(
+        current_app.logger.info(
             "Service: {0} ({1})".format(
                 self.name, "activated" if self.activated else "deactivated"
             )
         )
-        logging.info("- datapath: {0}".format(self.data_dir_path))
+        current_app.logger.info("- datapath: {0}".format(self.data_dir_path))
         for f in list(self.frameworks.items()):
-            logging.info("- framework: {0} - {1}".format(f[1].title, f[0]))
+            current_app.logger.info("- framework: {0} - {1}".format(f[1].title, f[0]))
         for ds in list(self.datasets.items()):
-            logging.info("- dataset: {0} - {1}".format(ds[1].title, ds[0]))
+            current_app.logger.info("- dataset: {0} - {1}".format(ds[1].title, ds[0]))
 
     # factory function for datasets
     def create_dataset_instance(self, dataset_yaml_file_path):

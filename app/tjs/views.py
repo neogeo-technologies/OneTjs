@@ -8,8 +8,6 @@ from flask import Blueprint
 
 from flask import current_app
 
-import logging
-
 try:
     import urllib.parse
     from urllib.parse import urlencode
@@ -675,7 +673,7 @@ def get_data(serv, args, blueprint_name):
     try:
         data = dtst.get_data(attributes=dtst_attributes, framework=frwk)
     except ValueError as e:
-        logging.error(e.message)
+        current_app.logger.error(e.message)
         data = None
 
     # TODO: handle correctly empty pd_dataframe (None for example)

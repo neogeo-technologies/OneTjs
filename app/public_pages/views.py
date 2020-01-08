@@ -7,10 +7,6 @@ from flask import send_from_directory
 from flask import Blueprint
 from flask import current_app
 
-import logging
-
-# from app import app
-
 public_blueprint = Blueprint("public_pages", __name__, template_folder="templates")
 
 
@@ -112,7 +108,7 @@ def dataset(service_name, dataset_name):
     try:
         data = this_dataset.get_data()
     except ValueError as e:
-        logging.error(e.message)
+        current_app.logger.error(e.message)
         data = None
 
     return render_template(

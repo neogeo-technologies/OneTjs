@@ -27,39 +27,41 @@ def create_app(app_name="onetjs", blueprints=None):
             os.path.join(os.path.dirname(__file__), "templates")
         ),
     )
-    app.wsgi_app = ReverseProxied(app.wsgi_app)
 
-    # Default config
-    app.config.from_object("app.config.BaseConfig")
+    with app.app_context():
+        app.wsgi_app = ReverseProxied(app.wsgi_app)
 
-    # Local config file set via the ONETJS_CONFIG_FILE_PATH environment variable or a onetjs.cfg file
-    local_cfg_file_path = os.environ.get(
-        "ONETJS_CONFIG_FILE_PATH",
-        os.path.abspath(
-            os.path.join(os.path.dirname(__file__), os.path.pardir, "onetjs.cfg")
-        ),
-    )
-    app.config.from_pyfile(local_cfg_file_path, silent=True)
+        # Default config
+        app.config.from_object("app.config.BaseConfig")
 
-    # Some adjustments for development and testing configs
-    if app.config["ENV"] == "development":
-        app.config.from_object("app.config.DevConfig")
+        # Local config file set via the ONETJS_CONFIG_FILE_PATH environment variable or a onetjs.cfg file
+        local_cfg_file_path = os.environ.get(
+            "ONETJS_CONFIG_FILE_PATH",
+            os.path.abspath(
+                os.path.join(os.path.dirname(__file__), os.path.pardir, "onetjs.cfg")
+            ),
+        )
+        app.config.from_pyfile(local_cfg_file_path, silent=True)
 
-    if app.config["TESTING"] == True:
-        app.config.from_object("app.config.TestConfig")
+        # Some adjustments for development and testing configs
+        if app.config["ENV"] == "development":
+            app.config.from_object("app.config.DevConfig")
 
-    app.init_success = False
-    from .models import services_manager
+        if app.config["TESTING"] == True:
+            app.config.from_object("app.config.TestConfig")
 
-    app.services_manager = services_manager.ServicesManager(app)
+        app.init_success = False
+        from .models import services_manager
 
-    blueprints_fabrics(app)
-    extensions_fabrics(app)
-    # see https://github.com/xen/flask-project-template
+        app.services_manager = services_manager.ServicesManager(app)
 
-    configure_logging(app)
-    error_pages(app)
-    app.version = __version__
+        blueprints_fabrics(app)
+        extensions_fabrics(app)
+        # see https://github.com/xen/flask-project-template
+
+        configure_logging(app)
+        error_pages(app)
+        app.version = __version__
 
     return app
 
