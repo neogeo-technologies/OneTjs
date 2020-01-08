@@ -5,12 +5,13 @@ MAINTAINER Benjamin Chartier at neogeo.fr
 RUN mkdir /onetjs
 RUN mkdir /onetjs/log
 COPY requirements.txt /onetjs/
+RUN pip install -r /onetjs/requirements.txt
+
 COPY app /onetjs/app
 COPY data /onetjs/data
 COPY static /onetjs/static
 COPY *.cfg /onetjs/
 COPY uwsgi.ini /onetjs/
-RUN pip install -r /onetjs/requirements.txt
 
 WORKDIR /onetjs
 VOLUME /onetjs/data
