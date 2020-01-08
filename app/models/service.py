@@ -7,7 +7,8 @@ import os
 
 from app.models.dataset import CsvFileDataset
 from app.models.dataset import XlsFileDataset
-from app.models.dataset import PostgreSqlDataset
+from app.models.dataset import PgsqlDataset
+from app.models.dataset import MysqlDataset
 from app.models.framework import Framework
 
 FRAMEWORKS_FILE_NAME = "frameworks.yml"
@@ -89,6 +90,7 @@ class Service(object):
                 if f.endswith(".yml") and f != FRAMEWORKS_FILE_NAME:
                     yaml_file_path = os.path.join(root, f)
                     try:
+                        current_app.logger.info("Reading dataset config file:\n{0}...".format(yaml_file_path))
                         ds = self.create_dataset_instance(yaml_file_path)
                         self.datasets[ds.name] = ds
                     except ValueError as e:
@@ -120,7 +122,7 @@ class Service(object):
 
     # factory function for datasets
     def create_dataset_instance(self, dataset_yaml_file_path):
-        dataset_subclasses = [CsvFileDataset, XlsFileDataset, PostgreSqlDataset]
+        dataset_subclasses = [CsvFileDataset, XlsFileDataset, MysqlDataset, PgsqlDataset]
         dataset_subclass = None
         data_source_type = None
         frameworks = None

@@ -1,0 +1,36 @@
+---
+name:              demandeurs_emploi_hommes_2011_mysql
+uri:               http://www.regionhautsdefrance.fr/data/geostats/datasets/demandeurs_emploi_hommes_2011_mysql
+organization:      Région Hauts-de-France
+title:             Nombre de demandeurs d'emploi dans les Hauts-de-Frances chez les hommes en 2011 (MySQL)
+abstract:          Nombre de demandeurs d'emploi dans les Hauts-de-Frances chez les hommes en 2011 (MySQL)
+documentation:     http://www.regionhautsdefrance.fr/data/geostats/datasets/demandeurs_emploi_hommes_2011.html
+version:           1
+reference_date:    2011-01-01
+start_date:        2011-12-31
+activated:         yes
+frameworks:
+  - name:           commune_2011
+    uri:            region_hdf/commune_2011
+    complete:       yes
+    relationship:   one
+data_source:
+  type:             mysql
+#  table:            demandeurs_emploi_hommes_2011
+  query:            "SELECT * FROM demandeurs_emploi_hommes_2011 WHERE demandeurs_emploi_homme > 50"
+  db_connection:
+    host:           localhost
+    port:           3306
+    database:       onetjs
+    user:           root
+    password:       onetjs
+attributes:
+  - name:            demandeurs_emploi_homme
+    title:           Nombre de demandeurs d'emploi dans les Hauts-de-France chez les hommes en 2011
+    abstract:        Nombre de demandeurs d'emploi dans les Hauts-de-France chez les hommes en 2011
+    type:            https://www.w3.org/TR/xmlschema-2/#integer
+    length:          8
+    purpose:         Attribute
+    values:          Count
+    uom_short_form:  personnes
+    uom_long_form:   personnes

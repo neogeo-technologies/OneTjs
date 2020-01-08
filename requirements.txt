@@ -10,3 +10,4 @@ xlrd==1.1.0
 pandas==0.20.3
 uWSGI==2.0.17
 psycopg2-binary==2.7.5
+mysql-connector-python==8.0.18

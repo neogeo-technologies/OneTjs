@@ -5,6 +5,7 @@ from flask import current_app
 import os
 import pandas as pd
 import psycopg2
+import mysql.connector
 import numpy as np
 
 from app.models.dataset_attribute import DatasetAttribute
@@ -280,40 +281,68 @@ class XlsFileDataset(FileDataset):
         return dataframe
 
 
-class PostgreSqlDataset(Dataset):
+class SqlDataset(Dataset):
     DATA_SOURCE_TYPE = "sql"
 
     def __init__(self, service, dataset_dict):
-        super(PostgreSqlDataset, self).__init__(service, dataset_dict)
+        super(SqlDataset, self).__init__(service, dataset_dict)
 
     def check_data_source(self):
-        param_con = []
-        for param in self.data_source["db_connection"]:
-            param_con.append("{0}={1}".format(param, self.data_source["db_connection"][param]))
-        conn_str = " ".join(param_con)
-        conn = psycopg2.connect(conn_str)
-        df = pd.read_sql(self.data_source["query"], con=conn)
+        df = self._get_dataframe()
         if df.empty:
             raise ValueError(
-                "Connection error : please check 'db_connection' or 'query' parameters in the dataset config file {0}".format(
+                "Db connection error: please check 'db_connection' or 'query' parameter in the dataset config file {0}".format(
                     self.yaml_file_path
                 )
             )
 
+    def _get_dataframe(self):
+
+        if self.data_source["type"] == "pgsql":
+            conn = psycopg2.connect(**self.data_source["db_connection"])
+        elif self.data_source["type"] == "mysql":
+            conn = mysql.connector.connect(**self.data_source["db_connection"])
+        else:
+            raise ValueError(
+                "Connection error: please check 'data_source type value' parameter in the dataset config file {0}. "
+                "The value {1} is not allowed.".format(
+                    self.yaml_file_path, self.data_source["type"]
+                )
+            )
+        if "query" in self.data_source:
+            df = pd.read_sql(self.data_source["query"], con=conn)
+        elif "table" in self.data_source:
+            query = "SELECT * FROM {0}".format(self.data_source["table"])
+            df = pd.read_sql(query, con=conn)
+        else:
+            raise KeyError(
+                "Db connection error: please check 'query' and 'table' parameters in the dataset config file {0}. "
+                "None of these parameters are present. There should be one of them".format(
+                    self.yaml_file_path
+                )
+            )
+
+        return df
+
     def _get_data(self, attributes_names, attributes_types, key_col_name, key_col_type):
 
-        param_con = []
-
-        for param in self.data_source["db_connection"]:
-            param_con.append("{0}={1}".format(param, self.data_source["db_connection"][param]))
-
-        query = self.data_source["query"]
-
-        conn_str = " ".join(param_con)
-        conn = psycopg2.connect(conn_str)
-        dataframe = pd.DataFrame()
-        for chunk in pd.read_sql(query, con=conn, chunksize=5000):
-            dataframe = dataframe.append(chunk)
-        dataframe = dataframe.set_index(key_col_name)
+        df = self._get_dataframe()
+        df = df.where((pd.notnull(df)), None)
+        df = df.set_index(key_col_name)
+        dataframe = pd.DataFrame(df, columns=attributes_names)
 
         return dataframe
+
+
+class MysqlDataset(SqlDataset):
+    DATA_SOURCE_TYPE = "mysql"
+
+    def __init__(self, service, dataset_dict):
+        super(MysqlDataset, self).__init__(service, dataset_dict)
+
+
+class PgsqlDataset(SqlDataset):
+    DATA_SOURCE_TYPE = "pgsql"
+
+    def __init__(self, service, dataset_dict):
+        super(PgsqlDataset, self).__init__(service, dataset_dict)

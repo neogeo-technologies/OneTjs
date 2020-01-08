@@ -264,22 +264,61 @@ frameworks:
     uri:             framework_URI
     complete:        yes # must be 'yes' -> data concerns the entire framework = complete dataset
     relationship:    one # Identifies if the relationship between the Framework and the Attribute datasets are 1:1 (one) or 1:many (many).
+datasource:
+    ...
+attributes:
+    ...
 ```
-The "data_source" parameter depends on data source type:
-```yaml
-# If data source is a PostgreSQL relationnal database
-data_source:
-  type:              sql
-  host:              Database host address
-  dbname:            Name of the database
-  user:              Database user id
-  password:          Database user password
-  query:             SQL query
 
-# If data source is CSV file (separator = ",") or XLS file
+Some "data_source" parameter examples:
+
+```yaml
+# CSV file (separator = ",") or XLS file
 data_source:
   type:              csv
   path:              datafile_name.csv
+```
+
+```yaml
+# Excel file
+data_source:
+  type:              xls
+  path:              datafile_name.xls
+
+```yaml
+# PostgreSQL database
+data_source:
+  type:              pgsql
+  query:             SQL query
+  table:             table name
+  db_connection:
+    host:              database host address
+    port:              connection port number (defaults to 5432 if not provided)
+    dbname:            database name
+    user:              database user name used to authenticate
+    password:          user password used to authenticate
+```
+
+```yaml
+# MySQL database
+data_source:
+  type:              mysql
+  query:             SQL query
+  table:             table name
+  db_connection:
+    host:              database host address
+    port:              connection port number (defaults to 3306 if not provided)
+    database:          database name
+    user:              database user name used to authenticate
+    password:          user password used to authenticate
+```
+
+Notes SQL datasources:
+- For MySQL and PostgreSQL datasources, either query or table must be present.
+- The SQL query when the table parameter is used is "SELECT * FROM tablename".
+- If both parameters are present, OneTJS only takes into account the query parameter.
+- The database name parameter is slightly different for MySQL and PostgreSQL: database and dbname respectively.
+
 ```
 The "attributes" parameter depends on the column data type:
 ```yaml
