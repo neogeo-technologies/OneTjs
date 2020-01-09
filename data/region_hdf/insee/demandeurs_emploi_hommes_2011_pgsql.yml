@@ -1,9 +1,9 @@
 ---
-name:              demandeurs_emploi_hommes_2011_mysql
-uri:               http://www.regionhautsdefrance.fr/data/geostats/datasets/demandeurs_emploi_hommes_2011_mysql
+name:              demandeurs_emploi_hommes_2011_pgsql
+uri:               http://www.regionhautsdefrance.fr/data/geostats/datasets/demandeurs_emploi_hommes_2011_pgsql
 organization:      Région Hauts-de-France
-title:             Nombre de demandeurs d'emploi dans les Hauts-de-Frances chez les hommes en 2011 (MySQL)
-abstract:          Nombre de demandeurs d'emploi dans les Hauts-de-Frances chez les hommes en 2011 (MySQL)
+title:             Nombre de demandeurs d'emploi dans les Hauts-de-Frances chez les hommes en 2011 (PostgreSQL)
+abstract:          Nombre de demandeurs d'emploi dans les Hauts-de-Frances chez les hommes en 2011 (PostgreSQL)
 documentation:     http://www.regionhautsdefrance.fr/data/geostats/datasets/demandeurs_emploi_hommes_2011.html
 version:           1
 reference_date:    2011-01-01
@@ -15,14 +15,14 @@ frameworks:
     complete:       yes
     relationship:   one
 data_source:
-  type:             mysql
+  type:             pgsql
 #  table:            demandeurs_emploi_hommes_2011
   query:            "SELECT * FROM demandeurs_emploi_hommes_2011 WHERE demandeurs_emploi_homme > 50"
   db_connection:
-    host:           mysql
-    port:           3306
-    database:       onetjs
-    user:           root
+    host:           postgresql
+    port:           5432
+    dbname:         onetjs
+    user:           onetjs
     password:       onetjs
 attributes:
   - name:            demandeurs_emploi_homme

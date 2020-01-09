@@ -26,8 +26,7 @@ Unsupported options:
 
 OneTjs is able to read data from:
 * data files stored in the local file system: CSV and XLS files
-* MySQL databases
-* PostgreSQL (planned)
+* MySQL and PostgreSQL databases
 
 
 ## License and contributors
