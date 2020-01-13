@@ -70,7 +70,7 @@ class Service(object):
         frwks_yml_path = os.path.join(self.abs_data_dir_path, FRAMEWORKS_FILE_NAME)
         if os.path.exists(frwks_yml_path):
 
-            with open(frwks_yml_path, "r") as stream:
+            with open(frwks_yml_path, "r", encoding='utf8') as stream:
                 try:
                     frameworks_dict = yaml.safe_load(stream)
 
@@ -129,7 +129,7 @@ class Service(object):
 
         # Get the data source type
         dataset_dict = {}
-        with open(dataset_yaml_file_path, "r") as stream:
+        with open(dataset_yaml_file_path, "r", encoding='utf8') as stream:
             # try:
             # Read the yaml file
             dataset_dict = yaml.safe_load(stream)

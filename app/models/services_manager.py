@@ -19,7 +19,7 @@ class ServicesManager(object):
         self.__find_services_yml_file_path()
 
         # Read the services param file
-        with open(self.services_cfg_file_path, "r") as stream:
+        with open(self.services_cfg_file_path, "r", encoding='utf8') as stream:
             try:
                 services_dict = yaml.safe_load(stream)
 
