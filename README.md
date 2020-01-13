@@ -54,6 +54,9 @@ Thanks to the [Région Hauts-de-France](http://www.hautsdefrance.fr/) for its su
 
 ## Installation
 
+Prerequisites:
+* Python 3.5 ou supérieur (PyYAML 4 needs at least Python 2.7 or Python 3.5)
+
 ### Git Repository
 
 Download the repository or clone it with:
