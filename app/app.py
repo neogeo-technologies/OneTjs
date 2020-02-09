@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
-import logging
-from logging.handlers import RotatingFileHandler
 
 from flask import Flask
 from flask import render_template
-from flask.logging import default_handler
 
 from .reverse_proxied import ReverseProxied
 
@@ -49,8 +45,6 @@ def create_app(app_name="onetjs", blueprints=None):
 
         if app.config["TESTING"] == True:
             app.config.from_object("app.config.TestConfig")
-
-        configure_logging(app)
 
         app.init_success = False
         from .models import services_manager
@@ -121,50 +115,3 @@ def error_pages(app):
     @app.errorhandler(500)
     def server_error_page(error):
         return render_template("error.html", error_code=500), 500
-
-
-def configure_logging(app):
-    """Configure file(info) and email(error) logging."""
-
-    log_format = app.config.get(
-        "LOGGING_FORMAT",
-        "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]",
-    )
-    date_format = "%Y-%m-%dT%H:%M:%SZ"
-    log_levels = {
-        "CRITICAL": logging.CRITICAL,
-        "ERROR": logging.ERROR,
-        "WARNING": logging.WARNING,
-        "INFO": logging.INFO,
-        "DEBUG": logging.DEBUG,
-        "NOTSET": logging.NOTSET,
-    }
-
-    log_formatter = logging.Formatter(log_format, date_format)
-    log_level = log_levels.get(app.config["LOGGING_LEVEL"], log_levels["INFO"])
-
-    if "LOGGING_LOCATION" in app.config:
-
-        log_file_name = app.config["LOGGING_LOCATION"]
-        parent_dir = os.path.abspath(os.path.join(log_file_name, os.pardir))
-
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir)
-
-        log_handler = RotatingFileHandler(
-            filename=log_file_name, maxBytes=10000, backupCount=5
-        )
-        log_handler.setLevel(log_level)
-        log_handler.setFormatter(log_formatter)
-        app.logger.addHandler(log_handler)
-
-        app.logger.debug("Logging initialized...")
-        app.logger.debug(
-            "... log file location: {}".format(app.config.get("LOGGING_LOCATION"))
-        )
-    else:
-        default_handler.setLevel(log_level)
-        default_handler.setFormatter(log_formatter)
-        log_handler = logging.basicConfig(stream=sys.stdout)
-        app.logger.debug("Logging initialized...")
-        app.logger.debug("... default flask logging handler")
