@@ -50,6 +50,8 @@ def create_app(app_name="onetjs", blueprints=None):
         if app.config["TESTING"] == True:
             app.config.from_object("app.config.TestConfig")
 
+        configure_logging(app)
+
         app.init_success = False
         from .models import services_manager
 
@@ -59,7 +61,6 @@ def create_app(app_name="onetjs", blueprints=None):
         extensions_fabrics(app)
         # see https://github.com/xen/flask-project-template
 
-        configure_logging(app)
         error_pages(app)
         app.version = __version__
 
