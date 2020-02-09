@@ -18,24 +18,31 @@ class ServicesManager(object):
         # Find the services yaml file
         self.__find_services_yml_file_path()
 
-        # Read the services param file
-        with open(self.services_cfg_file_path, "r", encoding='utf8') as stream:
-            try:
-                services_dict = yaml.safe_load(stream)
+        if not self.services_cfg_file_path:
+            self.app.logger.critical(
+                "No yaml file referencing data found in the following dir: {}."
+                "The config file of OneTjs probably references the wrong directory.".format(
+                    self.app.config["DATA_DIR_PATH"])
+            )
+        else:
+            # Read the services param file
+            with open(self.services_cfg_file_path, "r", encoding='utf8') as stream:
+                try:
+                    services_dict = yaml.safe_load(stream)
 
-                for k, v in list(services_dict.items()):
-                    v["cfg_file_path"] = self.services_cfg_file_path
-                    v["name"] = k
-                    s = Service(**v)
-                    self.services[k] = s
-                    self.app.init_success = True
-            except yaml.YAMLError as e:
-                self.app.logger.exception(e)
-                self.app.logger.critical(
-                    "The app config file is not correctly formed. The initialization porcess will stop."
-                    "The following configuration file must be fixed before the application is restarted : "
-                    "{}".format(self.services_cfg_file_path)
-                )
+                    for k, v in list(services_dict.items()):
+                        v["cfg_file_path"] = self.services_cfg_file_path
+                        v["name"] = k
+                        s = Service(**v)
+                        self.services[k] = s
+                        self.app.init_success = True
+                except yaml.YAMLError as e:
+                    self.app.logger.exception(e)
+                    self.app.logger.critical(
+                        "The app config file is not correctly formed. The initialization porcess will stop."
+                        "The following configuration file must be fixed before the application is restarted : "
+                        "{}".format(self.services_cfg_file_path)
+                    )
 
     def __find_services_yml_file_path(self):
 
