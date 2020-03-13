@@ -4,19 +4,6 @@ import xml.dom.minidom as minidom
 import os
 
 
-def u(s):
-    """
-    decodes utf8
-    """
-    if isinstance(s, str):
-        return s.encode("utf-8")
-    if isinstance(s, str):
-        return s.decode("utf-8")
-    # fix this, item may be unicode
-    elif isinstance(s, list):
-        return [i.decode("utf-8") for i in s]
-
-
 def prettify_xml(xml_string, minify=False, indent="  ", newl=os.linesep):
     """
     Function prettifying or minifying an xml string
@@ -37,7 +24,7 @@ def prettify_xml(xml_string, minify=False, indent="  ", newl=os.linesep):
             elif x.nodeType == minidom.Node.ELEMENT_NODE:
                 remove_blanks(x)
 
-    xml = minidom.parseString(u(xml_string))
+    xml = minidom.parseString(xml_string)
     remove_blanks(xml)
     xml.normalize()
 
