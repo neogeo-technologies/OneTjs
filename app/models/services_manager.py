@@ -3,7 +3,7 @@
 import os
 import yaml
 
-from app.models.service import Service
+from .service import Service
 
 SERVICES_FILE_NAME = "services.yml"
 

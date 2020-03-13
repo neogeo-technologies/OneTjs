@@ -108,7 +108,7 @@ def dataset(service_name, dataset_name):
     try:
         data = this_dataset.get_data()
     except ValueError as e:
-        current_app.logger.error(e.message)
+        current_app.logger.error(str(e))
         data = None
 
     return render_template(

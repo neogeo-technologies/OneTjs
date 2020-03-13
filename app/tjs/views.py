@@ -18,7 +18,7 @@ except:  # For Python 3
 from distutils.version import StrictVersion as Version
 from collections import OrderedDict
 
-from app import utils
+from .. import utils
 
 SUPPORTED_VERSIONS = (Version("1.0"),)
 
@@ -33,9 +33,8 @@ def tjs_operation(service_name):
     Function responding to every TJS request and calling specialized functions for each TJS operation.
     This function checks the validity of the more common TJS parameters.
 
-    :param serv:    Service object
-    :param args:    parameters of the TJS request
-    :return:        request response
+    :param service_name:    Service name
+    :return:                request response
     """
 
     exceptions = []
@@ -153,8 +152,6 @@ def get_normalized_args():
     """
     Function converting parameter names to lowercase strings
 
-    :param serv:    Service object
-    :param args:    parameters of the TJS request
     :return:        request response
     """
 
@@ -171,9 +168,10 @@ def get_capabilities(serv, args, blueprint_name):
     """
     Function used to answer to GetCapabilities requests
 
-    :param serv:    Service object
-    :param args:    parameters of the TJS request
-    :return:        request response
+    :param serv:                service object
+    :param args:                parameters of the TJS request
+    :param blueprint_name:      blueprint name
+    :return:                    request response
     """
 
     exceptions = []
@@ -197,7 +195,7 @@ def get_capabilities(serv, args, blueprint_name):
                 exceptions.append(
                     {
                         "code": "VersionNegotiationFailed",
-                        "text": "Oh là là ! " "{}".format(e.message),
+                        "text": "Oh là là ! " "{}".format(e),
                         "locator": "acceptversions",
                     }
                 )
@@ -247,9 +245,10 @@ def describe_frameworks(serv, args, blueprint_name):
     """
     Function used to answer to DescribeFrameworks requests
 
-    :param serv:    Service object
-    :param args:    parameters of the TJS request
-    :return:        request response
+    :param serv:            service object
+    :param args:            parameters of the TJS request
+    :param blueprint_name:  blueprint name
+    :return:                request response
     """
 
     exceptions = []
@@ -279,7 +278,7 @@ def describe_frameworks(serv, args, blueprint_name):
                 "text": "Oh là là ! "
                 "This version of the TJS specifications is not supported by this TJS implementation: {}. "
                 "Supported version numbers are: {}.".format(
-                    arg_version, ", ".join(SUPPORTED_VERSIONS)
+                    arg_version, ", ".join([str(version) for version in SUPPORTED_VERSIONS])
                 ),
                 "locator": "version={}".format(arg_version),
             }
@@ -308,9 +307,10 @@ def describe_datasets(serv, args, blueprint_name):
     """
     Function used to answer to DescribeDatasets requests
 
-    :param serv:    Service object
-    :param args:    parameters of the TJS request
-    :return:        request response
+    :param serv:            service object
+    :param args:            parameters of the TJS request
+    :param blueprint_name:  blueprint name
+    :return:                request response
     """
 
     exceptions = []
@@ -369,7 +369,7 @@ def describe_datasets(serv, args, blueprint_name):
                 "text": "Oh là là ! "
                 "This version of the TJS specifications is not supported by this TJS implementation: {}. "
                 "Supported version numbers are: {}.".format(
-                    arg_version, ", ".join(SUPPORTED_VERSIONS)
+                    arg_version, ", ".join([str(version) for version in SUPPORTED_VERSIONS])
                 ),
                 "locator": "version={}".format(arg_version),
             }
@@ -399,9 +399,10 @@ def describe_data(serv, args, blueprint_name):
     """
     Function used to answer to DescribeData requests
 
-    :param serv:    Service object
-    :param args:    parameters of the TJS request
-    :return:        request response
+    :param serv:            service object
+    :param args:            parameters of the TJS request
+    :param blueprint_name:  blueprint name
+    :return:                request response
     """
 
     exceptions = []
@@ -510,7 +511,7 @@ def describe_data(serv, args, blueprint_name):
                 "text": "Oh là là ! "
                 "This version of the TJS specifications is not supported by this TJS implementation: {}. "
                 "Supported version numbers are: {}.".format(
-                    arg_version, ", ".join(SUPPORTED_VERSIONS)
+                    arg_version, ", ".join([str(version) for version in SUPPORTED_VERSIONS])
                 ),
                 "locator": "version={}".format(arg_version),
             }
@@ -542,9 +543,10 @@ def get_data(serv, args, blueprint_name):
     """
     Function used to answer to GetData requests
 
-    :param serv:    Service object
-    :param args:    parameters of the TJS request
-    :return:        request response
+    :param serv:            service object
+    :param args:            parameters of the TJS request
+    :param blueprint_name:  blueprint name
+    :return:                request response
     """
 
     exceptions = []
@@ -573,7 +575,7 @@ def get_data(serv, args, blueprint_name):
                 "text": "Oh là là ! "
                 "This version of the TJS specifications is not supported by this TJS implementation: {}. "
                 "Supported version numbers are: {}.".format(
-                    arg_version, ", ".join(SUPPORTED_VERSIONS)
+                    arg_version, ", ".join([str(version) for version in SUPPORTED_VERSIONS])
                 ),
                 "locator": "version={}".format(arg_version),
             }
@@ -673,7 +675,7 @@ def get_data(serv, args, blueprint_name):
     try:
         data = dtst.get_data(attributes=dtst_attributes, framework=frwk)
     except ValueError as e:
-        current_app.logger.error(e.message)
+        current_app.logger.error(str(e))
         data = None
 
     # TODO: handle correctly empty pd_dataframe (None for example)
@@ -764,14 +766,15 @@ def get_service_url(serv, geoclip=False):
     """
     Function building the URL to a service with specific blueprint (tjs/tjs_geoclip).
 
-    :param serv:    Service instance
+    :param serv:    service instance
+    :param geoclip  flag indicating if the URL should correspond to Geoclip style
     :return:        URL
     """
     app_path = request.url_root
     blueprint_name = request.blueprint
 
     if blueprint_name == "public_pages":
-        if geoclip == True:
+        if geoclip is True:
             service_url = urllib.parse.urljoin(
                 app_path, "/".join(("tjs_geoclip", serv.name))
             )

@@ -6,9 +6,8 @@ import os
 import pandas as pd
 import psycopg2
 import mysql.connector
-import numpy as np
 
-from app.models.dataset_attribute import DatasetAttribute
+from .dataset_attribute import DatasetAttribute
 
 
 class Dataset(object):

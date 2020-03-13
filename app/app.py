@@ -43,7 +43,7 @@ def create_app(app_name="onetjs", blueprints=None):
         if app.config["ENV"] == "development":
             app.config.from_object("app.config.DevConfig")
 
-        if app.config["TESTING"] == True:
+        if app.config["TESTING"] is True:
             app.config.from_object("app.config.TestConfig")
 
         app.init_success = False

@@ -5,11 +5,11 @@ from flask import current_app
 import yaml
 import os
 
-from app.models.dataset import CsvFileDataset
-from app.models.dataset import XlsFileDataset
-from app.models.dataset import PgsqlDataset
-from app.models.dataset import MysqlDataset
-from app.models.framework import Framework
+from .dataset import CsvFileDataset
+from .dataset import XlsFileDataset
+from .dataset import PgsqlDataset
+from .dataset import MysqlDataset
+from .framework import Framework
 
 FRAMEWORKS_FILE_NAME = "frameworks.yml"
 
@@ -125,7 +125,6 @@ class Service(object):
         dataset_subclasses = [CsvFileDataset, XlsFileDataset, MysqlDataset, PgsqlDataset]
         dataset_subclass = None
         data_source_type = None
-        frameworks = None
 
         # Get the data source type
         dataset_dict = {}
