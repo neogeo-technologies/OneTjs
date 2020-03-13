@@ -770,9 +770,11 @@ def get_service_url(serv, geoclip=False):
     :param geoclip  flag indicating if the URL should correspond to Geoclip style
     :return:        URL
     """
-    app_path = request.url_root
-    blueprint_name = request.blueprint
+    app_path = current_app.config["TJS_SERVICE_ROOT_URL"]
+    if not app_path:
+        app_path = request.url_root
 
+    blueprint_name = request.blueprint
     if blueprint_name == "public_pages":
         if geoclip is True:
             service_url = urllib.parse.urljoin(
@@ -781,9 +783,8 @@ def get_service_url(serv, geoclip=False):
         else:
             service_url = urllib.parse.urljoin(app_path, "/".join(("tjs", serv.name)))
     else:
-        service_url = urllib.parse.urljoin(
-            app_path, "/".join((blueprint_name, serv.name))
-        )
+        service_url = urllib.parse.urljoin(app_path, "/".join((blueprint_name, serv.name)))
+
     return service_url
 
 

@@ -31,7 +31,14 @@ Example of customized config file:
 ```
 SECRET_KEY = 'my new secret key'
 ENV = 'production'
+DATA_DIR_PATH = ''
+SERVER_NAME = 'my.domain.org:5000'
+TJS_SERVICE_ROOT_URL = 'https://' + SERVER_NAME
 ```
+
+* `DATA_DIR_PATH`: path to the directory containing the configuration of the services, frameworks, datasets...
+* `SERVER_NAME`: server name (domain and port)
+* `TJS_SERVICE_ROOT_URL`: url to the root of all TJS services
 
 You may find useful to look at the Flask configuration documention:  
 http://flask.pocoo.org/docs/1.0/config/#builtin-configuration-values
