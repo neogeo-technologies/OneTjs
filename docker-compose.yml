@@ -3,5 +3,11 @@ version: '3'
 services:
   onetjs:
     build: .
+    environment:
+      - SECRET_KEY='change me please'
+      - ENV='production'
+      - SERVER_NAME='127.0.0.1:8000'
+      - TJS_SERVICE_ROOT_URL='http://127.0.0.1:8000'
     ports:
       - "127.0.0.1:8000:8000"
+
