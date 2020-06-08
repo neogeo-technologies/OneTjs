@@ -1,10 +1,24 @@
-# README.md
+# OneTjs
 
-## Description
+[![Fiabilité](https://sonarqube.neogeo.fr/api/project_badges/measure?project=onetjs&metric=reliability_rating)](https://sonarqube.neogeo.fr/dashboard?id=onetjs)
+[![Dette Technique](https://sonarqube.neogeo.fr/api/project_badges/measure?project=onetjs&metric=sqale_index)](https://sonarqube.neogeo.fr/dashboard?id=onetjs)
 
 OneTjs is a server implementing the Open Geospatial Consortium standard called "Table Joining Service".
 
-One of the main objectives of OneTjs is to provide a simple datasource for the Céoclip mapping tool
+## TABLE DES MATIÈRES
+  - [Startup](#Startup)
+    - [Prerequisites](#Prerequisites)
+    - [Installation](#Installation)
+    - [Use](#Use)
+    - [Running tests](#Running-tests)
+  - [Versions](#Versions)
+  - [Autors](#Autors)
+
+---
+
+## Startup
+
+One of the main objectives of OneTjs is to provide a simple datasource for the Géoclip mapping tool
 (https://www.geoclip.fr/?lang=en).
 
 It implements the Data Access operations:
@@ -28,43 +42,18 @@ OneTjs is able to read data from:
 * data files stored in the local file system: CSV and XLS files
 * MySQL and PostgreSQL databases
 
+### Prerequisites
 
-## License and contributors
+Python 3.5 ou supérieur (PyYAML 4 needs at least Python 2.7 or Python 3.5)
+Debian 
 
-OneTjs is mainly developed by Neogeo Technologies under the following license:  
-Apache License 2.0
-
-> Copyright 2018 Neogeo Technologies  
->  
-> Licensed under the Apache License, Version 2.0 (the "License");  
-> you may not use this file except in compliance with the License.  
-> You may obtain a copy of the License at  
->  
-> http://www.apache.org/licenses/LICENSE-2.0
->  
-> Unless required by applicable law or agreed to in writing, software  
-> distributed under the License is distributed on an "AS IS" BASIS,  
-> WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
-> See the License for the specific language governing permissions and  
-> limitations under the License.
-
-
-Thanks to the [Région Hauts-de-France](http://www.hautsdefrance.fr/) for its support.
-
-
-## Installation
-
-Prerequisites:
-* Python 3.5 ou supérieur (PyYAML 4 needs at least Python 2.7 or Python 3.5)
-
-### Git Repository
+### Installation
 
 Download the repository or clone it with:
 
-`$ git clone https://github.com/neogeo-technologies/OneTjs.git`
-
-
-### Virtual environment - Python 3
+```
+$ git clone https://github.com/neogeo-technologies/OneTjs.git
+```
 
 Install a python virtual environment:
 
@@ -76,20 +65,8 @@ Activate the virtual environment:
     $ source tjs-venv/bin/activate
 
 
-### Requirements
 
-Install the required python modules:
-
-    (tjs-venv) $ cd OneTjs
-    (tjs-venv) $ pip install -r requirements.txt
-
-Note that some frameworks (Bootstrap and JQuery for instance) are used via CDN (see app/templates/base.html for example). You therefore need an internet 
-connexion in order to make these web pages fully fonctionnal.
-
-
-## Run the server
-
-### ...using the Flask command
+#### Run the server using the Flask command
 
     (tjs-venv) $ flask run
 
@@ -103,7 +80,7 @@ You may specify it:
     (tjs-venv) $ ../tjs-venv/bin/flask run
     
 
-### ...using the manage.py script
+#### Running the server using the manage.py script
 
     (tjs-venv) $ python manage.py runserver
 
@@ -112,21 +89,27 @@ Do not use it for production.
 Default port: 5000.
 
 
-### ...using gunicorn
+#### Running the server using gunicorn
 
     (tjs-venv) $ gunicorn --bind 0.0.0.0:8000 app.wsgi:app
 
 
-### ...using uwsgi
+#### Running the server using uwsgi
 
     (tjs-venv) $ uwsgi --socket 0.0.0.0:8000 --protocol=http -w app.wsgi:app
-    
 
-### ...using uwsgi and an ini file
+#### Requirements
 
-    (tjs-venv) $ uwsgi --socket 0.0.0.0:8000 --protocol=http --ini uwsgi.ini
+Install the required python modules:
 
-## Specify a config file
+    (tjs-venv) $ cd OneTjs
+    (tjs-venv) $ pip install -r requirements.txt
+
+Note that some frameworks (Bootstrap and JQuery for instance) are used via CDN (see app/templates/base.html for example). You therefore need an internet 
+connexion in order to make these web pages fully fonctionnal.
+
+
+### Configuration
 
 The environment variable `ONETJS_CONFIG_FILE_PATH` is used for specifying a custom config file.
 Example:
@@ -137,4 +120,24 @@ Example:
 You may also create a `onetjs.cfg` file at the root of the app.  
 For example, copy the `onetjs.example.cfg` file, set its name to `onetjs.cfg` and edit its content.
 
-See the docs for further details.
+See the [docs for further details](./docs/configuration.md).
+
+### Use
+
+
+### Running tests
+
+TODO
+
+
+
+## Versions
+Voir le fichier [CHANGELOG](CHANGELOG.md)
+
+
+## Autors
+Neogeo Technologies
+
+See the [contributing guide](./docs/contributing.md) to see how to give us some help.
+
+Thanks to the [Région Hauts-de-France](http://www.hautsdefrance.fr/) for its support.
