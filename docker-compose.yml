@@ -9,4 +9,4 @@ services:
       - SERVER_NAME='127.0.0.1:8000'
       - TJS_SERVICE_ROOT_URL='http://127.0.0.1:8000'
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8000:80"

@@ -1,4 +1,4 @@
-FROM python:3.6.4
+FROM python:3.6
 
 MAINTAINER Benjamin Chartier at neogeo.fr
 
@@ -7,10 +7,10 @@ RUN mkdir /onetjs/log
 COPY requirements.txt /onetjs/
 RUN pip install -r /onetjs/requirements.txt
 
-COPY app /onetjs/app
+COPY onetjs /onetjs/onetjs
 COPY data /onetjs/data
 COPY static /onetjs/static
-COPY *.cfg /onetjs/
+COPY setup.py *.cfg /onetjs/
 COPY uwsgi.ini /onetjs/
 
 WORKDIR /onetjs
@@ -18,6 +18,14 @@ VOLUME /onetjs/data
 VOLUME /onetjs/log
 ENV ONETJS_CONFIG_FILE_PATH /onetjs/docker.cfg
 
-CMD ["uwsgi", "--socket", "0.0.0.0:8000", \
-               "--protocol", "http", \
-               "--ini", "uwsgi.ini"]
+RUN apt update; apt install -y apache2 apache2-dev
+
+RUN a2dismod mpm_event
+RUN a2enmod mpm_prefork
+RUN pip install mod-wsgi
+
+RUN mod_wsgi-express module-config > /etc/apache2/mods-enabled/wsgi.load
+COPY apache_onetjs.conf /etc/apache2/sites-enabled/000-default.conf  
+RUN sed -i 's/ErrorLog.*/ErrorLog \/dev\/sdtout/' /etc/apache2/apache2.conf
+RUN pip install -e .
+CMD ["apache2ctl", "-D", "FOREGROUND"]
