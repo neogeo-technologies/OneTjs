@@ -1,0 +1,70 @@
+image:
+  name: python:3.7
+
+variables:
+  SONAR_TOKEN: "9864e0b53830ce6c7917fdc17ebe7e486d0eeba0"
+  SONAR_PROJECTKEY: "$CI_PROJECT_NAME"
+  SONAR_HOST_URL: "https://sonarqube.neogeo.fr"
+  GIT_DEPTH: 0
+  CI_REGISTRY: docker-registry.neogeo.fr
+  CI_REGISTRY_IMAGE: docker-registry.neogeo.fr/neogeo/OneTjs
+  REDIS_HOST: redis
+  MONGO_URL: "mongodb://mongo:27017/"
+
+
+stages:
+#  - test
+  - check
+  - build
+
+#test_unit:
+#  stage: test
+#  before_script:
+#    - pip install -e .[tests]
+#  script:
+#    - pytest --junitxml=xunit-reports/xunit-result-pytest.xml --cov-report xml:coverage-reports/coverage-pytest.xml --cov onetjs/
+#  artifacts:
+#    paths:
+#    - coverage-reports/
+#    - xunit-reports/
+#    expire_in: 1 week
+#  allow_failure: true
+
+
+sonarqube-check:
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  stage: check
+  script:
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.projectName=$CI_PROJECT_NAME -Dsonar.projectVersion=$CI_COMMIT_BRANCH
+  allow_failure: true
+#  dependencies:
+#    - test_unit
+#  only:
+#    - develop
+#    - master
+
+#build-master:
+#  stage: build
+#  image:
+#    name: gcr.io/kaniko-project/executor:debug
+#    entrypoint: [""]
+#  script:
+#    - mkdir -p /kaniko/.docker/
+#    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$DOCKER_REGISTRY_USER\",\"password\":\"$DOCKER_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+#    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:latest
+#  only:
+#    - master
+#
+#build:
+#  stage: build
+#  image:
+#    name: gcr.io/kaniko-project/executor:debug
+#    entrypoint: [""]
+#  script:
+#    - mkdir -p /kaniko/.docker/
+#    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$DOCKER_REGISTRY_USER\",\"password\":\"$DOCKER_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+#    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+#  except:
+#    - master
