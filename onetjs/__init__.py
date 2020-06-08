@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-__version__ = "0.6.1"
+__version__ = "0.7.0"
 __description__ = "TJS server"
 
-from .app import create_app
+from onetjs.app import create_app
 
 if __name__ == "__main__":
     app = create_app()

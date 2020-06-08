@@ -28,7 +28,7 @@ def create_app(app_name="onetjs", blueprints=None):
         app.wsgi_app = ReverseProxied(app.wsgi_app)
 
         # Default config
-        app.config.from_object("app.config.BaseConfig")
+        app.config.from_object("onetjs.config.BaseConfig")
 
         # Local config file set via the ONETJS_CONFIG_FILE_PATH environment variable or a onetjs.cfg file
         local_cfg_file_path = os.environ.get(
