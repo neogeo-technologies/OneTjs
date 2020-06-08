@@ -1,7 +1,7 @@
 # OneTjs
 
-[![Fiabilité](https://sonarqube.neogeo.fr/api/project_badges/measure?project=onetjs&metric=reliability_rating)](https://sonarqube.neogeo.fr/dashboard?id=onetjs)
-[![Dette Technique](https://sonarqube.neogeo.fr/api/project_badges/measure?project=onetjs&metric=sqale_index)](https://sonarqube.neogeo.fr/dashboard?id=onetjs)
+[![Fiability](https://sonarqube.neogeo.fr/api/project_badges/measure?project=onetjs&metric=reliability_rating)](https://sonarqube.neogeo.fr/dashboard?id=onetjs)
+[![Technical debt](https://sonarqube.neogeo.fr/api/project_badges/measure?project=onetjs&metric=sqale_index)](https://sonarqube.neogeo.fr/dashboard?id=onetjs)
 
 OneTjs is a server implementing the Open Geospatial Consortium standard called "Table Joining Service".
 
@@ -124,6 +124,7 @@ See the [docs for further details](./docs/configuration.md).
 
 ### Use
 
+If you run the application user the test server, go to http://localhost:5000/
 
 ### Running tests
 
@@ -132,7 +133,7 @@ TODO
 
 
 ## Versions
-Voir le fichier [CHANGELOG](CHANGELOG.md)
+See file [CHANGELOG](CHANGELOG.md)
 
 
 ## Autors
