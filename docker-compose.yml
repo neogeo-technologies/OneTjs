@@ -2,7 +2,10 @@ version: '3'
 
 services:
   onetjs:
-    build: .
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.apache
+      #dockerfile: docker/Dockerfile.uwsgi
     environment:
       - SECRET_KEY='change me please'
       - ENV='production'

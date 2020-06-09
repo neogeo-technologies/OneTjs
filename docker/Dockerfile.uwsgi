@@ -1,0 +1,23 @@
+FROM python:3.6
+
+MAINTAINER Benjamin Chartier at neogeo.fr
+
+RUN mkdir /onetjs
+RUN mkdir /onetjs/log
+COPY requirements.txt /onetjs/
+RUN pip install -r /onetjs/requirements.txt
+
+COPY onetjs /onetjs/onetjs
+COPY data /onetjs/data
+COPY static /onetjs/static
+COPY setup.py docker/docker.cfg /onetjs/
+COPY docker/uwsgi.ini /onetjs/
+
+WORKDIR /onetjs
+VOLUME /onetjs/data
+VOLUME /onetjs/log
+ENV ONETJS_CONFIG_FILE_PATH /onetjs/docker.cfg
+
+CMD ["uwsgi", "--socket", "0.0.0.0:80", \
+                "--protocol", "http", \
+                "--ini", "uwsgi.ini"]

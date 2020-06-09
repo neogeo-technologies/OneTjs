@@ -44,7 +44,7 @@ OneTjs is able to read data from:
 
 ### Prerequisites
 
-Python 3.5 ou supérieur (PyYAML 4 needs at least Python 2.7 or Python 3.5)
+Python 3.5 or higher (PyYAML 4 needs at least Python 2.7 or Python 3.5)
 Debian 
 
 ### Installation
@@ -97,6 +97,23 @@ Default port: 5000.
 #### Running the server using uwsgi
 
     (tjs-venv) $ uwsgi --socket 0.0.0.0:8000 --protocol=http -w app.wsgi:app
+
+#### Running the server using Apache and ModWSGI
+
+Install Apache and mod_wsgi:
+
+    apt update
+    apt install apache2 libapache2-mod-wsgi-py3
+
+Setup Apache to use the wsgi script:
+
+
+    WSGIScriptAlias / /path/to/venv/src/onetjs/onetjs/wsgi_apache.py
+    <Directory "/path/to/venv/src/onetjs/onetjs/">
+        <Files "wsgi_apache.py">
+            Require all granted
+        </Files>
+    </Directory>
 
 #### Requirements
 
