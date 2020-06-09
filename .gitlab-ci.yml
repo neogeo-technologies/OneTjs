@@ -16,6 +16,7 @@ stages:
 #  - test
   - check
   - build
+  - deploy
 
 #test_unit:
 #  stage: test
@@ -31,14 +32,14 @@ stages:
 #  allow_failure: true
 
 
-sonarqube-check:
-  image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  stage: check
-  script:
-    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.projectName=$CI_PROJECT_NAME -Dsonar.projectVersion=$CI_COMMIT_BRANCH
-  allow_failure: true
+#sonarqube-check:
+#  image:
+#    name: sonarsource/sonar-scanner-cli:latest
+#    entrypoint: [""]
+#  stage: check
+#  script:
+#    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$CI_PROJECT_NAME -Dsonar.projectName=$CI_PROJECT_NAME -Dsonar.projectVersion=$CI_COMMIT_BRANCH
+#  allow_failure: true
 #  dependencies:
 #    - test_unit
 #  only:
@@ -68,3 +69,14 @@ sonarqube-check:
 #    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 #  except:
 #    - master
+
+github-mirror:
+  stage: deploy
+  variables:
+    GIT_SSH_COMMAND: "ssh -i ../id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+  before_script:
+    - echo -n "$ONETJS_GITLAB_PRIVATE_KEY" > id_rsa
+    - chmod 0600 id_rsa
+  script:
+    - git clone --mirror https://gitlab-ci-token:${CI_JOB_TOKEN}@git.neogeo.fr/neogeo/OneTjs.git
+    - cd OneTjs.git; git push --mirror git@github.com:neogeo-technologies/OneTjs.git
