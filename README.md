@@ -9,6 +9,7 @@ OneTjs is a server implementing the Open Geospatial Consortium standard called "
   - [Startup](#Startup)
     - [Prerequisites](#Prerequisites)
     - [Installation](#Installation)
+    - [Configuration](#Configuration)
     - [Use](#Use)
     - [Running tests](#Running-tests)
   - [Versions](#Versions)
@@ -44,8 +45,11 @@ OneTjs is able to read data from:
 
 ### Prerequisites
 
-Python 3.5 or higher (PyYAML 4 needs at least Python 2.7 or Python 3.5)
-Debian 
+Python 3.5 or higher (PyYAML 4 needs at least Python 2.7 or Python 3.5).
+The recommended (and the only supported) OS is Debian. 
+
+Note that some frameworks (Bootstrap and JQuery for instance) are used via CDN (see app/templates/base.html for example). You therefore need an internet 
+connexion in order to make these web pages fully fonctionnal.
 
 ### Installation
 
@@ -63,6 +67,14 @@ Install a python virtual environment:
 Activate the virtual environment:
 
     $ source tjs-venv/bin/activate
+
+Install OneTjs and the dependecies
+
+    $ pip install -e .
+
+You can also install directly through github (without a git clone before):
+
+    $ pip install -e git+https://github.com/neogeo-technologies/OneTjs.git
 
 
 
@@ -115,16 +127,6 @@ Setup Apache to use the wsgi script:
         </Files>
     </Directory>
 
-#### Requirements
-
-Install the required python modules:
-
-    (tjs-venv) $ cd OneTjs
-    (tjs-venv) $ pip install -r requirements.txt
-
-Note that some frameworks (Bootstrap and JQuery for instance) are used via CDN (see app/templates/base.html for example). You therefore need an internet 
-connexion in order to make these web pages fully fonctionnal.
-
 
 ### Configuration
 
@@ -139,9 +141,27 @@ For example, copy the `onetjs.example.cfg` file, set its name to `onetjs.cfg` an
 
 See the [docs for further details](./docs/configuration.md).
 
+### Docker variables
+
+If you don't override the `ONETJS_CONFIG_FILE_PATH` environment variable with your own file, you can use these environment variables to cofigure 
+neTjs:
+
+* `ONETJS_SECRET_KEY` (mandatory) used to enable flask sessions
+* `ONETJS_ENV_DEV` set to 1 to enable development environement (debugtoolbar, logs...)
+* `ONETJS_TESTING` set to 1 to enable logs and disable CSRF protection
+* `ONETJS_DATA_DIR_PATH` to the path containing the data (by default set to /onetjs/data, remember to put this in a volume)
+* `ONETJS_SERVER_NAME` the hostname (and optionaly the port), default is 'localhost.localdomain:8000'
+* `ONETJS_SERVICE_ROOT_URL` the full url of the service, by default 'http://'+ ONETJS\_SERVER\_NAME
+
+You should bind /onetjs/data/ and /onetjs to volumes.
+
+WARNING configuration is only read on container startup. If you change services or configuration, you will have to restart the container
+
 ### Use
 
 If you run the application user the test server, go to http://localhost:5000/
+
+WARNING: ensure you use the hostname/port defined in you ONETJSi\_SERVER\_NAME/SERVER\_NAME variables, otherwise flask will answer with a 404
 
 ### Running tests
 

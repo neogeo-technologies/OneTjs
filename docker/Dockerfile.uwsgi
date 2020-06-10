@@ -10,14 +10,17 @@ RUN pip install -r /onetjs/requirements.txt
 COPY onetjs /onetjs/onetjs
 COPY data /onetjs/data
 COPY static /onetjs/static
-COPY setup.py docker/docker.cfg /onetjs/
+COPY setup.* docker/docker.cfg /onetjs/
 COPY docker/uwsgi.ini /onetjs/
 
 WORKDIR /onetjs
 VOLUME /onetjs/data
 VOLUME /onetjs/log
 ENV ONETJS_CONFIG_FILE_PATH /onetjs/docker.cfg
+RUN pip install -e . uwsgi
 
-CMD ["uwsgi", "--socket", "0.0.0.0:80", \
+USER www-data:www-data
+CMD ["uwsgi", "--socket", "0.0.0.0:8000", \
                 "--protocol", "http", \
-                "--ini", "uwsgi.ini"]
+                "--ini", "uwsgi.ini" \
+                ]

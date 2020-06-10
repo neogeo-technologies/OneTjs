@@ -32,7 +32,7 @@ Example of customized config file:
 SECRET_KEY = 'my new secret key'
 ENV = 'production'
 DATA_DIR_PATH = ''
-SERVER_NAME = 'my.domain.org:5000'
+SERVER_NAME = 'my.domain.org:5000
 TJS_SERVICE_ROOT_URL = 'https://' + SERVER_NAME
 ```
 
@@ -48,8 +48,7 @@ The name and location of this cfg file may be specified using the following envi
 
     $ export ONETJS_CONFIG_FILE_PATH=/path/to/settings.cfg
 
-If such a file is not provided to the app, the parameters defined in the app.config.BaseConfig class is applied by
-OneTjs.
+If such a file is not provided to the app, the parameters defined in the onetjs.config.BaseConfig class are applied by OneTjs.
 
 
 Typical data file tree:

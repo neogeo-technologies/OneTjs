@@ -4,12 +4,17 @@ services:
   onetjs:
     build:
       context: .
-      dockerfile: docker/Dockerfile.apache
-      #dockerfile: docker/Dockerfile.uwsgi
+      #dockerfile: docker/Dockerfile.apache
+      dockerfile: docker/Dockerfile.uwsgi
     environment:
-      - SECRET_KEY='change me please'
-      - ENV='production'
-      - SERVER_NAME='127.0.0.1:8000'
-      - TJS_SERVICE_ROOT_URL='http://127.0.0.1:8000'
+      - ONETJS_SECRET_KEY='change me please'
+      #- ONETJS_ENV_DEV=0
+      #- ONETJS_TESTING=0
+      #- ONETJS_DATA_DIR_PATH=/onetjs/data
+      #- ONETJS_SERVER_NAME='localhost:8000'
+      #- ONETJS_SERVICE_ROOT_URL='http://localhost:8000'
     ports:
-      - "127.0.0.1:8000:80"
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./onetjs_volume/data:/onetjs/data
+      - ./onetjs_volume/log:/onetjs/log

@@ -41,10 +41,10 @@ def create_app(app_name="onetjs", blueprints=None):
 
         # Some adjustments for development and testing configs
         if app.config["ENV"] == "development":
-            app.config.from_object("app.config.DevConfig")
+            app.config.from_object("onetjs.config.DevConfig")
 
         if app.config["TESTING"] is True:
-            app.config.from_object("app.config.TestConfig")
+            app.config.from_object("onetjs.config.TestConfig")
 
         app.init_success = False
         from .models import services_manager

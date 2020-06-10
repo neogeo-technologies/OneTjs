@@ -115,8 +115,11 @@ dmypy.json
 .pyre/
 
 log/*
-docker-compose.override.yml
-onetjs.cfg
 
 # Vim stuff
 *.sw[po]
+
+# Docker and OneTJS stuff
+docker-compose.override.yml
+onetjs.cfg
+onetjs_volume
