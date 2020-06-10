@@ -1,11 +1,17 @@
-FROM python:3.6
+FROM python:3.6 as pip-dep-install
+
+RUN mkdir /onetjs
+COPY requirements.txt /onetjs/
+RUN pip install --prefix=/install --no-warn-script-location -r /onetjs/requirements.txt uwsgi
+
+FROM python:3.6-slim
 
 MAINTAINER Benjamin Chartier at neogeo.fr
 
-RUN mkdir /onetjs
-RUN mkdir /onetjs/log
-COPY requirements.txt /onetjs/
-RUN pip install -r /onetjs/requirements.txt
+RUN apt update ; apt install -y libxml2 libpq5 && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /onetjs /onetjs/log
+COPY --from=pip-dep-install /install /usr/local
 
 COPY onetjs /onetjs/onetjs
 COPY data /onetjs/data
