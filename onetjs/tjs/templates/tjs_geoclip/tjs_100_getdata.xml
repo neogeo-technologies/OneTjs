@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<GDAS service="TJS"
+<GDAS
+  service="TJS"
   version="1.0"
   capabilities="{{ get_service_url(serv=service) }}"
   xml:lang="{{ service.languages[0] }}"
