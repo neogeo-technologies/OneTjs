@@ -230,9 +230,10 @@ def get_capabilities(serv, args, blueprint_name):
             tjs_version=tjs_version,
             onetjs_version=current_app.version,
         )
-        response_content = utils.prettify_xml(
-            xml_string=response_content, minify=not current_app.debug
-        )
+        if blueprint_name != "tjs_geoclip":
+            response_content = utils.prettify_xml(
+                xml_string=response_content, minify=not current_app.debug
+            )
         response = make_response(response_content)
         response.headers["Content-Type"] = "application/xml"
 
@@ -294,9 +295,10 @@ def describe_frameworks(serv, args, blueprint_name):
         language=arg_language,
         onetjs_version=current_app.version,
     )
-    response_content = utils.prettify_xml(
-        xml_string=response_content, minify=not current_app.debug
-    )
+    if blueprint_name != "tjs_geoclip":
+        response_content = utils.prettify_xml(
+            xml_string=response_content, minify=not current_app.debug
+        )
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -386,9 +388,10 @@ def describe_datasets(serv, args, blueprint_name):
         dataset_uri=dataset_uri,
         onetjs_version=current_app.version,
     )
-    response_content = utils.prettify_xml(
-        xml_string=response_content, minify=not current_app.debug
-    )
+    if blueprint_name != "tjs_geoclip":
+        response_content = utils.prettify_xml(
+            xml_string=response_content, minify=not current_app.debug
+        )
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -530,9 +533,10 @@ def describe_data(serv, args, blueprint_name):
         attributes=dtst_attributes,
         onetjs_version=current_app.version,
     )
-    response_content = utils.prettify_xml(
-        xml_string=response_content, minify=not current_app.debug
-    )
+    if blueprint_name != "tjs_geoclip":
+        response_content = utils.prettify_xml(
+            xml_string=response_content, minify=not current_app.debug
+        )
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 
@@ -690,9 +694,10 @@ def get_data(serv, args, blueprint_name):
         data=data,
         onetjs_version=current_app.version,
     )
-    response_content = utils.prettify_xml(
-        xml_string=response_content, minify=not current_app.debug
-    )
+    if blueprint_name != "tjs_geoclip":
+        response_content = utils.prettify_xml(
+            xml_string=response_content, minify=not current_app.debug
+        )
     response = make_response(response_content)
     response.headers["Content-Type"] = "application/xml"
 

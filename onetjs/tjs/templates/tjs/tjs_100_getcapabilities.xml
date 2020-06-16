@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<tjs:Capabilities service="TJS"
+<tjs:Capabilities
+  service="TJS"
   version="1.0"
   xml:lang="{{ service.languages[0] }}"
   xmlns:xlink="http://www.w3.org/1999/xlink"

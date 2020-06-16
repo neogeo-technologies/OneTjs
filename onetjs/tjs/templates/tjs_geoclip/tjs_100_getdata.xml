@@ -4,7 +4,7 @@
   version="1.0"
   capabilities="{{ get_service_url(serv=service) }}"
   xml:lang="{{ service.languages[0] }}"
-  xmlns:tjs="http://www.opengis.net/tjs/1.0"
+  xmlns="http://www.opengis.net/tjs/1.0"
   xmlns:ows="http://www.opengis.net/ows/1.1"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
