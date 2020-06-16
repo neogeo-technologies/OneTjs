@@ -3,7 +3,7 @@
 from flask_script import Manager
 import logging
 
-from app.app import create_app
+from onetjs.app import create_app
 
 logging.basicConfig(level=logging.INFO)
 

@@ -80,7 +80,7 @@ You can also install directly through github (without a git clone before):
 
 #### Run the server using the Flask command
 
-    (tjs-venv) $ flask run
+    (tjs-venv) $ FLASK_APP=onetjs flask run
 
 This command launches the Flask development server (Werkzeug).  
 Do not use it for production.  
@@ -89,7 +89,7 @@ Default port: 5000.
 Note : make sure the flask command tool you use is the one located in your Python virtual environment.  
 You may specify it:
 
-    (tjs-venv) $ ../tjs-venv/bin/flask run
+    (tjs-venv) $ FLASK_APP=onetjs ../tjs-venv/bin/flask run
     
 
 #### Running the server using the manage.py script
