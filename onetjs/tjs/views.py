@@ -63,7 +63,7 @@ def tjs_operation(service_name):
         exceptions.append(
             {
                 "code": "MissingParameterValue",
-                "text": "Oh là là ! " "The 'service' parameter must be present.",
+                "text": "Oh là là! " "The 'service' parameter must be present.",
                 "locator": "service",
             }
         )
@@ -74,7 +74,7 @@ def tjs_operation(service_name):
         exceptions.append(
             {
                 "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "The service type requested is not supported: {}. "
                 "The only supported service type is TJS.".format(arg_service),
                 "locator": "service={}".format(arg_service),
@@ -87,7 +87,7 @@ def tjs_operation(service_name):
         exceptions.append(
             {
                 "code": "MissingParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "The 'request' parameter must be present. This TJS server cannot make a guess for this parameter.",
                 "locator": "request",
             }
@@ -124,7 +124,7 @@ def tjs_operation(service_name):
             exceptions.append(
                 {
                     "code": "OperationNotSupported",
-                    "text": "Oh là là ! "
+                    "text": "Oh là là! "
                     "This operation is not supported by this TJS implementation: {}. "
                     "Supported operations are GetCapabilities, DescribeFrameworks, DescribeDatasets "
                     "and DescribeData.".format(arg_operation),
@@ -137,7 +137,7 @@ def tjs_operation(service_name):
             exceptions.append(
                 {
                     "code": "InvalidParameterValue",
-                    "text": "Oh là là ! "
+                    "text": "Oh là là! "
                     "This operation is not a TJS operation: {}. "
                     "Supported operations are GetCapabilities, DescribeFrameworks, DescribeDatasets "
                     "and DescribeData.".format(arg_operation),
@@ -210,7 +210,7 @@ def get_capabilities(serv, args, blueprint_name):
                 exceptions.append(
                     {
                         "code": "VersionNegotiationFailed",
-                        "text": "Oh là là ! " "{}".format(e),
+                        "text": "Oh là là! " "{}".format(e),
                         "locator": "acceptversions",
                     }
                 )
@@ -221,7 +221,7 @@ def get_capabilities(serv, args, blueprint_name):
             exceptions.append(
                 {
                     "code": "VersionNegotiationFailed",
-                    "text": "Oh là là ! "
+                    "text": "Oh là là! "
                     "The 'acceptversions' does not include any version supported by this server."
                     "Supported versions are: {}".format(
                         ",".join([str(vrs) for vrs in SUPPORTED_VERSIONS])
@@ -290,7 +290,7 @@ def describe_frameworks(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "This version of the TJS specifications is not supported by this TJS implementation: {}. "
                 "Supported version numbers are: {}.".format(
                     arg_version, ", ".join([str(version) for version in SUPPORTED_VERSIONS])
@@ -348,7 +348,7 @@ def describe_datasets(serv, args, blueprint_name):
             exceptions.append(
                 {
                     "code": "InvalidParameterValue",
-                    "text": "Oh là là ! "
+                    "text": "Oh là là! "
                     "The frameworkuri parameter of the DescribeDatasets operation can only contain one uri. ",
                     "locator": "frameworkuri={}".format(arg_framework_uri),
                 }
@@ -365,7 +365,7 @@ def describe_datasets(serv, args, blueprint_name):
             exceptions.append(
                 {
                     "code": "InvalidParameterValue",
-                    "text": "Oh là là ! "
+                    "text": "Oh là là! "
                     "The dataseturi parameter of the DescribeDatasets operation can only contain one uri. ",
                     "locator": "dataseturi={}".format(arg_dataset_uri),
                 }
@@ -382,7 +382,7 @@ def describe_datasets(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "This version of the TJS specifications is not supported by this TJS implementation: {}. "
                 "Supported version numbers are: {}.".format(
                     arg_version, ", ".join([str(version) for version in SUPPORTED_VERSIONS])
@@ -442,7 +442,7 @@ def describe_data(serv, args, blueprint_name):
             exceptions.append(
                 {
                     "code": "InvalidParameterValue",
-                    "text": "Oh là là ! "
+                    "text": "Oh là là! "
                     "The frameworkuri parameter of the DescribeData operation can only contain one uri. ",
                     "locator": "frameworkuri={}".format(arg_framework_uri),
                 }
@@ -452,7 +452,7 @@ def describe_data(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "MissingParameterValue",
-                "text": "Oh là là ! " "The 'frameworkuri' parameter must be present.",
+                "text": "Oh là là! " "The 'frameworkuri' parameter must be present.",
                 "locator": "frameworkuri",
             }
         )
@@ -465,7 +465,7 @@ def describe_data(serv, args, blueprint_name):
             exceptions.append(
                 {
                     "code": "InvalidParameterValue",
-                    "text": "Oh là là ! "
+                    "text": "Oh là là! "
                     "The dataseturi parameter of the DescribeData operation can only contain one uri. ",
                     "locator": "dataseturi={}".format(arg_dataset_uri),
                 }
@@ -475,7 +475,7 @@ def describe_data(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "MissingParameterValue",
-                "text": "Oh là là ! " "The 'dataseturi' parameter must be present.",
+                "text": "Oh là là! " "The 'dataseturi' parameter must be present.",
                 "locator": "dataseturi",
             }
         )
@@ -487,7 +487,7 @@ def describe_data(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "The specified framework is not available for the specified dataseturi.",
                 "locator": "frameworkuri",
             }
@@ -505,7 +505,7 @@ def describe_data(serv, args, blueprint_name):
                 exceptions.append(
                     {
                         "code": "InvalidParameterValue",
-                        "text": "Oh là là ! "
+                        "text": "Oh là là! "
                         "The requested attribute is not valid: {}.".format(
                             attribute_name
                         ),
@@ -525,7 +525,7 @@ def describe_data(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "This version of the TJS specifications is not supported by this TJS implementation: {}. "
                 "Supported version numbers are: {}.".format(
                     arg_version, ", ".join([str(version) for version in SUPPORTED_VERSIONS])
@@ -590,7 +590,7 @@ def get_data(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "This version of the TJS specifications is not supported by this TJS implementation: {}. "
                 "Supported version numbers are: {}.".format(
                     arg_version, ", ".join([str(version) for version in SUPPORTED_VERSIONS])
@@ -609,7 +609,7 @@ def get_data(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "MissingParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "The 'frameworkuri' parameter is mandatory for GetData operation. "
                 "This TJS server cannot make a guess for this parameter.",
                 "locator": "frameworkuri",
@@ -621,7 +621,7 @@ def get_data(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "MissingParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "The 'dataseturi' parameter is mandatory for GetData operation. "
                 "This TJS server cannot make a guess for this parameter.",
                 "locator": "dataseturi",
@@ -637,7 +637,7 @@ def get_data(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "The parameter value for 'frameworkuri' is not valid: {}.".format(
                     arg_framework_uri
                 ),
@@ -652,7 +652,7 @@ def get_data(serv, args, blueprint_name):
         exceptions.append(
             {
                 "code": "InvalidParameterValue",
-                "text": "Oh là là ! "
+                "text": "Oh là là! "
                 "The parameter value for 'dataseturi' is not valid: {}.".format(
                     arg_dataset_uri
                 ),
@@ -673,7 +673,7 @@ def get_data(serv, args, blueprint_name):
                 exceptions.append(
                     {
                         "code": "InvalidParameterValue",
-                        "text": "Oh là là ! "
+                        "text": "Oh là là! "
                         "The requested attribute is not valid: {}.".format(
                             attribute_name
                         ),
