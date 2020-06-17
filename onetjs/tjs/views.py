@@ -202,7 +202,6 @@ def get_capabilities(serv, args, blueprint_name):
 
         if accepted_and_supported_versions:
             tjs_version = str(accepted_and_supported_versions[0])
-            print(tjs_version)
         else:
             exceptions.append(
                 {
@@ -216,7 +215,7 @@ def get_capabilities(serv, args, blueprint_name):
                 }
             )
     else:
-        tjs_version = str(SUPPORTED_VERSIONS[0])
+        tjs_version = max(SUPPORTED_VERSIONS)
 
     if tjs_version == "1.0":
         template_name = blueprint_name + "/tjs_100_getcapabilities.xml"
@@ -254,7 +253,7 @@ def describe_frameworks(serv, args, blueprint_name):
 
     exceptions = []
 
-    arg_version = args.get("version")
+    arg_version = args.get("version", max(SUPPORTED_VERSIONS))
     # TODO: handle language parameter
     arg_language = args.get("language")
     arg_framework_uri = args.get("frameworkuri")
@@ -269,7 +268,7 @@ def describe_frameworks(serv, args, blueprint_name):
         frameworks = list(serv.get_frameworks())
 
     # Get the jinja template corresponding to the TJS specifications version
-    if arg_version in ("1.0",):
+    if arg_version == Version("1.0"):
         template_name = blueprint_name + "/tjs_100_describeframeworks.xml"
     else:
         # TJS exception
@@ -317,7 +316,7 @@ def describe_datasets(serv, args, blueprint_name):
 
     exceptions = []
 
-    arg_version = args.get("version")
+    arg_version = args.get("version", max(SUPPORTED_VERSIONS))
     # TODO: handle language parameter
     arg_language = args.get("language")
     arg_framework_uri = args.get("frameworkuri")
@@ -410,7 +409,7 @@ def describe_data(serv, args, blueprint_name):
 
     exceptions = []
 
-    arg_version = args.get("version")
+    arg_version = args.get("version", max(SUPPORTED_VERSIONS))
     # TODO: handle language parameter
     arg_language = args.get("language")
     arg_framework_uri = args.get("frameworkuri")
@@ -555,7 +554,7 @@ def get_data(serv, args, blueprint_name):
 
     exceptions = []
 
-    arg_version = args.get("version")
+    arg_version = args.get("version", max(SUPPORTED_VERSIONS))
     # TODO: handle language parameter
     arg_language = args.get("language")
     arg_framework_uri = args.get("frameworkuri")
