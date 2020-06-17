@@ -151,6 +151,8 @@ def tjs_operation(service_name):
 def get_normalized_args():
     """
     Function converting parameter names to lowercase strings
+    Also converts string version in StrictVersion if possible.
+    Otherwise it keeps it as a string
 
     :return:        request response
     """
@@ -160,6 +162,19 @@ def get_normalized_args():
 
     for key, value in list(args.items()):
         normalized_args[key.lower()] = value
+
+    if "version" in normalized_args:
+        arg_version = normalized_args["version"]
+        if arg_version.isdigit():
+            arg_version = Version(arg_version + ".0")
+
+        try:
+            arg_version = Version(arg_version)
+            normalized_args["version"] = arg_version
+        except TypeError as e:
+            pass
+        except ValueError as e:
+            pass
 
     return normalized_args
 
@@ -268,7 +283,7 @@ def describe_frameworks(serv, args, blueprint_name):
         frameworks = list(serv.get_frameworks())
 
     # Get the jinja template corresponding to the TJS specifications version
-    if arg_version == Version("1.0"):
+    if type(arg_version) == Version and arg_version == Version("1.0"):
         template_name = blueprint_name + "/tjs_100_describeframeworks.xml"
     else:
         # TJS exception
@@ -360,7 +375,7 @@ def describe_datasets(serv, args, blueprint_name):
         dataset_uri = dataset_uris[0]
 
     # Get the jinja template corresponding to the TJS specifications version
-    if arg_version in ("1.0",):
+    if type(arg_version) == Version and arg_version == Version("1.0"):
         template_name = blueprint_name + "/tjs_100_describedatasets.xml"
     else:
         # TJS exception
@@ -503,7 +518,7 @@ def describe_data(serv, args, blueprint_name):
         dtst_attributes = dtst.ds_attributes
 
     # Get the jinja template corresponding to the TJS specifications version
-    if arg_version in ("1.0",):
+    if type(arg_version) == Version and arg_version == Version("1.0"):
         template_name = blueprint_name + "/tjs_100_describedata.xml"
     else:
         # TJS exception
@@ -568,7 +583,7 @@ def get_data(serv, args, blueprint_name):
     arg_aid = args.get("aid")
 
     # Get the jinja template corresponding to the TJS specifications version
-    if arg_version in ("1.0",):
+    if type(arg_version) == Version and arg_version == Version("1.0"):
         template_name = blueprint_name + "/tjs_100_getdata.xml"
     else:
         # TJS exception
